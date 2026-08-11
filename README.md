@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevKit
 
-## Getting Started
+> A simple, fast and open-source toolkit for developers.
 
-First, run the development server:
+DevKit is a collection of useful developer tools that run directly in your browser.
+
+No account.
+No unnecessary setup.
+Just open a tool and use it.
+
+## ✨ Features
+
+* JSON Formatter & Validator
+* JWT Decoder
+* UUID Generator
+* Regex Tester
+* Base64 Encoder & Decoder
+* Unix Timestamp Converter
+* Fast client-side tools
+* Responsive interface
+* No signup required
+
+## 🛠️ Built With
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+* Lucide React
+
+## 🚀 Getting Started
+
+Clone the repository:
+
+```bash
+git clone YOUR_REPOSITORY_URL
+```
+
+Enter the project:
+
+```bash
+cd devkit
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Project Structure
 
-## Learn More
+```text
+src/
+├── app/
+│   ├── tools/
+│   │   ├── json-formatter/
+│   │   ├── jwt-decoder/
+│   │   ├── uuid-generator/
+│   │   ├── regex-tester/
+│   │   ├── base64/
+│   │   └── timestamp/
+│   │
+│   ├── about/
+│   ├── page.tsx
+│   └── layout.tsx
+│
+├── components/
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   └── ToolCard.tsx
+│
+└── data/
+    └── tools.ts
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🔒 Privacy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+DevKit is designed to process tool data directly in the browser whenever possible.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Your input is not intentionally sent to a backend server by these client-side tools.
 
-## Deploy on Vercel
+However, always avoid pasting sensitive secrets such as production credentials, private keys, or real authentication tokens into any online developer tool.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contributions are welcome.
+
+You can:
+
+* Add a new developer tool
+* Improve an existing tool
+* Fix bugs
+* Improve accessibility
+* Improve the UI
+* Improve documentation
+
+Before submitting a pull request, make sure the project builds successfully.
+
+## 📌 Roadmap
+
+Planned tools and improvements:
+
+* [ ] URL Encoder / Decoder
+* [ ] HTML Formatter
+* [ ] CSS Formatter
+* [ ] SQL Formatter
+* [ ] Hash Generator
+* [ ] Color Converter
+* [ ] Cron Expression Generator
+* [ ] Markdown Preview
+* [ ] Improved Regex highlighting
+* [ ] Dark / Light theme
+* [ ] More developer utilities
+
+## ⭐ Support
+
+If DevKit is useful to you, consider giving the repository a ⭐ on GitHub.
+
+It helps the project grow and reach more developers.
+
+## 📄 License
+
+This project is open source and available under the MIT License.

@@ -1,6 +1,10 @@
 # DevKit
 
 > Simple, fast and useful developer tools — all in one place.
+>
+> ## 📸 Preview
+
+![DevKit Preview](./public/screenshots/devkit-home.png)
 
 DevKit is an open-source collection of browser-based tools built for developers.
 

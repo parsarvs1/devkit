@@ -1,14 +1,14 @@
 # DevKit
 
 > Simple, fast and useful developer tools — all in one place.
->
-> ## 📸 Preview
-
-![DevKit Preview](./public/screenshots/devkit-home.png)
 
 DevKit is an open-source collection of browser-based tools built for developers.
 
 Format JSON, decode JWTs, generate UUIDs, test regex, convert timestamps and more — without unnecessary setup or signup.
+
+## 📸 Preview
+
+![DevKit Preview](./public/screenshots/devkit-home.png)
 
 ## 🌐 Live Demo
 
@@ -26,18 +26,18 @@ https://devkit.pars-paris1.workers.dev/
 
 ## 🛠️ Available Tools
 
-| Tool                  | Description                      |
-| --------------------- | -------------------------------- |
-| JSON Formatter        | Format and validate JSON data    |
-| JWT Decoder           | Decode and inspect JWT tokens    |
-| UUID Generator        | Generate random UUIDs            |
-| Regex Tester          | Test regular expressions         |
-| Base64 Encoder        | Encode and decode Base64         |
-| Timestamp Converter   | Convert Unix timestamps          |
-| Hash Generator        | Generate secure hashes           |
+| Tool | Description |
+| --- | --- |
+| JSON Formatter | Format and validate JSON data |
+| JWT Decoder | Decode and inspect JWT tokens |
+| UUID Generator | Generate random UUIDs |
+| Regex Tester | Test regular expressions |
+| Base64 Encoder | Encode and decode Base64 |
+| Timestamp Converter | Convert Unix timestamps |
+| Hash Generator | Generate secure hashes |
 | URL Encoder / Decoder | Encode and decode URL components |
-| Color Converter       | Convert HEX, RGB and HSL colors  |
-| Password Generator    | Generate strong random passwords |
+| Color Converter | Convert HEX, RGB and HSL colors |
+| Password Generator | Generate strong random passwords |
 
 ## 🚀 Getting Started
 
@@ -52,8 +52,6 @@ Clone the repository:
 
 ```bash
 git clone https://github.com/parsarvs1/devkit.git
-
----
 
 Enter the project:
 
@@ -70,6 +68,9 @@ npm run dev
 Open:
 
 http://localhost:3000
+
+---
+
 🧱 Built With
 Next.js
 React
@@ -92,6 +93,8 @@ devkit/
 │   └── tools.ts
 │
 ├── public/
+│   └── screenshots/
+│       └── devkit-home.png
 │
 ├── package.json
 └── README.md
@@ -120,4 +123,3 @@ If you find DevKit useful, consider giving the repository a star on GitHub.
 It helps the project grow and reach more developers.
 
 Built for developers.
-```

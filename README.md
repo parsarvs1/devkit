@@ -1,136 +1,119 @@
 # DevKit
 
-> A simple, fast and open-source toolkit for developers.
+> Simple, fast and useful developer tools — all in one place.
 
-DevKit is a collection of useful developer tools that run directly in your browser.
+DevKit is an open-source collection of browser-based tools built for developers.
 
-No account.
-No unnecessary setup.
-Just open a tool and use it.
+Format JSON, decode JWTs, generate UUIDs, test regex, convert timestamps and more — without unnecessary setup or signup.
+
+## 🌐 Live Demo
+
+https://devkit.pars-paris1.workers.dev/
 
 ## ✨ Features
 
-* JSON Formatter & Validator
-* JWT Decoder
-* UUID Generator
-* Regex Tester
-* Base64 Encoder & Decoder
-* Unix Timestamp Converter
-* Fast client-side tools
-* Responsive interface
-* No signup required
+- ⚡ Fast and lightweight
+- 🔒 Privacy-focused browser tools
+- 🧰 Multiple developer utilities
+- 🔎 Search and filter tools
+- 📱 Responsive design
+- 🌐 No signup required
+- 🧑‍💻 Open source
 
-## 🛠️ Built With
+## 🛠️ Available Tools
 
-* Next.js
-* React
-* TypeScript
-* Tailwind CSS
-* Lucide React
+| Tool                  | Description                      |
+| --------------------- | -------------------------------- |
+| JSON Formatter        | Format and validate JSON data    |
+| JWT Decoder           | Decode and inspect JWT tokens    |
+| UUID Generator        | Generate random UUIDs            |
+| Regex Tester          | Test regular expressions         |
+| Base64 Encoder        | Encode and decode Base64         |
+| Timestamp Converter   | Convert Unix timestamps          |
+| Hash Generator        | Generate secure hashes           |
+| URL Encoder / Decoder | Encode and decode URL components |
+| Color Converter       | Convert HEX, RGB and HSL colors  |
+| Password Generator    | Generate strong random passwords |
 
 ## 🚀 Getting Started
+
+### Requirements
+
+- Node.js
+- npm
+
+### Installation
 
 Clone the repository:
 
 ```bash
-git clone YOUR_REPOSITORY_URL
-```
+git clone https://github.com/parsarvs1/devkit.git
+
+---
 
 Enter the project:
 
-```bash
 cd devkit
-```
 
 Install dependencies:
 
-```bash
 npm install
-```
 
 Start the development server:
 
-```bash
 npm run dev
-```
 
 Open:
 
-```text
 http://localhost:3000
-```
-
-## 📁 Project Structure
-
-```text
-src/
+🧱 Built With
+Next.js
+React
+TypeScript
+Tailwind CSS
+Lucide React
+📁 Project Structure
+devkit/
 ├── app/
-│   ├── tools/
-│   │   ├── json-formatter/
-│   │   ├── jwt-decoder/
-│   │   ├── uuid-generator/
-│   │   ├── regex-tester/
-│   │   ├── base64/
-│   │   └── timestamp/
-│   │
 │   ├── about/
-│   ├── page.tsx
-│   └── layout.tsx
+│   ├── tools/
+│   └── page.tsx
 │
 ├── components/
 │   ├── Navbar.tsx
 │   ├── Footer.tsx
 │   └── ToolCard.tsx
 │
-└── data/
-    └── tools.ts
-```
-
-## 🔒 Privacy
-
-DevKit is designed to process tool data directly in the browser whenever possible.
-
-Your input is not intentionally sent to a backend server by these client-side tools.
-
-However, always avoid pasting sensitive secrets such as production credentials, private keys, or real authentication tokens into any online developer tool.
-
-## 🤝 Contributing
+├── data/
+│   └── tools.ts
+│
+├── public/
+│
+├── package.json
+└── README.md
+🤝 Contributing
 
 Contributions are welcome.
 
-You can:
+If you have an idea for a useful developer tool:
 
-* Add a new developer tool
-* Improve an existing tool
-* Fix bugs
-* Improve accessibility
-* Improve the UI
-* Improve documentation
+Fork the repository
+Create a new branch
+Make your changes
+Test the project
+Open a Pull Request
 
-Before submitting a pull request, make sure the project builds successfully.
+Please read CONTRIBUTING.md before contributing.
 
-## 📌 Roadmap
+📄 License
 
-Planned tools and improvements:
+This project is open source and available under the MIT License.
 
-* [ ] URL Encoder / Decoder
-* [ ] HTML Formatter
-* [ ] CSS Formatter
-* [ ] SQL Formatter
-* [ ] Hash Generator
-* [ ] Color Converter
-* [ ] Cron Expression Generator
-* [ ] Markdown Preview
-* [ ] Improved Regex highlighting
-* [ ] Dark / Light theme
-* [ ] More developer utilities
+⭐ Support
 
-## ⭐ Support
-
-If DevKit is useful to you, consider giving the repository a ⭐ on GitHub.
+If you find DevKit useful, consider giving the repository a star on GitHub.
 
 It helps the project grow and reach more developers.
 
-## 📄 License
-
-This project is open source and available under the MIT License.
+Built for developers.
+```

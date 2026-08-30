@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "devkit",
+  "main": ".open-next/worker.js",
+
+  "compatibility_date": "2026-08-20",
+
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "devkit-db",
+      "database_id": "cbcd41ca-17bc-42e9-9387-057748bdf5db"
+    }
+  ]
+}

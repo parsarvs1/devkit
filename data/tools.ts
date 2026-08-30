@@ -9,6 +9,7 @@ import {
   Hash,
   Palette,
   LockKeyhole,
+  FileText
 } from "lucide-react";
 
 export const tools = [
@@ -91,4 +92,11 @@ export const tools = [
     href: "/tools/password-generator",
     category: "Generators",
   },
+  {
+  name: "Markdown Previewer",
+  description: "Write and preview Markdown instantly.",
+  icon: FileText,
+  href: "/tools/markdown-preview",
+  category: "Development",
+},
 ];

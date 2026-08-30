@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Search, X } from "lucide-react";
-
+import RecentTools from "@/components/RecentTools";
 import ToolCard from "@/components/ToolCard";
 import { tools } from "@/data/tools";
 
@@ -42,7 +42,6 @@ export default function ToolsPage() {
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
-      {/* Navigation */}
 
       <nav className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
@@ -55,9 +54,6 @@ export default function ToolsPage() {
           </Link>
         </div>
       </nav>
-
-      {/* Header */}
-
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="max-w-2xl">
           <p className="mb-2 text-sm text-zinc-500">
@@ -73,9 +69,6 @@ export default function ToolsPage() {
             Fast, simple and free.
           </p>
         </div>
-
-        {/* Search */}
-
         <div className="mt-10">
           <div className="relative max-w-xl">
             <Search
@@ -102,13 +95,9 @@ export default function ToolsPage() {
             )}
           </div>
         </div>
-
-        {/* Categories */}
-
         <div className="mt-6 flex flex-wrap gap-2">
           {categories.map((item) => {
             const active = category === item;
-
             return (
               <button
                 key={item}
@@ -124,10 +113,8 @@ export default function ToolsPage() {
             );
           })}
         </div>
-
-        {/* Results */}
-
         <div className="mt-12">
+                  <RecentTools />
           <div className="mb-5 flex items-center justify-between">
             <p className="text-sm text-zinc-500">
               {filteredTools.length}{" "}

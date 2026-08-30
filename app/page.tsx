@@ -20,8 +20,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
       <Navbar />
-
-      {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 py-24 sm:py-28">
         <div className="max-w-3xl">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/50 px-3 py-1.5 text-xs text-zinc-400">
@@ -63,8 +61,6 @@ export default function Home() {
             </a>
           </div>
         </div>
-
-        {/* Stats */}
         <div className="mt-16 flex flex-wrap gap-x-10 gap-y-4 border-t border-zinc-800 pt-6 text-sm text-zinc-500">
           <span>{tools.length} developer tools</span>
 
@@ -75,8 +71,6 @@ export default function Home() {
           <span>No signup required</span>
         </div>
       </section>
-
-      {/* Popular Tools */}
       <section className="border-t border-zinc-900">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="mb-8 flex items-end justify-between gap-4">
@@ -113,8 +107,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Features */}
       <section className="border-t border-zinc-900">
         <div className="mx-auto grid max-w-6xl gap-5 px-6 py-20 md:grid-cols-3">
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-6 transition hover:border-zinc-700">
@@ -166,8 +158,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* CTA */}
       <section className="border-t border-zinc-900">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900/40 px-6 py-12 text-center sm:px-12">

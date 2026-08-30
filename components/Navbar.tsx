@@ -1,45 +1,90 @@
-import Link from "next/link";
+"use client";
 
-import { Code2 } from "lucide-react";
+import Link from "next/link";
+import { Code2, User } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
-  return (
-    <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link href="/" className="group flex items-center gap-2">
-          <Code2
-            size={21}
-            className="text-zinc-300 transition group-hover:text-white"
-          />
+  const { data: session, status } = useSession();
 
-          <span className="text-lg font-semibold tracking-tight">DevKit</span>
+  const isLoggedIn = status === "authenticated";
+
+  return (
+    <nav className="border-b border-zinc-800">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+
+        {/* Logo */}
+
+        <Link
+          href="/"
+          className="flex items-center gap-2"
+        >
+          <Code2 size={21} />
+
+          <span className="text-lg font-semibold">
+            DevKit
+          </span>
         </Link>
 
-        <div className="flex items-center gap-5 text-sm text-zinc-400">
-          <Link href="/" className="transition hover:text-white">
+        {/* Navigation */}
+
+        <div className="flex items-center gap-6 text-sm text-zinc-400">
+
+          <Link
+            href="/"
+            className="transition hover:text-white"
+          >
             Home
           </Link>
 
-          <Link href="/tools" className="transition hover:text-white">
+          <Link
+            href="/tools"
+            className="transition hover:text-white"
+          >
             Tools
           </Link>
 
           <Link
             href="/about"
-            className="hidden transition hover:text-white sm:block"
+            className="transition hover:text-white"
           >
             About
           </Link>
-          <a
-            href="https://github.com/parsarvs1/devkit"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="DevKit GitHub repository"
-            className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-zinc-400 transition hover:border-zinc-700 hover:text-white"
-          >
-            <Code2   size={16} />
-            <span className="hidden sm:inline">GitHub</span>
-          </a>
+
+          {status === "loading" ? (
+            <div className="h-9 w-20 animate-pulse rounded-lg bg-zinc-900" />
+          ) : isLoggedIn ? (
+            <div className="flex items-center gap-3">
+
+              <Link
+                href="/account"
+                className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-300 transition hover:border-zinc-700 hover:text-white"
+              >
+                <User size={16} />
+
+                <span>
+                  {session?.user?.name || "Account"}
+                </span>
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="text-sm text-zinc-500 transition hover:text-white"
+              >
+                Sign out
+              </button>
+
+            </div>
+          ) : (
+            <Link
+              href="/signup"
+              className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-zinc-200"
+            >
+              Sign Up
+            </Link>
+          )}
+
         </div>
       </div>
     </nav>

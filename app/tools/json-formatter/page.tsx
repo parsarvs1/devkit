@@ -1,15 +1,9 @@
-
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Copy,
-  Trash2,
-  Sparkles,
-  Minimize2,
-} from "lucide-react";
+import RecentToolTracker from "@/components/RecentToolTracker";
+import { ArrowLeft, Copy, Trash2, Sparkles, Minimize2 } from "lucide-react";
 
 export default function JsonFormatterPage() {
   const [input, setInput] = useState("");
@@ -59,7 +53,7 @@ export default function JsonFormatterPage() {
         skills: ["Next.js", "React", "TypeScript"],
       },
       null,
-      2
+      2,
     );
 
     setInput(example);
@@ -81,6 +75,7 @@ export default function JsonFormatterPage() {
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
+      <RecentToolTracker name="JSON Formatter" href="/tools/json-formatter" />
       <nav className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
@@ -95,13 +90,9 @@ export default function JsonFormatterPage() {
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="mb-10">
-          <p className="mb-2 text-sm text-zinc-500">
-            DevKit Tool
-          </p>
+          <p className="mb-2 text-sm text-zinc-500">DevKit Tool</p>
 
-          <h1 className="text-4xl font-bold">
-            JSON Formatter
-          </h1>
+          <h1 className="text-4xl font-bold">JSON Formatter</h1>
 
           <p className="mt-3 text-zinc-400">
             Format, minify and validate your JSON data.
@@ -113,9 +104,7 @@ export default function JsonFormatterPage() {
 
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-sm font-medium">
-                Input
-              </h2>
+              <h2 className="text-sm font-medium">Input</h2>
 
               <div className="flex items-center gap-4">
                 <button
@@ -162,20 +151,14 @@ export default function JsonFormatterPage() {
               </button>
             </div>
 
-            {error && (
-              <p className="mt-3 text-sm text-red-400">
-                {error}
-              </p>
-            )}
+            {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
           </div>
 
           {/* Output */}
 
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-sm font-medium">
-                Output
-              </h2>
+              <h2 className="text-sm font-medium">Output</h2>
 
               {output && (
                 <button

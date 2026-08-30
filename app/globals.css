@@ -1,26 +1,291 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ========================================
+   THEME
+======================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f4f5;
+  --foreground: #18181b;
+
+  --card: #fafafa;
+  --card-hover: #ffffff;
+
+  --border: #e4e4e7;
+  --border-hover: #d4d4d8;
+
+  --muted: #71717a;
+  --muted-strong: #52525b;
+
+  --input: #ffffff;
 }
+
+html.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+
+  --card: #18181b;
+  --card-hover: #1f1f22;
+
+  --border: #27272a;
+  --border-hover: #3f3f46;
+
+  --muted: #71717a;
+  --muted-strong: #a1a1aa;
+
+  --input: #09090b;
+
+  color-scheme: dark;
+}
+
+html.light {
+  --background: #f4f4f5;
+  --foreground: #18181b;
+
+  --card: #fafafa;
+  --card-hover: #ffffff;
+
+  --border: #e4e4e7;
+  --border-hover: #d4d4d8;
+
+  --muted: #71717a;
+  --muted-strong: #52525b;
+
+  --input: #ffffff;
+
+  color-scheme: light;
+}
+
+/* ========================================
+   TAILWIND
+======================================== */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ========================================
+   BASE
+======================================== */
+
+html {
+  background: var(--background);
 }
 
 body {
+  margin: 0;
+  min-height: 100vh;
+
   background: var(--background);
   color: var(--foreground);
+
   font-family: Arial, Helvetica, sans-serif;
+
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+/* ========================================
+   LIGHT MODE
+   BACKGROUNDS
+======================================== */
+
+html.light .bg-zinc-950 {
+  background-color: var(--background) !important;
+}
+
+html.light .bg-zinc-900 {
+  background-color: var(--card) !important;
+}
+
+html.light .bg-zinc-800 {
+  background-color: #e4e4e7 !important;
+}
+
+html.light .bg-zinc-700 {
+  background-color: #d4d4d8 !important;
+}
+
+/* Transparent backgrounds */
+
+html.light .bg-zinc-900\/20 {
+  background-color: rgb(250 250 250 / 0.2) !important;
+}
+
+html.light .bg-zinc-900\/30 {
+  background-color: rgb(250 250 250 / 0.7) !important;
+}
+
+html.light .bg-zinc-900\/40 {
+  background-color: rgb(250 250 250 / 0.8) !important;
+}
+
+html.light .bg-zinc-900\/50 {
+  background-color: rgb(250 250 250 / 0.85) !important;
+}
+
+html.light .bg-zinc-900\/60 {
+  background-color: rgb(250 250 250 / 0.9) !important;
+}
+
+/* ========================================
+   LIGHT MODE
+   BORDERS
+======================================== */
+
+html.light .border-zinc-900 {
+  border-color: #eaeaec !important;
+}
+
+html.light .border-zinc-800 {
+  border-color: var(--border) !important;
+}
+
+html.light .border-zinc-700 {
+  border-color: var(--border-hover) !important;
+}
+
+html.light .border-zinc-600 {
+  border-color: #a1a1aa !important;
+}
+
+/* ========================================
+   LIGHT MODE
+   HOVER
+======================================== */
+
+html.light .hover\:bg-zinc-800:hover {
+  background-color: #e4e4e7 !important;
+}
+
+html.light .hover\:bg-zinc-900:hover {
+  background-color: #ededee !important;
+}
+
+html.light .hover\:border-zinc-700:hover {
+  border-color: #d4d4d8 !important;
+}
+
+html.light .hover\:border-zinc-600:hover {
+  border-color: #a1a1aa !important;
+}
+
+/* ========================================
+   LIGHT MODE
+   TEXT COLORS
+======================================== */
+
+html.light .text-white {
+  color: var(--foreground) !important;
+}
+
+html.light .text-zinc-50,
+html.light .text-zinc-100,
+html.light .text-zinc-200,
+html.light .text-zinc-300 {
+  color: var(--foreground) !important;
+}
+
+html.light .text-zinc-400 {
+  color: var(--muted-strong) !important;
+}
+
+html.light .text-zinc-500 {
+  color: var(--muted) !important;
+}
+
+html.light .text-zinc-600 {
+  color: var(--muted-strong) !important;
+}
+
+html.light .placeholder-zinc-400::placeholder,
+html.light .placeholder-zinc-500::placeholder {
+  color: var(--muted) !important;
+}
+
+html.light .hover\:text-white:hover {
+  color: var(--foreground) !important;
+}
+
+html.light .hover\:text-zinc-100:hover,
+html.light .hover\:text-zinc-200:hover,
+html.light .hover\:text-zinc-300:hover {
+  color: var(--foreground) !important;
+}
+
+/* ========================================
+   INPUTS
+======================================== */
+
+html.light input,
+html.light textarea,
+html.light select {
+  background-color: var(--input);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #a1a1aa;
+}
+
+html.light .bg-white {
+  background-color: #18181b !important;
+  color: #ffffff !important;
+}
+
+html.light .hover\:bg-zinc-200:hover {
+  background-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+/* ========================================
+   SELECTION
+======================================== */
+
+::selection {
+  background-color: #71717a;
+  color: #ffffff;
+}
+
+/* ========================================
+   SCROLLBAR
+======================================== */
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a1a1aa;
+  border-radius: 999px;
+  border: 3px solid var(--background);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #52525b;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #71717a;
+}
+
+html.dark {
+  scrollbar-color: #52525b #09090b;
+}
+
+html.light {
+  scrollbar-color: #a1a1aa #f4f4f5;
 }

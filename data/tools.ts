@@ -1,102 +1,69 @@
 import {
   Braces,
   KeyRound,
-  Fingerprint,
   Regex,
+  Fingerprint,
   Binary,
   Clock,
-  Link as LinkIcon,
-  Hash,
   Palette,
-  LockKeyhole,
-  FileText
+  Hash,
 } from "lucide-react";
 
 export const tools = [
   {
     name: "JSON Formatter",
-    description: "Format and validate JSON data.",
+    description: "Format and beautify JSON data instantly.",
     icon: Braces,
     href: "/tools/json-formatter",
-    category: "Format",
+    category: "JSON",
   },
-
   {
     name: "JWT Decoder",
-    description: "Decode and inspect JWT tokens.",
+    description: "Decode JWT tokens and inspect their contents.",
     icon: KeyRound,
     href: "/tools/jwt-decoder",
     category: "Security",
   },
-
   {
     name: "UUID Generator",
-    description: "Generate random UUIDs instantly.",
+    description: "Generate random UUIDs quickly.",
     icon: Fingerprint,
     href: "/tools/uuid-generator",
     category: "Generators",
   },
-
   {
     name: "Regex Tester",
-    description: "Test regular expressions quickly.",
+    description: "Test and debug regular expressions.",
     icon: Regex,
     href: "/tools/regex-tester",
-    category: "Development",
+    category: "Text",
   },
-
   {
     name: "Base64 Encoder",
     description: "Encode and decode Base64 strings.",
     icon: Binary,
     href: "/tools/base64",
-    category: "Converters",
+    category: "Encoding",
   },
-
   {
-    name: "Timestamp Converter",
-    description: "Convert Unix timestamps easily.",
+    name: "Timestamp",
+    description: "Convert and work with Unix timestamps.",
     icon: Clock,
     href: "/tools/timestamp",
-    category: "Converters",
+    category: "Utilities",
   },
-
+  {
+    name: "Color Converter",
+    description: "Convert colors between HEX, RGB and HSL.",
+    icon: Palette,
+    href: "/tools/color-converter",
+    category: "Utilities",
+  },
   {
     name: "Hash Generator",
-    description: "Generate secure hashes from text.",
+    description: "Generate hashes from text and data.",
     icon: Hash,
     href: "/tools/hash-generator",
     category: "Security",
   },
-
-  {
-    name: "URL Encoder / Decoder",
-    description: "Encode and decode URL components.",
-    icon: LinkIcon,
-    href: "/tools/url-encoder",
-    category: "Converters",
-  },
-
-  {
-    name: "Color Converter",
-    description: "Convert HEX colors to RGB and HSL.",
-    icon: Palette,
-    href: "/tools/color-converter",
-    category: "Converters",
-  },
-
-  {
-    name: "Password Generator",
-    description: "Generate strong random passwords securely.",
-    icon: LockKeyhole,
-    href: "/tools/password-generator",
-    category: "Generators",
-  },
-  {
-  name: "Markdown Previewer",
-  description: "Write and preview Markdown instantly.",
-  icon: FileText,
-  href: "/tools/markdown-preview",
-  category: "Development",
-},
 ];

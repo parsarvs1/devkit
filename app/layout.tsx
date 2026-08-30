@@ -19,8 +19,8 @@ export default function RootLayout({
       <body>
         <SessionProvider>
           {children}
+          <CommandPalette />
         </SessionProvider>
-        <CommandPalette />
       </body>
     </html>
   );

@@ -1,175 +1,259 @@
+"use client";
+
 import Link from "next/link";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import {
   User,
   Mail,
   ShieldCheck,
-  ArrowRight,
-  Star,
-  Clock3,
+  LogOut,
+  ArrowLeft,
+  Settings,
 } from "lucide-react";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import SignOutButton from "./SignOutButton";
+export default function AccountPage() {
+  const { data: session, status } = useSession();
 
-export default async function AccountPage() {
-  const session = await auth();
+  if (status === "loading") {
+    return (
+      <main className="min-h-screen bg-background text-foreground">
+        <div className="mx-auto max-w-4xl px-6 py-20">
+          <div className="h-8 w-40 animate-pulse rounded-lg bg-zinc-200 dark:bg-zinc-800" />
 
-  if (!session?.user) {
-    redirect("/login");
+          <div className="mt-8 rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="h-6 w-32 animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
+
+            <div className="mt-6 space-y-4">
+              <div className="h-12 animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800" />
+              <div className="h-12 animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800" />
+            </div>
+          </div>
+        </div>
+      </main>
+    );
   }
 
+  if (status !== "authenticated") {
+    return (
+      <main className="min-h-screen bg-background text-foreground">
+        <div className="mx-auto flex min-h-screen max-w-4xl items-center justify-center px-6">
+          <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
+              <ShieldCheck
+                size={26}
+                className="text-zinc-600 dark:text-zinc-300"
+              />
+            </div>
+
+            <h1 className="mt-5 text-2xl font-bold">
+              Login required
+            </h1>
+
+            <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+              You need to be logged in to view your account.
+            </p>
+
+            <Link
+              href="/login"
+              className="mt-6 inline-flex items-center justify-center rounded-lg bg-zinc-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+            >
+              Go to Login
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const user = session.user;
+
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <Navbar />
+    <main className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
 
-      <section className="mx-auto max-w-5xl px-6 py-16">
+        {/* Back */}
 
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-zinc-900 dark:hover:text-white"
+        >
+          <ArrowLeft size={16} />
+          Back to home
+        </Link>
 
-        <div className="mb-10">
-          <p className="mb-2 text-sm text-zinc-500">
+        {/* Header */}
+
+        <div className="mt-8">
+          <h1 className="text-3xl font-bold tracking-tight">
             Account
-          </p>
-
-          <h1 className="text-4xl font-bold tracking-tight">
-            Welcome back,{" "}
-            {session.user.name || "Developer"}
           </h1>
 
-          <p className="mt-3 text-zinc-500">
-            Manage your DevKit account and tools.
+          <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+            Manage your DevKit account and profile.
           </p>
         </div>
 
+        {/* Profile */}
 
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
+        <section className="mt-8 overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
 
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          {/* Profile header */}
 
+          <div className="border-b border-zinc-200 p-6 dark:border-zinc-800">
             <div className="flex items-center gap-4">
 
-              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
                 <User
-                  size={24}
-                  className="text-zinc-400"
+                  size={28}
+                  className="text-zinc-600 dark:text-zinc-300"
                 />
               </div>
 
-              <div>
-                <h2 className="font-semibold">
-                  {session.user.name ||
-                    "DevKit User"}
+              <div className="min-w-0">
+                <h2 className="truncate text-xl font-semibold">
+                  {user?.name || "DevKit User"}
                 </h2>
 
-                <div className="mt-1 flex items-center gap-2 text-sm text-zinc-500">
-                  <Mail size={14} />
+                <p className="mt-1 truncate text-sm text-zinc-500 dark:text-zinc-400">
+                  {user?.email || "No email available"}
+                </p>
+              </div>
 
-                  {session.user.email}
+            </div>
+          </div>
+
+          {/* Account information */}
+
+          <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+
+            {/* Name */}
+
+            <div className="flex items-center justify-between gap-4 p-6">
+              <div className="flex items-center gap-4">
+
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
+                  <User size={18} />
                 </div>
+
+                <div>
+                  <p className="text-sm font-medium">
+                    Name
+                  </p>
+
+                  <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                    Your display name
+                  </p>
+                </div>
+
               </div>
 
+              <span className="max-w-[180px] truncate text-sm text-zinc-600 dark:text-zinc-300">
+                {user?.name || "Not set"}
+              </span>
             </div>
 
-            <div className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-500">
-              <ShieldCheck size={15} />
+            {/* Email */}
 
-              Account active
+            <div className="flex items-center justify-between gap-4 p-6">
+              <div className="flex items-center gap-4">
+
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
+                  <Mail size={18} />
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium">
+                    Email
+                  </p>
+
+                  <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                    Your account email
+                  </p>
+                </div>
+
+              </div>
+
+              <span className="max-w-[220px] truncate text-sm text-zinc-600 dark:text-zinc-300">
+                {user?.email || "Not available"}
+              </span>
+            </div>
+
+            {/* Account status */}
+
+            <div className="flex items-center justify-between gap-4 p-6">
+              <div className="flex items-center gap-4">
+
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
+                  <ShieldCheck size={18} />
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium">
+                    Account status
+                  </p>
+
+                  <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                    Current authentication status
+                  </p>
+                </div>
+
+              </div>
+
+              <span className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-medium text-green-700 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                Authenticated
+              </span>
             </div>
 
           </div>
+        </section>
 
-        </div>
+        {/* Actions */}
 
-
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
-
-          <Link
-            href="/tools"
-            className="group rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 transition hover:-translate-y-1 hover:border-zinc-700 hover:bg-zinc-900"
-          >
-            <div className="flex items-start justify-between">
-
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950">
-                <Star
-                  size={19}
-                  className="text-zinc-400"
-                />
-              </div>
-
-              <ArrowRight
-                size={17}
-                className="text-zinc-700 transition group-hover:text-zinc-300"
-              />
-
-            </div>
-
-            <h3 className="mt-5 font-semibold">
-              Favorite Tools
-            </h3>
-
-            <p className="mt-2 text-sm leading-6 text-zinc-500">
-              Quickly access the developer tools
-              you use most.
-            </p>
-
-          </Link>
+        <section className="mt-6 grid gap-4 sm:grid-cols-2">
 
           <Link
-            href="/tools"
-            className="group rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 transition hover:-translate-y-1 hover:border-zinc-700 hover:bg-zinc-900"
+            href="/settings"
+            className="group rounded-2xl border border-zinc-200 bg-white p-6 transition hover:border-zinc-300 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700"
           >
-            <div className="flex items-start justify-between">
-
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950">
-                <Clock3
-                  size={19}
-                  className="text-zinc-400"
-                />
-              </div>
-
-              <ArrowRight
-                size={17}
-                className="text-zinc-700 transition group-hover:text-zinc-300"
-              />
-
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
+              <Settings size={18} />
             </div>
 
-            <h3 className="mt-5 font-semibold">
-              Recently Used
+            <h3 className="mt-4 font-semibold">
+              Settings
             </h3>
 
-            <p className="mt-2 text-sm leading-6 text-zinc-500">
-              Continue using the tools you recently
-              opened.
+            <p className="mt-2 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+              Manage your preferences and account settings.
             </p>
-
           </Link>
 
-        </div>
+          <button
+            type="button"
+            onClick={() =>
+              signOut({
+                callbackUrl: "/",
+              })
+            }
+            className="group rounded-2xl border border-red-200 bg-white p-6 text-left transition hover:border-red-300 hover:bg-red-50 dark:border-red-950 dark:bg-zinc-900 dark:hover:border-red-900 dark:hover:bg-red-950/20"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 text-red-600 dark:bg-red-950/40 dark:text-red-400">
+              <LogOut size={18} />
+            </div>
 
-        <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
+            <h3 className="mt-4 font-semibold">
+              Sign out
+            </h3>
 
-          <h2 className="font-semibold">
-            Account Settings
-          </h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
+              Sign out of your DevKit account.
+            </p>
+          </button>
 
-          <p className="mt-2 text-sm text-zinc-500">
-            Manage your account preferences.
-          </p>
+        </section>
 
-          <div className="mt-5 border-t border-zinc-800 pt-5">
-
-            <SignOutButton />
-
-          </div>
-
-        </div>
-
-      </section>
-
-      <Footer />
+      </div>
     </main>
   );
 }

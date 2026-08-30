@@ -3,6 +3,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolCard from "@/components/ToolCard";
+import QuickActions from "@/components/QuickActions";
 
 import { tools } from "@/data/tools";
 
@@ -157,6 +158,13 @@ export default function Home() {
             </p>
           </div>
         </div>
+        
+      </section>
+      <section className="border-t border-zinc-900" >
+        <div className="mx-auto max-w-6xl px-6">
+          <QuickActions />
+        </div>
+
       </section>
       <section className="border-t border-zinc-900">
         <div className="mx-auto max-w-6xl px-6 py-20">

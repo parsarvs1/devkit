@@ -6,13 +6,13 @@ import {
   Mail,
   ShieldCheck,
   ArrowRight,
-  LogOut,
   Star,
   Clock3,
 } from "lucide-react";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SignOutButton from "./SignOutButton";
 
 export default async function AccountPage() {
   const session = await auth();
@@ -27,7 +27,6 @@ export default async function AccountPage() {
 
       <section className="mx-auto max-w-5xl px-6 py-16">
 
-        {/* Header */}
 
         <div className="mb-10">
           <p className="mb-2 text-sm text-zinc-500">
@@ -44,7 +43,6 @@ export default async function AccountPage() {
           </p>
         </div>
 
-        {/* Profile */}
 
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
 
@@ -84,11 +82,8 @@ export default async function AccountPage() {
 
         </div>
 
-        {/* Tools */}
 
         <div className="mt-8 grid gap-5 md:grid-cols-2">
-
-          {/* Favorites */}
 
           <Link
             href="/tools"
@@ -120,8 +115,6 @@ export default async function AccountPage() {
             </p>
 
           </Link>
-
-          {/* Recently Used */}
 
           <Link
             href="/tools"
@@ -156,8 +149,6 @@ export default async function AccountPage() {
 
         </div>
 
-        {/* Account Settings */}
-
         <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
 
           <h2 className="font-semibold">
@@ -170,14 +161,7 @@ export default async function AccountPage() {
 
           <div className="mt-5 border-t border-zinc-800 pt-5">
 
-            <button
-              type="button"
-              className="flex items-center gap-2 text-sm text-red-400 transition hover:text-red-300"
-            >
-              <LogOut size={16} />
-
-              Sign out
-            </button>
+            <SignOutButton />
 
           </div>
 

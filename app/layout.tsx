@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import SessionProvider from "@/components/SessionProvider";
+import CommandPalette from "@/components/CommandPalette";
 
 export const metadata: Metadata = {
   title: "DevKit",
@@ -19,6 +20,7 @@ export default function RootLayout({
         <SessionProvider>
           {children}
         </SessionProvider>
+        <CommandPalette />
       </body>
     </html>
   );

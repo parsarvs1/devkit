@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ToolCard from "@/components/ToolCard";
 import QuickActions from "@/components/QuickActions";
-
+import { Wrench } from "lucide-react";
 import { tools } from "@/data/tools";
 
 import {
@@ -140,7 +140,7 @@ export default function Home() {
                 key={tool.name}
                 name={tool.name}
                 description={tool.description}
-                icon={tool.icon}
+                icon={tool.icon ?? Wrench}
                 href={tool.href}
                 category={tool.category}
               />

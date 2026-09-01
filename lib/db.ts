@@ -1,7 +1,11 @@
-export function getDB() {
-  if (typeof process !== "undefined") {
-    return process.env.DB;
-  }
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 
-  return null;
+/**
+ * Returns the D1 database binding.
+ * process.env.DB does NOT work on Cloudflare Workers —
+ * bindings are only available through the Cloudflare context.
+ */
+export async function getDB() {
+  const { env } = await getCloudflareContext();
+  return env.DB;
 }

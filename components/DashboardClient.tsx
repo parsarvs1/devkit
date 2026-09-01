@@ -109,7 +109,7 @@ export default function DashboardClient() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 
           {tools.slice(0, 4).map((tool) => {
-            const Icon = tool.icon;
+            const Icon = tool.icon ?? Wrench;
 
             return (
               <Link
@@ -204,7 +204,7 @@ export default function DashboardClient() {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 
             {favoriteTools.map((tool) => {
-              const Icon = tool.icon;
+              const Icon = tool.icon ?? Wrench;
 
               return (
                 <Link

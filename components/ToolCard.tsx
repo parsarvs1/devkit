@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-
+import PinButton from "@/components/PinButton";
 interface ToolCardProps {
   name: string;
   description: string;
@@ -19,7 +19,7 @@ export default function ToolCard({
   return (
     <Link
       href={href}
-      className="group relative flex min-h-[200px] flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/30 p-5 transition-all duration-200 hover:-translate-y-1 hover:border-zinc-700 hover:bg-zinc-900/60 sm:min-h-[220px] sm:p-6"
+      className="group relative flex min-h-200px flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/30 p-5 transition-all duration-200 hover:-translate-y-1 hover:border-zinc-700 hover:bg-zinc-900/60 sm:min-h-[220px] sm:p-6"
     >
       {/* Glow */}
 
@@ -35,12 +35,20 @@ export default function ToolCard({
           />
         </div>
 
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-600 transition-all duration-200 group-hover:bg-zinc-800 group-hover:text-zinc-300">
-          <ArrowUpRight
-            size={17}
-            className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-          />
-        </div>
+        <div className="flex items-center gap-1">
+  <PinButton href={href} />
+
+ <div className="flex items-center gap-1">
+  <PinButton href={href} />
+
+  <div className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 transition-all duration-200 group-hover:bg-zinc-800 group-hover:text-zinc-300">
+    <ArrowUpRight
+      size={17}
+      className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+    />
+  </div>
+</div>
+</div>
       </div>
 
       {/* Content */}

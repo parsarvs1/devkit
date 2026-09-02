@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+
 import {
   Code2,
   User,
   LogOut,
   Settings,
+  LayoutDashboard,
   Sun,
   Moon,
   Monitor,
@@ -13,14 +15,17 @@ import {
   Menu,
   X,
 } from "lucide-react";
+
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
+
 import { useTheme } from "@/components/ThemeProvider";
 
 type Theme = "light" | "dark" | "system";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
+
   const { theme, setTheme } = useTheme();
 
   const [open, setOpen] = useState(false);
@@ -110,7 +115,6 @@ export default function Navbar() {
           ========================== */}
 
           <div className="relative">
-
             <button
               type="button"
               onClick={() => {
@@ -185,7 +189,6 @@ export default function Navbar() {
                     />
                   )}
                 </button>
-
               </div>
             )}
           </div>
@@ -195,14 +198,11 @@ export default function Navbar() {
           ========================== */}
 
           {status === "loading" ? (
-
             <div className="h-9 w-24 animate-pulse rounded-lg bg-zinc-900" />
-
           ) : isLoggedIn ? (
-
             <div className="relative">
 
-              {/* Account Button */}
+              {/* Dashboard Button */}
 
               <button
                 type="button"
@@ -225,10 +225,12 @@ export default function Navbar() {
                 </span>
               </button>
 
-              {/* Account Dropdown */}
+              {/* Dashboard Dropdown */}
 
               {open && (
                 <div className="absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl">
+
+                  {/* User Info */}
 
                   <div className="border-b border-zinc-800 px-4 py-3">
                     <p className="truncate text-sm font-medium text-white">
@@ -242,14 +244,19 @@ export default function Navbar() {
 
                   <div className="p-1">
 
+                    {/* Dashboard */}
+
                     <Link
-                      href="/account"
+                      href="/dashboard"
                       onClick={() => setOpen(false)}
                       className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
                     >
-                      <User size={16} />
-                      Account
+                      <LayoutDashboard size={16} />
+
+                      Dashboard
                     </Link>
+
+                    {/* Settings */}
 
                     <Link
                       href="/settings"
@@ -257,13 +264,14 @@ export default function Navbar() {
                       className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
                     >
                       <Settings size={16} />
+
                       Settings
                     </Link>
-
                   </div>
 
-                  <div className="border-t border-zinc-800 p-1">
+                  {/* Sign Out */}
 
+                  <div className="border-t border-zinc-800 p-1">
                     <button
                       type="button"
                       onClick={() =>
@@ -274,19 +282,17 @@ export default function Navbar() {
                       className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-red-400 transition hover:bg-red-950/30 hover:text-red-300"
                     >
                       <LogOut size={16} />
+
                       Sign out
                     </button>
-
                   </div>
-
                 </div>
               )}
-
             </div>
-
           ) : (
-
             <div className="flex items-center gap-3">
+
+              {/* Login */}
 
               <Link
                 href="/login"
@@ -295,17 +301,16 @@ export default function Navbar() {
                 Login
               </Link>
 
+              {/* Sign Up */}
+
               <Link
                 href="/signup"
                 className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-zinc-200"
               >
                 Sign Up
               </Link>
-
             </div>
-
           )}
-
         </div>
 
         {/* =========================
@@ -317,7 +322,6 @@ export default function Navbar() {
           {/* Mobile Theme */}
 
           <div className="relative">
-
             <button
               type="button"
               onClick={() => {
@@ -333,6 +337,8 @@ export default function Navbar() {
             {themeOpen && (
               <div className="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-1 shadow-2xl">
 
+                {/* Light */}
+
                 <button
                   type="button"
                   onClick={() => changeTheme("light")}
@@ -344,9 +350,14 @@ export default function Navbar() {
                   </span>
 
                   {theme === "light" && (
-                    <Check size={15} className="text-white" />
+                    <Check
+                      size={15}
+                      className="text-white"
+                    />
                   )}
                 </button>
+
+                {/* Dark */}
 
                 <button
                   type="button"
@@ -359,9 +370,14 @@ export default function Navbar() {
                   </span>
 
                   {theme === "dark" && (
-                    <Check size={15} className="text-white" />
+                    <Check
+                      size={15}
+                      className="text-white"
+                    />
                   )}
                 </button>
+
+                {/* System */}
 
                 <button
                   type="button"
@@ -374,13 +390,14 @@ export default function Navbar() {
                   </span>
 
                   {theme === "system" && (
-                    <Check size={15} className="text-white" />
+                    <Check
+                      size={15}
+                      className="text-white"
+                    />
                   )}
                 </button>
-
               </div>
             )}
-
           </div>
 
           {/* Hamburger */}
@@ -401,9 +418,7 @@ export default function Navbar() {
               <Menu size={19} />
             )}
           </button>
-
         </div>
-
       </div>
 
       {/* =========================
@@ -412,7 +427,6 @@ export default function Navbar() {
 
       {mobileOpen && (
         <div className="border-t border-zinc-800 bg-zinc-950 md:hidden">
-
           <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
 
             {/* Navigation */}
@@ -442,7 +456,6 @@ export default function Navbar() {
               >
                 About
               </Link>
-
             </div>
 
             {/* Divider */}
@@ -452,17 +465,13 @@ export default function Navbar() {
             {/* Authentication */}
 
             {status === "loading" ? (
-
               <div className="h-10 animate-pulse rounded-lg bg-zinc-900" />
-
             ) : isLoggedIn ? (
-
               <div className="space-y-1">
 
                 {/* User */}
 
                 <div className="mb-2 rounded-lg bg-zinc-900 px-3 py-3">
-
                   <div className="flex items-center gap-3">
 
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800 text-zinc-300">
@@ -470,7 +479,6 @@ export default function Navbar() {
                     </div>
 
                     <div className="min-w-0">
-
                       <p className="truncate text-sm font-medium text-white">
                         {session?.user?.name || "DevKit User"}
                       </p>
@@ -478,21 +486,23 @@ export default function Navbar() {
                       <p className="truncate text-xs text-zinc-500">
                         {session?.user?.email}
                       </p>
-
                     </div>
-
                   </div>
-
                 </div>
 
+                {/* Dashboard */}
+
                 <Link
-                  href="/account"
+                  href="/dashboard"
                   onClick={closeMobileMenu}
                   className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-zinc-300 transition hover:bg-zinc-900 hover:text-white"
                 >
-                  <User size={17} />
-                  Account
+                  <LayoutDashboard size={17} />
+
+                  Dashboard
                 </Link>
+
+                {/* Settings */}
 
                 <Link
                   href="/settings"
@@ -500,8 +510,11 @@ export default function Navbar() {
                   className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-zinc-300 transition hover:bg-zinc-900 hover:text-white"
                 >
                   <Settings size={17} />
+
                   Settings
                 </Link>
+
+                {/* Sign Out */}
 
                 <button
                   type="button"
@@ -513,14 +526,14 @@ export default function Navbar() {
                   className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm text-red-400 transition hover:bg-red-950/30 hover:text-red-300"
                 >
                   <LogOut size={17} />
+
                   Sign out
                 </button>
-
               </div>
-
             ) : (
-
               <div className="grid grid-cols-2 gap-2">
+
+                {/* Login */}
 
                 <Link
                   href="/login"
@@ -530,6 +543,8 @@ export default function Navbar() {
                   Login
                 </Link>
 
+                {/* Sign Up */}
+
                 <Link
                   href="/signup"
                   onClick={closeMobileMenu}
@@ -537,16 +552,11 @@ export default function Navbar() {
                 >
                   Sign Up
                 </Link>
-
               </div>
-
             )}
-
           </div>
-
         </div>
       )}
-
     </nav>
   );
 }

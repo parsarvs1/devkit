@@ -71,7 +71,7 @@ const commands: Command[] = [
   {
     name: "Account",
     description: "Manage your DevKit account",
-    href: "/account",
+    href: "/dashboard",
     category: "Navigation",
     icon: <User size={17} />,
   },

@@ -3,7 +3,12 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const {
+  handlers,
+  auth,
+  signIn,
+  signOut,
+} = NextAuth({
   providers: [
     Credentials({
       name: "Credentials",
@@ -21,25 +26,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
 
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (
+          !credentials?.email ||
+          !credentials?.password
+        ) {
           return null;
         }
 
-        const email = String(credentials.email)
+        const email = String(
+          credentials.email
+        )
           .trim()
           .toLowerCase();
 
-        const password = String(credentials.password);
+        const password = String(
+          credentials.password
+        );
 
         try {
-          const { env } = await getCloudflareContext();
+          const { env } =
+            await getCloudflareContext();
 
           const db = env.DB;
 
           const user = await db
             .prepare(
               `
-              SELECT id, name, email, password
+              SELECT
+                id,
+                name,
+                email,
+                password
               FROM users
               WHERE email = ?
               LIMIT 1
@@ -57,22 +74,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return null;
           }
 
-          const passwordValid = await bcrypt.compare(
-            password,
-            user.password
-          );
+          const passwordValid =
+            await bcrypt.compare(
+              password,
+              user.password
+            );
 
           if (!passwordValid) {
             return null;
           }
 
           return {
-            id: user.id,
+            id: String(user.id),
             name: user.name,
             email: user.email,
           };
         } catch (error) {
-          console.error("AUTH ERROR:", error);
+          console.error(
+            "AUTH ERROR:",
+            error
+          );
+
           return null;
         }
       },
@@ -81,6 +103,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   session: {
     strategy: "jwt",
+  },
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user?.id) {
+        token.sub = String(user.id);
+      }
+
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (
+        session.user &&
+        token.sub
+      ) {
+        session.user.id =
+          String(token.sub);
+      }
+
+      return session;
+    },
   },
 
   pages: {

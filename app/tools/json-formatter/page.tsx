@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import RecentToolTracker from "@/components/RecentToolTracker";
 import ShareButton from "@/components/ShareButton";
+import TrackToolUsage from "@/components/TrackToolUsage";
 
 import {
   ArrowLeft,
@@ -14,9 +15,13 @@ import {
   Minimize2,
 } from "lucide-react";
 
-import TrackToolUsage from "@/components/TrackToolUsage";
-
 import { decodeShareState } from "@/lib/shareState";
+
+import {
+  formatJson,
+  minifyJson,
+  getJsonExample,
+} from "@/shared/jsonFormatter";
 
 export default function JsonFormatterPage() {
   const [input, setInput] = useState("");
@@ -45,42 +50,39 @@ export default function JsonFormatterPage() {
     }
   }, []);
 
-  function formatJson() {
+  /*
+   * Format JSON
+   */
+  function handleFormatJson() {
     try {
-      const parsed = JSON.parse(input);
-
-      const formatted = JSON.stringify(
-        parsed,
-        null,
-        2
-      );
+      const formatted = formatJson(input);
 
       setOutput(formatted);
       setError("");
     } catch {
       setOutput("");
-      setError(
-        "Invalid JSON. Please check your syntax."
-      );
+      setError("Invalid JSON. Please check your syntax.");
     }
   }
 
-  function minifyJson() {
+  /*
+   * Minify JSON
+   */
+  function handleMinifyJson() {
     try {
-      const parsed = JSON.parse(input);
-
-      const minified = JSON.stringify(parsed);
+      const minified = minifyJson(input);
 
       setOutput(minified);
       setError("");
     } catch {
       setOutput("");
-      setError(
-        "Invalid JSON. Please check your syntax."
-      );
+      setError("Invalid JSON. Please check your syntax.");
     }
   }
 
+  /*
+   * Clear everything
+   */
   function clearAll() {
     setInput("");
     setOutput("");
@@ -88,27 +90,18 @@ export default function JsonFormatterPage() {
     setCopied(false);
   }
 
+  /*
+   * Load example
+   */
   function loadExample() {
-    const example = JSON.stringify(
-      {
-        name: "Parsa",
-        age: 20,
-        developer: true,
-        skills: [
-          "Next.js",
-          "React",
-          "TypeScript",
-        ],
-      },
-      null,
-      2
-    );
-
-    setInput(example);
+    setInput(getJsonExample());
     setOutput("");
     setError("");
   }
 
+  /*
+   * Copy output
+   */
   async function copyOutput() {
     if (!output) return;
 
@@ -134,6 +127,7 @@ export default function JsonFormatterPage() {
         href="/tools/json-formatter"
       />
 
+      {/* Navigation */}
       <nav className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
@@ -146,7 +140,9 @@ export default function JsonFormatterPage() {
         </div>
       </nav>
 
+      {/* Main content */}
       <section className="mx-auto max-w-6xl px-6 py-14">
+        {/* Header */}
         <div className="mb-10">
           <p className="mb-2 text-sm text-zinc-500">
             DevKit Tool
@@ -172,6 +168,7 @@ export default function JsonFormatterPage() {
           </div>
         </div>
 
+        {/* Editor */}
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Input */}
           <div>
@@ -203,18 +200,17 @@ export default function JsonFormatterPage() {
 
             <textarea
               value={input}
-              onChange={(e) =>
-                setInput(e.target.value)
-              }
+              onChange={(e) => setInput(e.target.value)}
               placeholder='{"name":"John","age":25}'
               spellCheck={false}
               className="h-96 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
             />
 
+            {/* Actions */}
             <div className="mt-4 flex gap-3">
               <button
                 type="button"
-                onClick={formatJson}
+                onClick={handleFormatJson}
                 className="flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200"
               >
                 <Sparkles size={16} />
@@ -223,7 +219,7 @@ export default function JsonFormatterPage() {
 
               <button
                 type="button"
-                onClick={minifyJson}
+                onClick={handleMinifyJson}
                 className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white"
               >
                 <Minimize2 size={16} />
@@ -231,6 +227,7 @@ export default function JsonFormatterPage() {
               </button>
             </div>
 
+            {/* Error */}
             {error && (
               <p className="mt-3 text-sm text-red-400">
                 {error}
@@ -253,16 +250,13 @@ export default function JsonFormatterPage() {
                 >
                   <Copy size={15} />
 
-                  {copied
-                    ? "Copied!"
-                    : "Copy"}
+                  {copied ? "Copied!" : "Copy"}
                 </button>
               )}
             </div>
 
             <pre className="h-96 overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300">
-              {output ||
-                "Formatted JSON will appear here..."}
+              {output || "Formatted JSON will appear here..."}
             </pre>
           </div>
         </div>

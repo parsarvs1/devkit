@@ -2,12 +2,12 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "devkit",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.parsparis1.devkit",
   "build": {
     "frontendDist": "../out",
-    "devUrl": "http://localhost:3000",
-    "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "npm run build"
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "npm --prefix desktop run dev -- --host 127.0.0.1",
+    "beforeBuildCommand": "npm --prefix desktop run build"
   },
   "app": {
     "windows": [

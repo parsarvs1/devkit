@@ -22,7 +22,7 @@ export default function LoginPage() {
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
-
+    
     setError("");
     setLoading(true);
 

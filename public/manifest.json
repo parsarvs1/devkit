@@ -1,0 +1,19 @@
+{
+  "name": "DevKit — Developer Tools",
+  "short_name": "DevKit",
+  "description":
+    "Free, fast and privacy-friendly developer tools. Format JSON, decode JWTs, generate hashes and more — right in your browser.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "orientation": "any",
+  "categories": ["developer", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

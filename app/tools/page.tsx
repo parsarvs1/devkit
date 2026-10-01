@@ -9,6 +9,7 @@ import { tools } from "@/data/tools";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+
 export default function ToolsPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");

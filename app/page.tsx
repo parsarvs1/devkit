@@ -6,22 +6,46 @@ import {
   GitBranch,
   LockKeyhole,
   ShieldCheck,
-  Sparkles,
-  Terminal,
   Zap,
 } from "lucide-react";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ToolCard from "@/components/ToolCard";
-import QuickActions from "@/components/QuickActions";
+import Faq from "@/components/Faq";
 import { tools } from "@/data/tools";
 
 export default function Home() {
-  const popularTools = tools.slice(0, 6);
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "DevKit",
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Web",
+    description:
+      "Free, fast and privacy-friendly developer tools. Format JSON, decode JWTs, generate hashes, generate UUIDs, test regex and more — right in your browser.",
+    url: "https://devkit.pars-paris1.workers.dev",
+    author: {
+      "@type": "Person",
+      name: "Parsa Ravasha",
+      url: "https://github.com/parsarvs1",
+    },
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    featureList: tools.map((tool) => tool.name),
+  };
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+
       <Navbar />
       <section className="relative isolate overflow-hidden">
         {/* Background glow */}
@@ -159,57 +183,6 @@ export default function Home() {
       </section>
 
       {/* =========================================
-          POPULAR TOOLS
-          ========================================= */}
-
-      <section className="border-t border-zinc-900">
-        <div className="mx-auto max-w-6xl px-6 py-20 sm:px-8 sm:py-24 lg:px-10">
-          <div className="mb-10 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-violet-400">
-                <Sparkles size={14} />
-                Start here
-              </div>
-
-              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                Popular tools
-              </h2>
-
-              <p className="mt-3 max-w-xl text-sm leading-6 text-zinc-500">
-                Everything you need for common development tasks,
-                available directly in your browser.
-              </p>
-            </div>
-
-            <Link
-              href="/tools"
-              className="group inline-flex w-fit items-center gap-2 text-sm font-medium text-zinc-400 transition hover:text-white"
-            >
-              View all tools
-
-              <ArrowRight
-                size={16}
-                className="transition-transform duration-200 group-hover:translate-x-1"
-              />
-            </Link>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-  {popularTools.map((tool) => (
-    <ToolCard
-      key={tool.href}
-      name={tool.name}
-      description={tool.description}
-      icon={tool.icon}
-      href={tool.href}
-      category={tool.category}
-    />
-  ))}
-</div>
-        </div>
-      </section>
-
-      {/* =========================================
           FEATURES
           ========================================= */}
 
@@ -282,30 +255,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* =========================================
-          QUICK ACTIONS
-          ========================================= */}
-
-      <section className="border-t border-zinc-900">
-        <div className="mx-auto max-w-6xl px-6 py-20 sm:px-8 sm:py-24 lg:px-10">
-          <div className="mb-10">
-            <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-violet-400">
-              <Terminal size={14} />
-              Quick access
-            </div>
-
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Get things done faster.
-            </h2>
-
-            <p className="mt-3 max-w-xl text-sm leading-6 text-zinc-500">
-              Jump straight into the tools you use most.
-            </p>
-          </div>
-
-          <QuickActions />
-        </div>
-      </section>
 
       {/* =========================================
           COMMAND PALETTE
@@ -349,6 +298,16 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* =========================================
+          FAQ
+          ========================================= */}
+
+      <section className="border-t border-zinc-900">
+        <div className="mx-auto max-w-6xl px-6 py-20 sm:px-8 sm:py-24 lg:px-10">
+          <Faq />
         </div>
       </section>
 

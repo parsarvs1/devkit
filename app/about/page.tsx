@@ -3,12 +3,14 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-import {
-  ArrowRight,
-  Code2,
-  ShieldCheck,
-  Zap,
-} from "lucide-react";
+import { ArrowRight, Code2, Heart, ShieldCheck, Zap } from "lucide-react";
+
+export const metadata = {
+  title: "About DevKit",
+  description:
+    "DevKit is an open-source collection of simple, fast and privacy-friendly developer tools built by Parsa Ravasha.",
+  alternates: { canonical: "/about" },
+};
 
 export default function AboutPage() {
   const technologies = [
@@ -27,26 +29,22 @@ export default function AboutPage() {
         {/* Header */}
 
         <div className="max-w-3xl">
-          <p className="mb-3 text-sm text-zinc-500">
-            About DevKit
-          </p>
+          <p className="mb-3 text-sm text-zinc-500">About DevKit</p>
 
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Developer tools,
             <br />
-            <span className="text-zinc-500">
-              without the clutter.
-            </span>
+            <span className="text-zinc-500">without the clutter.</span>
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-400">
-            DevKit is an open-source collection of simple,
-            fast and useful tools built for developers.
+            DevKit is an open-source collection of simple, fast and useful tools
+            built for developers.
           </p>
 
           <p className="mt-4 max-w-2xl leading-7 text-zinc-500">
-            The goal is simple: provide the tools developers
-            use every day in one clean and accessible place.
+            The goal is simple: provide the tools developers use every day in
+            one clean and accessible place.
           </p>
         </div>
 
@@ -54,14 +52,9 @@ export default function AboutPage() {
 
         <div className="mt-14 grid gap-5 sm:grid-cols-3">
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-5">
-            <Zap
-              size={20}
-              className="text-zinc-300"
-            />
+            <Zap size={20} className="text-zinc-300" />
 
-            <h2 className="mt-4 font-semibold">
-              Fast
-            </h2>
+            <h2 className="mt-4 font-semibold">Fast</h2>
 
             <p className="mt-2 text-sm leading-6 text-zinc-500">
               Lightweight tools designed to work instantly.
@@ -69,34 +62,23 @@ export default function AboutPage() {
           </div>
 
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-5">
-            <ShieldCheck
-              size={20}
-              className="text-zinc-300"
-            />
+            <ShieldCheck size={20} className="text-zinc-300" />
 
-            <h2 className="mt-4 font-semibold">
-              Private
-            </h2>
+            <h2 className="mt-4 font-semibold">Private</h2>
 
             <p className="mt-2 text-sm leading-6 text-zinc-500">
-              Most tools process your data directly in the
-              browser.
+              Most tools process your data directly in the browser.
             </p>
           </div>
 
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-5">
-            <Code2
-              size={20}
-              className="text-zinc-300"
-            />
+            <Code2 size={20} className="text-zinc-300" />
 
-            <h2 className="mt-4 font-semibold">
-              Open Source
-            </h2>
+            <h2 className="mt-4 font-semibold">Open Source</h2>
 
             <p className="mt-2 text-sm leading-6 text-zinc-500">
-              The project is public and open for developers
-              to explore and improve.
+              The project is public and open for developers to explore and
+              improve.
             </p>
           </div>
         </div>
@@ -104,9 +86,7 @@ export default function AboutPage() {
         {/* Built With */}
 
         <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
-          <h2 className="text-lg font-semibold">
-            Built with
-          </h2>
+          <h2 className="text-lg font-semibold">Built with</h2>
 
           <p className="mt-2 text-sm text-zinc-500">
             DevKit is built with modern web technologies.
@@ -129,21 +109,15 @@ export default function AboutPage() {
         <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
           <div className="flex items-start justify-between gap-5">
             <div>
-              <h2 className="text-lg font-semibold">
-                Open Source
-              </h2>
+              <h2 className="text-lg font-semibold">Open Source</h2>
 
               <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-500">
-                Want to explore the code, report an issue or
-                contribute a new tool? The project is available
-                on GitHub.
+                Want to explore the code, report an issue or contribute a new
+                tool? The project is available on GitHub.
               </p>
             </div>
 
-            <Code2
-              size={22}
-              className="shrink-0 text-zinc-500"
-            />
+            <Code2 size={22} className="shrink-0 text-zinc-500" />
           </div>
 
           <a
@@ -157,15 +131,44 @@ export default function AboutPage() {
           </a>
         </div>
 
+        {/* Creator */}
+
+        <div className="mt-6 rounded-2xl border border-zinc-800 bg-gradient-to-br from-violet-500/5 via-zinc-900/40 to-zinc-900/30 p-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-violet-500/20 bg-violet-500/10 text-violet-400">
+                <Heart size={21} />
+              </div>
+
+              <div>
+                <h2 className="text-lg font-semibold">Made by Parsa Ravasha</h2>
+
+                <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-500">
+                  DevKit is designed, built and maintained by Parsa Ravaseh.
+                  Created to give developers a single clean place for the tools
+                  they use every day.
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="https://github.com/parsarvs1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2.5 text-sm text-zinc-300 transition hover:border-zinc-700 hover:text-white"
+            >
+              <Code2 size={16} />
+              Follow on GitHub
+            </a>
+          </div>
+        </div>
 
         <div className="mt-10 rounded-2xl border border-zinc-800 bg-zinc-900/30 p-8 text-center">
-          <h2 className="text-2xl font-bold">
-            Ready to use DevKit?
-          </h2>
+          <h2 className="text-2xl font-bold">Ready to use DevKit?</h2>
 
           <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-zinc-500">
-            Explore the available tools and find what you
-            need for your next project.
+            Explore the available tools and find what you need for your next
+            project.
           </p>
 
           <Link

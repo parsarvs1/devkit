@@ -290,26 +290,12 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-3">
-
-              {/* Login */}
-
-              <Link
-                href="/login"
-                className="transition hover:text-white"
-              >
-                Login
-              </Link>
-
-              {/* Sign Up */}
-
-              <Link
-                href="/signup"
-                className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-zinc-200"
-              >
-                Sign Up
-              </Link>
-            </div>
+            <Link
+              href="/login"
+              className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-zinc-200"
+            >
+              Sign in
+            </Link>
           )}
         </div>
 
@@ -531,28 +517,13 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-2">
-
-                {/* Login */}
-
-                <Link
-                  href="/login"
-                  onClick={closeMobileMenu}
-                  className="flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white"
-                >
-                  Login
-                </Link>
-
-                {/* Sign Up */}
-
-                <Link
-                  href="/signup"
-                  onClick={closeMobileMenu}
-                  className="flex items-center justify-center rounded-lg bg-white px-4 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
-                >
-                  Sign Up
-                </Link>
-              </div>
+              <Link
+                href="/login"
+                onClick={closeMobileMenu}
+                className="flex items-center justify-center rounded-lg bg-white px-4 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
+              >
+                Sign in
+              </Link>
             )}
           </div>
         </div>

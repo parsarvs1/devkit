@@ -86,7 +86,11 @@ export default function Footer() {
           </p>
 
           <p>
-            Built for developers.
+            Built with{" "}
+            <span className="text-red-500">♥</span> by{" "}
+            <span className="font-medium text-zinc-400">
+              Parsa Ravasha
+            </span>
           </p>
         </div>
       </div>

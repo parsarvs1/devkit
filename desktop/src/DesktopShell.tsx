@@ -22,7 +22,6 @@ import {
   Pipette,
   Regex,
   Settings,
-  UserPlus,
   UserRound,
   X,
 } from "lucide-react";
@@ -36,7 +35,6 @@ type DesktopShellProps = {
   user: User | null;
 
   onLogin: () => void;
-  onSignup: () => void;
   onLogout: () => void;
 
   onProfile: () => void;
@@ -115,7 +113,6 @@ export default function DesktopShell({
   onCommandPalette,
   user,
   onLogin,
-  onSignup,
   onLogout,
   onProfile,
   onSettings,
@@ -256,13 +253,6 @@ export default function DesktopShell({
     setMobileOpen(false);
 
     onLogin();
-  }
-
-  function handleSignup() {
-    setAccountOpen(false);
-    setMobileOpen(false);
-
-    onSignup();
   }
 
   function handleLogout() {
@@ -574,18 +564,6 @@ export default function DesktopShell({
                       <LogIn size={15} />
 
                       <span>Sign in</span>
-                    </button>
-
-                    {/* CREATE ACCOUNT */}
-
-                    <button
-                      type="button"
-                      className="sidebar-account-menu-item"
-                      onClick={handleSignup}
-                    >
-                      <UserPlus size={15} />
-
-                      <span>Create account</span>
                     </button>
                   </>
                 )}

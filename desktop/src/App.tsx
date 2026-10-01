@@ -230,21 +230,6 @@ export default function App() {
   };
 
   /* =========================================
-     SIGN UP
-  ========================================= */
-
-  const openSignup = () => {
-    setAuthMode("signup");
-
-    setAuthOpen(true);
-
-    setProfileOpen(false);
-    setSettingsOpen(false);
-    setFavoritesOpen(false);
-    setCommandPaletteOpen(false);
-  };
-
-  /* =========================================
      AUTH SUCCESS
   ========================================= */
 
@@ -458,7 +443,6 @@ export default function App() {
             onCommandPalette={openCommandPalette}
             user={user}
             onLogin={openLogin}
-            onSignup={openSignup}
             onLogout={handleLogout}
             onProfile={openProfile}
             onSettings={openSettings}

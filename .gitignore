@@ -47,3 +47,5 @@ Thumbs.db
 .agentsroom/handoff-transcript-*.txt
 .agentsroom/handoff-summary-*.md
 .agentsroom/fork-context-*.txt
+".open-next" 
+".wrangler" 

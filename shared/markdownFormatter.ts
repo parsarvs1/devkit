@@ -86,7 +86,7 @@ export function validateMarkdown(input: string): { isValid: boolean; error?: str
   }
 
   // Check for unclosed code blocks
-  const codeBlockPattern = /\`\`\`(\w*)\s*\n.*?\n\`\`\`/gs;
+  const codeBlockPattern = /\`\`\`(\w*)\s*\n[\s\S]*?\n\`\`\`/g;
   const codeBlocks = input.match(codeBlockPattern);
 
   if (codeBlocks) {

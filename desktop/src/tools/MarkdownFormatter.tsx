@@ -28,6 +28,7 @@ export default function MarkdownFormatter() {
 
     try {
       const validation = validateMarkdown(input);
+
       if (!validation.isValid) {
         setError(validation.error || "Invalid Markdown format.");
         setOutput("");
@@ -35,6 +36,7 @@ export default function MarkdownFormatter() {
       }
 
       const formatted = formatMarkdown(input);
+
       setOutput(formatted);
       setError("");
     } catch (err) {
@@ -45,6 +47,7 @@ export default function MarkdownFormatter() {
 
   function handleExample() {
     const example = getMarkdownExample();
+
     setInput(example);
     setOutput("");
     setError("");
@@ -91,6 +94,7 @@ export default function MarkdownFormatter() {
             Format and validate Markdown text instantly.
           </p>
         </div>
+      </div>
 
       <section className="markdown-panel">
         <div className="panel-header">
@@ -117,7 +121,17 @@ export default function MarkdownFormatter() {
             setInput(event.target.value);
             setError("");
           }}
-          placeholder="# Your Markdown here...\n\nStart typing your Markdown and see it formatted live!\n\n**Features:**\n- Headers: # ## ###\n- **Bold** and *italic*\n- \`inline code\`\n- [Links](https://example.com)\n- Lists and tables\n- And more..."
+          placeholder={
+            "# Your Markdown here...\n\n" +
+            "Start typing your Markdown and see it formatted live!\n\n" +
+            "**Features:**\n" +
+            "- Headers: # ## ###\n" +
+            "- **Bold** and *italic*\n" +
+            "- `inline code`\n" +
+            "- [Links](https://example.com)\n" +
+            "- Lists and tables\n" +
+            "- And more..."
+          }
           spellCheck={false}
         />
 
@@ -170,3 +184,4 @@ export default function MarkdownFormatter() {
       )}
     </main>
   );
+}

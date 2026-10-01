@@ -11,6 +11,7 @@
   "dependencies": {
     "@cloudflare/workers-types": "^5.20260820.1",
     "@google/genai": "^2.20.0",
+    "@opennextjs/cloudflare": "^1.20.2",
     "@tauri-apps/api": "^2.11.1",
     "bcryptjs": "^3.0.3",
     "framer-motion": "^13.1.0",
@@ -23,7 +24,6 @@
     "react-markdown": "^10.1.0"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.20.2",
     "@tailwindcss/postcss": "^4",
     "@tauri-apps/cli": "^2.11.4",
     "@types/bcryptjs": "^2.4.6",

@@ -23,11 +23,6 @@ export default function Home() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-zinc-950 text-white">
       <Navbar />
-
-      {/* =========================================
-          HERO
-          ========================================= */}
-
       <section className="relative isolate overflow-hidden">
         {/* Background glow */}
         <div
@@ -50,6 +45,7 @@ export default function Home() {
               </span>
 
               Free developer toolkit
+               <span className="ml-1.5 rounded-full bg-zinc-700 px-1.5 py-0.5 text-[10px] font-semibold text-zinc-400">v1.0</span>
             </div>
 
             {/* Heading */}

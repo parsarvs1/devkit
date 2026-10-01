@@ -1,162 +1,139 @@
 import { useEffect, useState } from "react";
 
 import "./App.css";
-import type { Tool } from "./types";
-import DesktopShell from "./DesktopShell";
-import CommandPalette from "./CommandPalette";
-import ThemeToggle from "./ThemeToggle";
-import AuthScreen from "./AuthScreen";
 
+import AuthScreen from "./AuthScreen";
+import CommandPalette from "./CommandPalette";
+import DesktopShell from "./DesktopShell";
+import Favorites from "./Favorites";
+import Home from "./Home";
+import Profile from "./Profile";
+import SettingsPage from "./Settings";
+
+import Base64 from "./tools/Base64";
+import ColorConverter from "./tools/ColorConverter";
+import HashCompare from "./tools/HashCompare";
+import HashGenerator from "./tools/HashGenerator";
 import JsonFormatter from "./tools/JsonFormatter";
 import JwtDecoder from "./tools/JwtDecoder";
-import UuidGenerator from "./tools/UuidGenerator";
+import LoremIpsum from "./tools/LoremIpsum";
+import MarkdownFormatter from "./tools/MarkdownFormatter";
 import RegexTester from "./tools/RegexTester";
-import Base64 from "./tools/Base64";
 import Timestamp from "./tools/Timestamp";
-import ColorConverter from "./tools/ColorConverter";
-import HashGenerator from "./tools/HashGenerator";
-import HashCompare from "./tools/HashCompare";
 import UrlEncoder from "./tools/UrlEncoder";
+import UuidGenerator from "./tools/UuidGenerator";
 
-import {
-  Braces,
-  Clock3,
-  Code2,
-  Fingerprint,
-  GitCompare,
-  Hash,
-  Link,
-  Palette,
-  Regex,
-  Shield,
-} from "lucide-react";
+import type { RecentTool, Tool, User } from "./types";
 
-type ToolCard = {
-  id: Exclude<Tool, "home">;
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-};
+/* =========================================
+   TOOL INFO
+========================================= */
 
-type User = {
-  name: string;
-  email: string;
-};
-
-type AuthMode = "login" | "signup";
-
-const tools: ToolCard[] = [
+const TOOL_INFO: Record<
+  string,
   {
-    id: "json",
+    name: string;
+    description: string;
+  }
+> = {
+  json: {
     name: "JSON Formatter",
-    description: "Format and minify JSON with ease.",
-    icon: <Braces size={20} />,
+    description: "Format and validate JSON",
   },
 
-  {
-    id: "jwt",
+  jwt: {
     name: "JWT Decoder",
-    description:
-      "Decode JWT tokens and inspect their payload.",
-    icon: <Shield size={20} />,
+    description: "Decode JWT tokens",
   },
 
-  {
-    id: "uuid",
+  uuid: {
     name: "UUID Generator",
-    description:
-      "Generate unique UUIDs instantly.",
-    icon: <Fingerprint size={20} />,
+    description: "Generate UUIDs",
   },
 
-  {
-    id: "regex",
+  regex: {
     name: "Regex Tester",
-    description:
-      "Test regular expressions against text.",
-    icon: <Regex size={20} />,
+    description: "Test regular expressions",
   },
 
-  {
-    id: "base64",
-    name: "Base64",
-    description:
-      "Encode and decode Base64 strings.",
-    icon: <Code2 size={20} />,
+  base64: {
+    name: "Base64 Encoder",
+    description: "Encode and decode Base64",
   },
 
-  {
-    id: "timestamp",
+  timestamp: {
     name: "Timestamp",
-    description:
-      "Convert Unix timestamps and dates.",
-    icon: <Clock3 size={20} />,
+    description: "Convert timestamps",
   },
 
-  {
-    id: "color",
+  color: {
     name: "Color Converter",
-    description:
-      "Convert HEX colors to RGB and HSL.",
-    icon: <Palette size={20} />,
+    description: "Convert colors",
   },
 
-  {
-    id: "hash",
+  hash: {
     name: "Hash Generator",
-    description:
-      "Generate SHA hashes from text instantly.",
-    icon: <Hash size={20} />,
+    description: "Generate hashes",
   },
 
-  {
-    id: "hash-compare",
+  "hash-compare": {
     name: "Hash Compare",
-    description:
-      "Compare hashes and verify text integrity.",
-    icon: <GitCompare size={20} />,
+    description: "Compare hashes",
   },
 
-  {
-    id: "url",
+  url: {
     name: "URL Encoder",
-    description:
-      "Encode and decode URLs and query parameters.",
-    icon: <Link size={20} />,
+    description: "Encode and decode URLs",
   },
-];
+  lorem: {
+    name: "Lorem Ipsum Generator",
+    description: "Generate placeholder text",
+  },
+
+  markdown: {
+    name: "Markdown Formatter",
+    description: "Format and validate Markdown text",
+  },
+};
+
+/* =========================================
+   APP
+========================================= */
 
 export default function App() {
-  const [activeTool, setActiveTool] =
-    useState<Tool>("home");
+  const [activeTool, setActiveTool] = useState<Tool>("home");
 
-  const [commandPaletteOpen, setCommandPaletteOpen] =
-    useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
-  const [authScreen, setAuthScreen] =
-    useState<AuthMode | null>(null);
+  const [authOpen, setAuthOpen] = useState(false);
 
-  const [user, setUser] =
-    useState<User | null>(null);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
 
-  /*
-   * ======================================================
-   * LOAD SAVED USER
-   * ======================================================
-   */
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+
+  const [commandPaletteEnabled, setCommandPaletteEnabled] = useState(true);
+
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const [favoritesOpen, setFavoritesOpen] = useState(false);
+
+  const [recentTools, setRecentTools] = useState<RecentTool[]>([]);
+
+  /* =========================================
+     LOAD RECENT TOOLS
+  ========================================= */
 
   useEffect(() => {
+    const savedUser = localStorage.getItem("devkit-user");
+
+    if (!savedUser) {
+      return;
+    }
+
     try {
-      const savedUser =
-        localStorage.getItem("devkit-user");
-
-      if (!savedUser) {
-        return;
-      }
-
-      const parsedUser = JSON.parse(
-        savedUser
-      ) as User;
+      const parsedUser = JSON.parse(savedUser);
 
       if (
         parsedUser &&
@@ -170,153 +147,264 @@ export default function App() {
     }
   }, []);
 
-  /*
-   * ======================================================
-   * OPEN TOOL
-   * ======================================================
-   */
-
-  function openTool(tool: Tool) {
-    setActiveTool(tool);
-    setCommandPaletteOpen(false);
-  }
-
-  /*
-   * ======================================================
-   * GO HOME
-   * ======================================================
-   */
-
-  function goHome() {
-    setActiveTool("home");
-  }
-
-  /*
-   * ======================================================
-   * COMMAND PALETTE
-   * ======================================================
-   */
+  /* =========================================
+     LOAD COMMAND PALETTE SETTING
+  ========================================= */
 
   useEffect(() => {
-    function handleKeyboard(
-      event: KeyboardEvent
-    ) {
-      if (
-        (event.ctrlKey || event.metaKey) &&
-        event.key.toLowerCase() === "k"
-      ) {
-        event.preventDefault();
+    const loadCommandPaletteSetting = () => {
+      const saved = localStorage.getItem("devkit-command-palette");
 
-        setCommandPaletteOpen(
-          (current) => !current
-        );
-      }
+      setCommandPaletteEnabled(saved === null ? true : saved === "true");
+    };
 
-      if (
-        event.key === "Escape" &&
-        commandPaletteOpen
-      ) {
-        setCommandPaletteOpen(false);
-      }
-    }
+    loadCommandPaletteSetting();
 
     window.addEventListener(
-      "keydown",
-      handleKeyboard
+      "devkit-settings-change",
+      loadCommandPaletteSetting,
     );
 
     return () => {
       window.removeEventListener(
-        "keydown",
-        handleKeyboard
+        "devkit-settings-change",
+        loadCommandPaletteSetting,
       );
     };
-  }, [commandPaletteOpen]);
+  }, []);
 
-  /*
-   * ======================================================
-   * AUTH
-   * ======================================================
-   */
+  /* =========================================
+     OPEN TOOL
+  ========================================= */
 
-  function openLogin() {
-    setAuthScreen("login");
-  }
+  const openTool = (tool: string) => {
+    const nextTool = tool as Tool;
 
-  function openSignup() {
-    setAuthScreen("signup");
-  }
+    setActiveTool(nextTool);
 
-  function closeAuth() {
-    setAuthScreen(null);
-  }
+    setProfileOpen(false);
+    setSettingsOpen(false);
+    setFavoritesOpen(false);
+    setAuthOpen(false);
+    setCommandPaletteOpen(false);
 
-  function handleAuthSuccess(
-    loggedInUser: User
-  ) {
-    setUser(loggedInUser);
+    if (nextTool === "home") {
+      return;
+    }
 
-    localStorage.setItem(
-      "devkit-user",
-      JSON.stringify(loggedInUser)
-    );
+    const info = TOOL_INFO[nextTool];
 
-    setAuthScreen(null);
-  }
+    if (!info) {
+      return;
+    }
 
-  function handleLogout() {
+    setRecentTools((current) => {
+      const updated = [
+        {
+          id: nextTool,
+          name: info.name,
+          description: info.description,
+        },
+        ...current.filter((item) => item.id !== nextTool),
+      ].slice(0, 5);
+
+      localStorage.setItem("devkit-recent-tools", JSON.stringify(updated));
+
+      return updated;
+    });
+  };
+
+  /* =========================================
+     LOGIN
+  ========================================= */
+
+  const openLogin = () => {
+    setAuthMode("login");
+
+    setAuthOpen(true);
+
+    setProfileOpen(false);
+    setSettingsOpen(false);
+    setFavoritesOpen(false);
+    setCommandPaletteOpen(false);
+  };
+
+  /* =========================================
+     SIGN UP
+  ========================================= */
+
+  const openSignup = () => {
+    setAuthMode("signup");
+
+    setAuthOpen(true);
+
+    setProfileOpen(false);
+    setSettingsOpen(false);
+    setFavoritesOpen(false);
+    setCommandPaletteOpen(false);
+  };
+
+  /* =========================================
+     AUTH SUCCESS
+  ========================================= */
+
+  const handleAuthSuccess = (authenticatedUser: User) => {
+    setUser(authenticatedUser);
+
+    setAuthOpen(false);
+
+    setAuthMode("login");
+  };
+
+  /* =========================================
+     LOGOUT
+  ========================================= */
+
+  const handleLogout = () => {
+    localStorage.removeItem("devkit-user");
+
     setUser(null);
-
-    localStorage.removeItem(
-      "devkit-user"
-    );
-
+    setProfileOpen(false);
+    setSettingsOpen(false);
+    setAuthOpen(false);
+    setCommandPaletteOpen(false);
     setActiveTool("home");
-  }
+  };
 
-  /*
-   * ======================================================
-   * AUTH SCREEN
-   * ======================================================
-   */
+  /* =========================================
+     PROFILE
+  ========================================= */
 
-  if (authScreen) {
-    return (
-      <AuthScreen
-        mode={authScreen}
-        onBack={closeAuth}
-        onSuccess={handleAuthSuccess}
-      />
+  const openProfile = () => {
+    if (!user) {
+      openLogin();
+
+      return;
+    }
+
+    setProfileOpen(true);
+
+    setSettingsOpen(false);
+    setFavoritesOpen(false);
+    setAuthOpen(false);
+    setCommandPaletteOpen(false);
+  };
+
+  const closeProfile = () => {
+    setProfileOpen(false);
+  };
+
+  const handleUpdateUser = (updatedUser: User) => {
+    setUser(updatedUser);
+  };
+
+  /* =========================================
+     SETTINGS
+  ========================================= */
+
+  const openSettings = () => {
+    setSettingsOpen(true);
+
+    setProfileOpen(false);
+    setFavoritesOpen(false);
+    setAuthOpen(false);
+    setCommandPaletteOpen(false);
+  };
+
+  const closeSettings = () => {
+    setSettingsOpen(false);
+  };
+
+  /* =========================================
+     FAVORITES
+  ========================================= */
+
+  const openFavorites = () => {
+    setFavoritesOpen(true);
+
+    setProfileOpen(false);
+    setSettingsOpen(false);
+    setAuthOpen(false);
+    setCommandPaletteOpen(false);
+  };
+
+  const closeFavorites = () => {
+    setFavoritesOpen(false);
+  };
+
+  /* =========================================
+     COMMAND PALETTE
+  ========================================= */
+
+  const openCommandPalette = () => {
+    if (!commandPaletteEnabled) {
+      return;
+    }
+
+    setCommandPaletteOpen(true);
+  };
+
+  const closeCommandPalette = () => {
+    setCommandPaletteOpen(false);
+  };
+
+  /* =========================================
+     HOME COMMAND PALETTE EVENT
+  ========================================= */
+
+  useEffect(() => {
+    const handleOpenCommandPalette = () => {
+      openCommandPalette();
+    };
+
+    window.addEventListener(
+      "devkit-open-command-palette",
+      handleOpenCommandPalette,
     );
-  }
 
-  /*
-   * ======================================================
-   * RENDER ACTIVE TOOL
-   * ======================================================
-   */
+    return () => {
+      window.removeEventListener(
+        "devkit-open-command-palette",
+        handleOpenCommandPalette,
+      );
+    };
+  }, [commandPaletteEnabled]);
 
-  function renderTool() {
+  /* =========================================
+     RENDER TOOL
+  ========================================= */
+
+  const renderTool = () => {
+    if (favoritesOpen) {
+      return <Favorites onSelectTool={openTool} />;
+    }
+
+    if (settingsOpen) {
+      return <SettingsPage onBack={closeSettings} />;
+    }
+
+    if (profileOpen && user) {
+      return (
+        <Profile
+          user={user}
+          onBack={closeProfile}
+          onUpdateUser={handleUpdateUser}
+        />
+      );
+    }
+
     switch (activeTool) {
       case "json":
         return <JsonFormatter />;
 
       case "jwt":
-        return (
-          <JwtDecoder
-            onBack={goHome}
-          />
-        );
+        return <JwtDecoder onBack={() => openTool("home")} />;
 
       case "uuid":
         return <UuidGenerator />;
 
       case "regex":
-        return (
-          <RegexTester
-            onBack={goHome}
-          />
-        );
+        return <RegexTester onBack={() => openTool("home")} />;
 
       case "base64":
         return <Base64 />;
@@ -335,159 +423,57 @@ export default function App() {
 
       case "url":
         return <UrlEncoder />;
+      case "lorem":
+        return <LoremIpsum />;
+
+      case "markdown":
+        return <MarkdownFormatter />;
 
       case "home":
+
       default:
         return (
-          <Dashboard
-            onOpenTool={openTool}
-          />
+          <Home onSelectTool={openTool} user={user} recentTools={recentTools} />
         );
     }
-  }
+  };
 
-  /*
-   * ======================================================
-   * APP
-   * ======================================================
-   */
+  /* =========================================
+     RENDER
+  ========================================= */
 
   return (
     <>
-      <DesktopShell
-        activeTool={activeTool}
-        onSelectTool={openTool}
-        onCommandPalette={() =>
-          setCommandPaletteOpen(true)
-        }
-        user={user}
-        onLogin={openLogin}
-        onSignup={openSignup}
-        onLogout={handleLogout}
-      >
-        {renderTool()}
-      </DesktopShell>
+      {authOpen ? (
+        <AuthScreen
+          mode={authMode}
+          onBack={() => setAuthOpen(false)}
+          onSuccess={handleAuthSuccess}
+        />
+      ) : (
+        <>
+          <DesktopShell
+            activeTool={activeTool}
+            onSelectTool={openTool}
+            onCommandPalette={openCommandPalette}
+            user={user}
+            onLogin={openLogin}
+            onSignup={openSignup}
+            onLogout={handleLogout}
+            onProfile={openProfile}
+            onSettings={openSettings}
+            onFavorites={openFavorites}
+          >
+            {renderTool()}
+          </DesktopShell>
 
-      <CommandPalette
-        open={commandPaletteOpen}
-        onClose={() =>
-          setCommandPaletteOpen(false)
-        }
-        onSelect={(tool) => {
-          openTool(tool as Tool);
-        }}
-      />
+          <CommandPalette
+            open={commandPaletteOpen}
+            onClose={closeCommandPalette}
+            onSelect={openTool}
+          />
+        </>
+      )}
     </>
-  );
-}
-
-/*
- * ========================================================
- * DASHBOARD
- * ========================================================
- */
-
-type DashboardProps = {
-  onOpenTool: (tool: Tool) => void;
-};
-
-function Dashboard({
-  onOpenTool,
-}: DashboardProps) {
-  return (
-    <div className="desktop-dashboard">
-      {/* HEADER */}
-
-      <section className="dashboard-header">
-        <div>
-          <div className="dashboard-eyebrow">
-            <span className="status-dot" />
-
-            DEVELOPER TOOLKIT
-          </div>
-
-          <h1>
-            Build faster.
-            <br />
-
-            <span>
-              Work smarter.
-            </span>
-          </h1>
-
-          <p>
-            A powerful collection of developer
-            tools built for everyday development.
-          </p>
-        </div>
-
-        <div className="dashboard-header-actions">
-          <ThemeToggle />
-        </div>
-      </section>
-
-      {/* TOOLS */}
-
-      <section className="dashboard-section">
-        <div className="dashboard-section-header">
-          <div>
-            <span className="section-label">
-              TOOLS
-            </span>
-
-            <h2>
-              Developer Utilities
-            </h2>
-          </div>
-
-          <span className="tool-count">
-            {tools.length} tools
-          </span>
-        </div>
-
-        <div className="desktop-tools-grid">
-          {tools.map((tool) => (
-            <button
-              key={tool.id}
-              type="button"
-              className="tool-card"
-              onClick={() =>
-                onOpenTool(tool.id)
-              }
-            >
-              <div className="tool-card-icon">
-                {tool.icon}
-              </div>
-
-              <div className="tool-card-content">
-                <h3>
-                  {tool.name}
-                </h3>
-
-                <p>
-                  {tool.description}
-                </p>
-              </div>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* FOOTER */}
-
-      <footer className="desktop-footer">
-        <div>
-          <Code2 size={16} />
-
-          <span>
-            DevKit
-          </span>
-        </div>
-
-        <span>
-          Developer tools for everyday work.
-        </span>
-      </footer>
-    </div>
   );
 }

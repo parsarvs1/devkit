@@ -9,9 +9,17 @@ export type Tool =
   | "color"
   | "hash"
   | "hash-compare"
-  | "url";
+  | "url"
+  | "lorem"
+  | "markdown";
 
 export type User = {
   name: string;
   email: string;
+};
+
+export type RecentTool = {
+  id: Tool;
+  name: string;
+  description: string;
 };

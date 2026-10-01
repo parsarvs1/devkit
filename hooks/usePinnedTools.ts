@@ -37,25 +37,15 @@ export default function usePinnedTools() {
 
       try {
         const parsed = JSON.parse(stored);
-
-        if (Array.isArray(parsed)) {
-          setPinnedTools(parsed);
-        }
       } catch {
         setPinnedTools([]);
       }
     }
 
-    window.addEventListener(
-      "devkit-pins-changed",
-      handlePinsChanged
-    );
+    window.addEventListener("devkit-pins-changed", handlePinsChanged);
 
     return () => {
-      window.removeEventListener(
-        "devkit-pins-changed",
-        handlePinsChanged
-      );
+      window.removeEventListener("devkit-pins-changed", handlePinsChanged);
     };
   }, []);
 
@@ -65,14 +55,9 @@ export default function usePinnedTools() {
         ? current.filter((item) => item !== href)
         : [...current, href];
 
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(updated)
-      );
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 
-      window.dispatchEvent(
-        new Event("devkit-pins-changed")
-      );
+      window.dispatchEvent(new Event("devkit-pins-changed"));
 
       return updated;
     });
@@ -80,18 +65,11 @@ export default function usePinnedTools() {
 
   function removePin(href: string) {
     setPinnedTools((current) => {
-      const updated = current.filter(
-        (item) => item !== href
-      );
+      const updated = current.filter((item) => item !== href);
 
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(updated)
-      );
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 
-      window.dispatchEvent(
-        new Event("devkit-pins-changed")
-      );
+      window.dispatchEvent(new Event("devkit-pins-changed"));
 
       return updated;
     });

@@ -5,7 +5,6 @@ import {
   Code2,
   Eye,
   EyeOff,
-  Loader2,
   Lock,
   Mail,
   User,
@@ -22,8 +21,6 @@ type AuthScreenProps = {
   }) => void;
 };
 
-const API_URL = "https://devkit.pars-paris1.workers.dev";
-
 export default function AuthScreen({
   mode,
   onBack,
@@ -32,22 +29,32 @@ export default function AuthScreen({
   const [authMode, setAuthMode] =
     useState<AuthMode>(mode);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] =
+    useState("");
+
+  const [email, setEmail] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
 
   const [showPassword, setShowPassword] =
     useState(false);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [error, setError] =
+    useState("");
 
-  const isLogin = authMode === "login";
+  const [success, setSuccess] =
+    useState("");
+
+  const isLogin =
+    authMode === "login";
 
   function switchMode() {
     setAuthMode(
-      isLogin ? "signup" : "login"
+      isLogin
+        ? "signup"
+        : "login"
     );
 
     setError("");
@@ -55,131 +62,112 @@ export default function AuthScreen({
     setPassword("");
   }
 
-  async function handleSubmit(
+  function handleSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
 
     setError("");
     setSuccess("");
-    setLoading(true);
 
-    try {
-      /*
-       * ==================================================
-       * SIGN UP
-       * ==================================================
-       */
+    /*
+     * LOGIN
+     */
 
-      if (!isLogin) {
-        if (!name.trim()) {
-          setError("Please enter your name.");
-          return;
-        }
-
-        if (!email.trim()) {
-          setError("Please enter your email.");
-          return;
-        }
-
-        if (!password) {
-          setError("Please enter your password.");
-          return;
-        }
-
-        if (password.length < 6) {
-          setError(
-            "Password must be at least 6 characters."
-          );
-          return;
-        }
-
-        const response = await fetch(
-          `${API_URL}/api/register`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: name.trim(),
-              email: email.trim(),
-              password,
-            }),
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          setError(
-            data?.error ||
-              "Unable to create your account."
-          );
-
-          return;
-        }
-
-        /*
-         * After successful registration,
-         * switch user to Login.
-         */
-
-        setAuthMode("login");
-
-        setPassword("");
-
-        setSuccess(
-          "Account created successfully. You can now sign in."
-        );
-
-        return;
-      }
-
-      /*
-       * ==================================================
-       * LOGIN
-       * ==================================================
-       *
-       * Temporary desktop login.
-       *
-       * The real API login can be connected here later.
-       */
-
+    if (isLogin) {
       if (!email.trim()) {
-        setError("Please enter your email.");
+        setError(
+          "Please enter your email."
+        );
         return;
       }
 
       if (!password) {
-        setError("Please enter your password.");
+        setError(
+          "Please enter your password."
+        );
         return;
       }
 
       /*
-       * Temporary user object.
+       * Temporary local login.
        *
-       * This allows the desktop authentication flow
-       * and sidebar account UI to work for now.
+       * API will be connected later.
        */
 
       const loggedInUser = {
-        name: email.trim().split("@")[0],
-        email: email.trim(),
+        name:
+          email
+            .trim()
+            .split("@")[0] ||
+          "Developer",
+
+        email:
+          email.trim(),
       };
 
-      onSuccess(loggedInUser);
-    } catch {
-      setError(
-        "Unable to connect to DevKit server."
+      onSuccess(
+        loggedInUser
       );
-    } finally {
-      setLoading(false);
+
+      return;
     }
+
+    /*
+     * SIGN UP
+     */
+
+    if (!name.trim()) {
+      setError(
+        "Please enter your name."
+      );
+      return;
+    }
+
+    if (!email.trim()) {
+      setError(
+        "Please enter your email."
+      );
+      return;
+    }
+
+    if (!password) {
+      setError(
+        "Please enter your password."
+      );
+      return;
+    }
+
+    if (password.length < 6) {
+      setError(
+        "Password must be at least 6 characters."
+      );
+      return;
+    }
+
+    /*
+     * Temporary local signup.
+     *
+     * Real account creation will be
+     * connected later.
+     */
+
+    setSuccess(
+      "Account created successfully."
+    );
+
+    setTimeout(() => {
+      setAuthMode("login");
+      setPassword("");
+      setSuccess(
+        "Account created successfully. You can now sign in."
+      );
+    }, 500);
   }
 
   return (
     <main className="auth-screen">
+
       <div className="auth-container">
 
         {/* BACK */}
@@ -188,9 +176,10 @@ export default function AuthScreen({
           type="button"
           className="auth-back"
           onClick={onBack}
-          disabled={loading}
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft
+            size={16}
+          />
 
           <span>
             Back to DevKit
@@ -204,12 +193,15 @@ export default function AuthScreen({
           {/* LOGO */}
 
           <div className="auth-logo">
-            <Code2 size={22} />
+            <Code2
+              size={22}
+            />
           </div>
 
           {/* HEADING */}
 
           <div className="auth-heading">
+
             <h1>
               {isLogin
                 ? "Welcome back"
@@ -221,13 +213,16 @@ export default function AuthScreen({
                 ? "Sign in to continue to DevKit."
                 : "Create your DevKit account and get started."}
             </p>
+
           </div>
 
           {/* FORM */}
 
           <form
             className="auth-form"
-            onSubmit={handleSubmit}
+            onSubmit={
+              handleSubmit
+            }
           >
 
             {/* NAME */}
@@ -241,18 +236,23 @@ export default function AuthScreen({
 
                 <div className="auth-input-wrapper">
 
-                  <User size={17} />
+                  <User
+                    size={17}
+                  />
 
                   <input
                     id="name"
                     type="text"
                     value={name}
-                    onChange={(event) =>
-                      setName(event.target.value)
+                    onChange={(
+                      event
+                    ) =>
+                      setName(
+                        event.target.value
+                      )
                     }
                     placeholder="Your name"
                     autoComplete="name"
-                    disabled={loading}
                   />
 
                 </div>
@@ -270,18 +270,23 @@ export default function AuthScreen({
 
               <div className="auth-input-wrapper">
 
-                <Mail size={17} />
+                <Mail
+                  size={17}
+                />
 
                 <input
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(event) =>
-                    setEmail(event.target.value)
+                  onChange={(
+                    event
+                  ) =>
+                    setEmail(
+                      event.target.value
+                    )
                   }
                   placeholder="you@example.com"
                   autoComplete="email"
-                  disabled={loading}
                 />
 
               </div>
@@ -298,7 +303,9 @@ export default function AuthScreen({
 
               <div className="auth-input-wrapper">
 
-                <Lock size={17} />
+                <Lock
+                  size={17}
+                />
 
                 <input
                   id="password"
@@ -308,8 +315,12 @@ export default function AuthScreen({
                       : "password"
                   }
                   value={password}
-                  onChange={(event) =>
-                    setPassword(event.target.value)
+                  onChange={(
+                    event
+                  ) =>
+                    setPassword(
+                      event.target.value
+                    )
                   }
                   placeholder="••••••••"
                   autoComplete={
@@ -317,7 +328,6 @@ export default function AuthScreen({
                       ? "current-password"
                       : "new-password"
                   }
-                  disabled={loading}
                 />
 
                 <button
@@ -325,10 +335,10 @@ export default function AuthScreen({
                   className="auth-password-toggle"
                   onClick={() =>
                     setShowPassword(
-                      (current) => !current
+                      (current) =>
+                        !current
                     )
                   }
-                  disabled={loading}
                   aria-label={
                     showPassword
                       ? "Hide password"
@@ -336,9 +346,13 @@ export default function AuthScreen({
                   }
                 >
                   {showPassword ? (
-                    <EyeOff size={17} />
+                    <EyeOff
+                      size={17}
+                    />
                   ) : (
-                    <Eye size={17} />
+                    <Eye
+                      size={17}
+                    />
                   )}
                 </button>
 
@@ -367,26 +381,10 @@ export default function AuthScreen({
             <button
               type="submit"
               className="auth-submit"
-              disabled={loading}
             >
-              {loading ? (
-                <>
-                  <Loader2
-                    size={17}
-                    className="auth-spinner"
-                  />
-
-                  <span>
-                    Please wait...
-                  </span>
-                </>
-              ) : (
-                <span>
-                  {isLogin
-                    ? "Sign in"
-                    : "Create account"}
-                </span>
-              )}
+              {isLogin
+                ? "Sign in"
+                : "Create account"}
             </button>
 
           </form>
@@ -403,8 +401,9 @@ export default function AuthScreen({
 
             <button
               type="button"
-              onClick={switchMode}
-              disabled={loading}
+              onClick={
+                switchMode
+              }
             >
               {isLogin
                 ? "Create account"
@@ -422,6 +421,7 @@ export default function AuthScreen({
 
         </div>
       </div>
+
     </main>
   );
 }

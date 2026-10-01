@@ -38,16 +38,12 @@ export default function ToolCard({
         <div className="flex items-center gap-1">
   <PinButton href={href} />
 
- <div className="flex items-center gap-1">
-  <PinButton href={href} />
-
   <div className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 transition-all duration-200 group-hover:bg-zinc-800 group-hover:text-zinc-300">
     <ArrowUpRight
       size={17}
       className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
     />
   </div>
-</div>
 </div>
       </div>
 

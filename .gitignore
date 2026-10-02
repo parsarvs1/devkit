@@ -47,6 +47,8 @@ Thumbs.db
 .agentsroom/handoff-transcript-*.txt
 .agentsroom/handoff-summary-*.md
 .agentsroom/fork-context-*.txt
-".open-next" 
-".wrangler" 
+
+# Build output (OpenNext / Wrangler)
+.open-next/
+.wrangler/
 .wrangler/

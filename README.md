@@ -21,7 +21,7 @@ right in your browser, with no signup.
 
 ## 📸 Preview
 
-![DevKit Preview](public/screenshots/devkit-home.png)
+![DevKit Preview](public/screenshots/devkit-new-home.png)
 
 ## ✨ Features
 
@@ -36,21 +36,21 @@ right in your browser, with no signup.
 
 ## 🛠️ Available Tools
 
-| Tool | Description |
-| --- | --- |
-| JSON Formatter | Format, beautify and validate JSON |
-| JWT Decoder | Decode and inspect JWT tokens |
-| UUID Generator | Generate random UUIDs |
-| Regex Tester | Test and debug regular expressions |
-| Base64 Encoder | Encode and decode Base64 |
-| Timestamp Converter | Convert Unix timestamps |
-| Hash Generator | Generate hashes |
-| URL Encoder / Decoder | Encode and decode URL components |
-| Color Converter | Convert between HEX, RGB and HSL |
-| Color Palette | Generate color palettes |
-| Password Generator | Generate strong random passwords |
-| JSON → TypeScript | Convert JSON to TypeScript types |
-| JSON → Zod | Convert JSON to Zod schemas |
+| Tool                  | Description                        |
+| --------------------- | ---------------------------------- |
+| JSON Formatter        | Format, beautify and validate JSON |
+| JWT Decoder           | Decode and inspect JWT tokens      |
+| UUID Generator        | Generate random UUIDs              |
+| Regex Tester          | Test and debug regular expressions |
+| Base64 Encoder        | Encode and decode Base64           |
+| Timestamp Converter   | Convert Unix timestamps            |
+| Hash Generator        | Generate hashes                    |
+| URL Encoder / Decoder | Encode and decode URL components   |
+| Color Converter       | Convert between HEX, RGB and HSL   |
+| Color Palette         | Generate color palettes            |
+| Password Generator    | Generate strong random passwords   |
+| JSON → TypeScript     | Convert JSON to TypeScript types   |
+| JSON → Zod            | Convert JSON to Zod schemas        |
 
 …and more. Browse the full list on the [Tools page](https://devkit.pars-paris1.workers.dev/tools).
 

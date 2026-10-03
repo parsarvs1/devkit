@@ -1,0 +1,46 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Only the latest run per branch should deploy.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and deploy worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Next.js reads AUTH_SECRET at build time (next-auth v5 / auth.ts).
+      # .env.local is gitignored, so the secret is injected here.
+      - name: Build OpenNext worker
+        env:
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        run: npm run build:worker
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Dependencies (and the build) are already done in the steps above.
+          installDependencies: false
+          command: deploy

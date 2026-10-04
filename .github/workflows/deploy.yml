@@ -10,15 +10,54 @@ concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
 
+# This workflow only checks out code and talks to the Cloudflare API.
+# Deployment uses CLOUDFLARE_API_TOKEN, not the GITHUB_TOKEN.
+permissions:
+  contents: read
+
 jobs:
   deploy:
     name: Build and deploy worker
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Fail fast BEFORE the expensive build. A referenced-but-unset secret
+      # expands to an empty string, so `-z` detects it. GitHub does not allow
+      # secrets in `if:` conditionals, so this step runs unconditionally and
+      # exits non-zero on a missing value. The token value is never printed —
+      # only its name.
+      - name: Verify required secrets
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        run: |
+          set -euo pipefail
+
+          fail=0
+          # "$2" is the value; "${2// /}" treats a whitespace-only value as blank.
+          # Only the name ($1, a hardcoded literal) is ever printed.
+          require() {
+            if [[ -z "${2// /}" ]]; then
+              echo "::error::Required secret '$1' is missing or empty. Add it under Settings → Secrets and variables → Actions."
+              fail=1
+            fi
+          }
+
+          require CLOUDFLARE_API_TOKEN "${CLOUDFLARE_API_TOKEN:-}"
+          require CLOUDFLARE_ACCOUNT_ID "${CLOUDFLARE_ACCOUNT_ID:-}"
+          require AUTH_SECRET            "${AUTH_SECRET:-}"
+
+          if [[ "$fail" -ne 0 ]]; then
+            echo "::error::Aborting before build: one or more required secrets are missing."
+            exit 1
+          fi
+          echo "All required secrets are present."
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -29,11 +68,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Next.js reads AUTH_SECRET at build time (next-auth v5 / auth.ts).
-      # .env.local is gitignored, so the secret is injected here.
-      - name: Build OpenNext worker
+      # OpenNext bakes runtime env vars into .open-next/cloudflare/next-env.mjs at
+      # BUILD time, and its extractProjectEnvVars() reads ONLY .env* files (never
+      # process.env). .env.local is gitignored, so without materializing an env
+      # file here the CI build emits an empty env map and process.env.AUTH_SECRET
+      # is undefined at runtime -> next-auth throws MissingSecret + UntrustedHost.
+      - name: Write env file for build
+        shell: bash
         env:
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+        run: |
+          set -euo pipefail
+          printf 'AUTH_SECRET=%s\n' "$AUTH_SECRET" > .env.production.local
+          printf 'AUTH_TRUST_HOST=true\n' >> .env.production.local
+          echo ".env.production.local written (gitignored)"
+
+      - name: Build OpenNext worker
         run: npm run build:worker
 
       - name: Deploy to Cloudflare Workers

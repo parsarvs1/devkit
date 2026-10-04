@@ -53,10 +53,35 @@ jobs:
           require CLOUDFLARE_ACCOUNT_ID "${CLOUDFLARE_ACCOUNT_ID:-}"
           require AUTH_SECRET            "${AUTH_SECRET:-}"
 
+          # Wrangler validates CLOUDFLARE_ACCOUNT_ID against ^[A-Za-z0-9_-]+$
+          # and aborts the deploy on any other character. A value copied from a
+          # terminal or an .env file often carries a trailing newline, surrounding
+          # quotes or a stray "VAR=" prefix, all of which trip that check while
+          # the ID itself is correct. Strip them, then validate, so a fixable
+          # value is caught here in seconds rather than after the full build.
+          account_id="${CLOUDFLARE_ACCOUNT_ID:-}"
+          account_id="${account_id#"${account_id%%[![:space:]]*}"}"
+          account_id="${account_id%"${account_id##*[![:space:]]}"}"
+          account_id="${account_id#CLOUDFLARE_ACCOUNT_ID=}"
+          account_id="${account_id#\"}"; account_id="${account_id%\"}"
+          account_id="${account_id#\'}"; account_id="${account_id%\'}"
+          account_id="${account_id#"${account_id%%[![:space:]]*}"}"
+          account_id="${account_id%"${account_id##*[![:space:]]}"}"
+
+          if [[ -n "$account_id" && ! "$account_id" =~ ^[A-Za-z0-9_-]+$ ]]; then
+            echo "::error::CLOUDFLARE_ACCOUNT_ID contains characters other than alphanumerics, '-' and '_'. Copy the 32-character hex ID from the Cloudflare dashboard (any account → Overview → Account ID), not the account name or the whole 'CLOUDFLARE_ACCOUNT_ID=...' line."
+            fail=1
+          fi
+
           if [[ "$fail" -ne 0 ]]; then
             echo "::error::Aborting before build: one or more required secrets are missing."
             exit 1
           fi
+
+          # Hand the normalized ID to the deploy step via $GITHUB_ENV. Writing
+          # a masked secret's trimmed form here is safe: it never reaches the
+          # log, and the deploy step reads it back verbatim.
+          echo "CLOUDFLARE_ACCOUNT_ID=$account_id" >> "$GITHUB_ENV"
           echo "All required secrets are present."
 
       - name: Setup Node.js
@@ -90,4 +115,6 @@ jobs:
         run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Normalized by the "Verify required secrets" step above, so wrangler
+          # never sees a trailing newline or quotes around the raw secret.
+          CLOUDFLARE_ACCOUNT_ID: ${{ env.CLOUDFLARE_ACCOUNT_ID }}

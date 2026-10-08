@@ -9,6 +9,7 @@ import {
   Trash2,
   Link as LinkIcon,
 } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 export default function UrlEncoderPage() {
   const [input, setInput] = useState("");
@@ -53,13 +54,16 @@ export default function UrlEncoderPage() {
   async function copyOutput() {
     if (!output) return;
 
-    await navigator.clipboard.writeText(output);
+    setError("");
 
-    setCopied(true);
+    const ok = await copyToClipboard(output, setError);
+    if (ok) {
+      setCopied(true);
 
-    setTimeout(() => {
-      setCopied(false);
-    }, 1500);
+      setTimeout(() => {
+        setCopied(false);
+      }, 1500);
+    }
   }
 
   function clearAll() {

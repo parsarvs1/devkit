@@ -416,7 +416,7 @@ export default function AuthScreen({
 
           <div className="auth-terms">
             By continuing, you agree to
-            DevKit's terms and conditions.
+            DevKit&apos;s terms and conditions.
           </div>
 
         </div>

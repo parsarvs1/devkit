@@ -11,6 +11,7 @@ import {
   X,
   Loader2,
 } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -85,7 +86,7 @@ export default function ApiTesterPage() {
     );
   }
 
-  function buildUrl() {
+  function buildUrl(): string {
     try {
       const parsedUrl = new URL(url);
 
@@ -100,7 +101,9 @@ export default function ApiTesterPage() {
 
       return parsedUrl.toString();
     } catch {
-      return url;
+      // The URL is not absolute. Prepend https:// so a bare host like
+      // "api.example.com" doesn't silently fetch this site itself.
+      return `https://${url}`;
     }
   }
 
@@ -148,35 +151,35 @@ export default function ApiTesterPage() {
         }
       }
 
-      const result = await fetch(
-        buildUrl(),
-        options
-      );
+      const result = await fetch(buildUrl(), options);
 
       const end = performance.now();
 
       setStatus(result.status);
-      setResponseTime(
-        Math.round(end - start)
-      );
+      setResponseTime(Math.round(end - start));
 
       const text = await result.text();
 
       try {
         const json = JSON.parse(text);
 
-        setResponse(
-          JSON.stringify(json, null, 2)
-        );
+        setResponse(JSON.stringify(json, null, 2));
       } catch {
         setResponse(text);
       }
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Request failed."
-      );
+      const message =
+        err instanceof Error ? err.message : "Request failed.";
+
+      // Browsers block most cross-origin reads and all https→http
+      // requests, and both surface as a bare "Failed to fetch".
+      if (/Failed to fetch/i.test(message)) {
+        setError(
+          "The request was blocked. Browsers block cross-origin responses (CORS) unless the API sends permissive headers, and block https→http requests as mixed content. Requests run from your browser, not a server."
+        );
+      } else {
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }
@@ -185,9 +188,8 @@ export default function ApiTesterPage() {
   async function copyResponse() {
     if (!response) return;
 
-    await navigator.clipboard.writeText(
-      response
-    );
+    const ok = await copyToClipboard(response, setError);
+    if (!ok) return;
 
     setCopied(true);
 
@@ -389,6 +391,7 @@ export default function ApiTesterPage() {
                   />
 
                   <button
+                    aria-label={`Remove parameter ${index + 1}`}
                     onClick={() =>
                       removeItem(
                         "params",
@@ -460,6 +463,7 @@ export default function ApiTesterPage() {
                   />
 
                   <button
+                    aria-label={`Remove header ${index + 1}`}
                     onClick={() =>
                       removeItem(
                         "headers",

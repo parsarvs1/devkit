@@ -83,6 +83,8 @@ export default function Home({ onSelectTool, user, recentTools }: HomeProps) {
    * Load favorites
    */
   useEffect(() => {
+    // Favorites are hydrated from localStorage on mount.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const saved = localStorage.getItem("devkit-favorites");
 
     if (!saved) {
@@ -98,6 +100,7 @@ export default function Home({ onSelectTool, user, recentTools }: HomeProps) {
     } catch {
       localStorage.removeItem("devkit-favorites");
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   /*

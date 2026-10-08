@@ -20,7 +20,8 @@ export default function ToolUsageTracker() {
 
     addToolToHistory(
       tool.name,
-      tool.href
+      tool.href,
+      tool.category
     );
   }, [pathname]);
 

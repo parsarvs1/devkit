@@ -48,6 +48,8 @@ export default function ThemeToggle() {
    * + listen for system theme changes
    */
   useEffect(() => {
+    // Theme is hydrated from localStorage on mount.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const savedTheme =
       localStorage.getItem(
         "devkit-theme"
@@ -62,6 +64,7 @@ export default function ThemeToggle() {
 
     setTheme(initialTheme);
     applyTheme(initialTheme);
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     const mediaQuery =
       window.matchMedia(

@@ -1,11 +1,29 @@
 export interface ToolHistoryItem {
   toolName: string;
   toolHref: string;
+  category?: string;
   usedAt: number;
 }
 
 const STORAGE_KEY = "devkit-tool-history";
-const MAX_HISTORY = 10;
+const MAX_HISTORY = 20;
+
+function isToolHistoryItem(
+  value: unknown
+): value is ToolHistoryItem {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const item = value as Record<string, unknown>;
+
+  return (
+    typeof item.toolName === "string" &&
+    typeof item.toolHref === "string" &&
+    (item.usedAt === undefined ||
+      typeof item.usedAt === "number")
+  );
+}
 
 export function getToolHistory(): ToolHistoryItem[] {
   if (typeof window === "undefined") {
@@ -19,13 +37,13 @@ export function getToolHistory(): ToolHistoryItem[] {
       return [];
     }
 
-    const parsed = JSON.parse(stored);
+    const parsed: unknown = JSON.parse(stored);
 
     if (!Array.isArray(parsed)) {
       return [];
     }
 
-    return parsed;
+    return parsed.filter(isToolHistoryItem);
   } catch {
     return [];
   }
@@ -33,7 +51,8 @@ export function getToolHistory(): ToolHistoryItem[] {
 
 export function addToolToHistory(
   toolName: string,
-  toolHref: string
+  toolHref: string,
+  category?: string
 ): void {
   if (typeof window === "undefined") {
     return;
@@ -51,6 +70,10 @@ export function addToolToHistory(
       toolHref,
       usedAt: Date.now(),
     };
+
+    if (category) {
+      newItem.category = category;
+    }
 
     const updatedHistory = [
       newItem,

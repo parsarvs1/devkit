@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { decodeShareState } from "@/lib/shareState";
+import { copyToClipboard } from "@/lib/clipboard";
 
 import {
   formatJson,
@@ -33,6 +34,8 @@ export default function JsonFormatterPage() {
    * Load shared state from URL
    */
   useEffect(() => {
+    // Shared state is hydrated from the URL once on mount.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const params = new URLSearchParams(window.location.search);
     const sharedState = params.get("state");
 
@@ -48,6 +51,7 @@ export default function JsonFormatterPage() {
     if (typeof state.input === "string") {
       setInput(state.input);
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   /*
@@ -105,13 +109,16 @@ export default function JsonFormatterPage() {
   async function copyOutput() {
     if (!output) return;
 
-    await navigator.clipboard.writeText(output);
+    setError("");
 
-    setCopied(true);
+    const ok = await copyToClipboard(output, setError);
+    if (ok) {
+      setCopied(true);
 
-    setTimeout(() => {
-      setCopied(false);
-    }, 1500);
+      setTimeout(() => {
+        setCopied(false);
+      }, 1500);
+    }
   }
 
   return (

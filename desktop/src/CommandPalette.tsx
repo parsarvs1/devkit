@@ -15,6 +15,7 @@ import {
   ChevronUp,
   Code2,
   FileKey2,
+  FileText,
   GitCompare,
   Hash,
   Home,
@@ -22,6 +23,7 @@ import {
   Pipette,
   Regex,
   Search,
+  Type,
   X,
 } from "lucide-react";
 
@@ -141,6 +143,24 @@ const items: PaletteItem[] = [
     group: "Tools",
     keywords: ["url", "uri", "encode", "decode"],
   },
+
+  {
+    id: "lorem",
+    name: "Lorem Ipsum",
+    description: "Generate placeholder text.",
+    icon: <Type size={17} />,
+    group: "Tools",
+    keywords: ["lorem", "ipsum", "placeholder", "text"],
+  },
+
+  {
+    id: "markdown",
+    name: "Markdown Formatter",
+    description: "Format and validate Markdown.",
+    icon: <FileText size={17} />,
+    group: "Tools",
+    keywords: ["markdown", "md", "format", "validate"],
+  },
 ];
 
 export default function CommandPalette({
@@ -160,14 +180,24 @@ export default function CommandPalette({
    * ======================================================
    */
 
+  // Navigation items first, then tools — the order the palette shows.
+  // `items` is a module constant, so it isn't a reactive dependency.
+  const orderedResults = useMemo(
+    () => [
+      ...items.filter((item) => item.group === "Navigation"),
+      ...items.filter((item) => item.group === "Tools"),
+    ],
+    []
+  );
+
   const results = useMemo(() => {
     const normalized = query.trim().toLowerCase();
 
     if (!normalized) {
-      return items;
+      return orderedResults;
     }
 
-    return items
+    return orderedResults
       .map((item) => {
         let score = 0;
 
@@ -209,7 +239,7 @@ export default function CommandPalette({
       .filter((result) => result.score > 0)
       .sort((a, b) => b.score - a.score)
       .map((result) => result.item);
-  }, [query]);
+  }, [query, orderedResults]);
 
   /*
    * ======================================================
@@ -222,6 +252,8 @@ export default function CommandPalette({
       return;
     }
 
+    // Resetting on open is a hydration of palette state, not a reaction.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery("");
     setSelectedIndex(0);
 
@@ -230,7 +262,9 @@ export default function CommandPalette({
     });
   }, [open]);
 
+  // Keeping the selection on the first result while the user types.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedIndex(0);
   }, [query]);
 
@@ -323,12 +357,13 @@ export default function CommandPalette({
     return null;
   }
 
-  const tools = results.filter((item) => item.group === "Tools");
+  const tools = orderedResults.filter(
+    (item) => item.group === "Tools",
+  );
 
-  const navigation = results.filter((item) => item.group === "Navigation");
-
-  const orderedResults = [...navigation, ...tools];
-
+  const navigation = orderedResults.filter(
+    (item) => item.group === "Navigation",
+  );
 
   return (
     <div className="command-palette-overlay" onMouseDown={handleOverlayClick}>

@@ -1,3 +1,28 @@
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function stripCodeBlocks(input: string): string {
+  // Remove fenced code blocks so their contents are not parsed as prose
+  // (matches either a complete ```lang ... ``` block, or a lone opening fence).
+  return input.replace(/```[\s\S]*?```/g, " ").replace(/```/g, " ");
+}
+
+function stripInlineCode(input: string): string {
+  return input.replace(/`[^`]*`/g, " ");
+}
+
+function stripEmoticons(input: string): string {
+  // Remove emoticons like :-) :-( ;) :D =( so their unbalanced parens
+  // don't get mistaken for broken Markdown links.
+  return input.replace(/[:;=8xXB]-?[()OoPDdS\\\/|]/g, "");
+}
+
 export function formatMarkdown(input: string): string {
   // Basic Markdown formatter
   // Wrap paragraphs with <p> tags
@@ -10,20 +35,20 @@ export function formatMarkdown(input: string): string {
 
     // Handle headers
     if (trimmed.startsWith("# ")) {
-      formatted += `<h1>${trimmed.substring(2)}</h1>\n\n`;
+      formatted += `<h1>${escapeHtml(trimmed.substring(2))}</h1>\n\n`;
     } else if (trimmed.startsWith("## ")) {
-      formatted += `<h2>${trimmed.substring(3)}</h2>\n\n`;
+      formatted += `<h2>${escapeHtml(trimmed.substring(3))}</h2>\n\n`;
     } else if (trimmed.startsWith("### ")) {
-      formatted += `<h3>${trimmed.substring(4)}</h3>\n\n`;
+      formatted += `<h3>${escapeHtml(trimmed.substring(4))}</h3>\n\n`;
     } else if (trimmed.startsWith("#### ")) {
-      formatted += `<h4>${trimmed.substring(5)}</h4>\n\n`;
+      formatted += `<h4>${escapeHtml(trimmed.substring(5))}</h4>\n\n`;
     } else if (trimmed.startsWith("##### ")) {
-      formatted += `<h5>${trimmed.substring(6)}</h5>\n\n`;
+      formatted += `<h5>${escapeHtml(trimmed.substring(6))}</h5>\n\n`;
     } else if (trimmed.startsWith("###### ")) {
-      formatted += `<h6>${trimmed.substring(7)}</h6>\n\n`;
+      formatted += `<h6>${escapeHtml(trimmed.substring(7))}</h6>\n\n`;
     } else {
       // Wrap paragraph in <p> tag
-      formatted += `<p>${trimmed}</p>\n\n`;
+      formatted += `<p>${escapeHtml(trimmed)}</p>\n\n`;
     }
   }
 
@@ -67,41 +92,36 @@ function hello() {
 
 **Strong emphasis**
 *Weak emphasis*
-
-`;}
+`;
+}
 
 export function validateMarkdown(input: string): { isValid: boolean; error?: string } {
   // Basic Markdown validation
   // Check for balanced brackets in links
   const linkPattern = /\[(.*?)\]\((.*?)\)/g;
   let match;
-  let openBrackets = 0;
 
   while ((match = linkPattern.exec(input)) !== null) {
     // Link validation - basic check for valid format
-    const [fullMatch, text, url] = match;
+    const [, text, url] = match;
     if (!text || !url) {
       return { isValid: false, error: "Invalid link format: missing text or URL" };
     }
   }
 
-  // Check for unclosed code blocks
-  const codeBlockPattern = /\`\`\`(\w*)\s*\n[\s\S]*?\n\`\`\`/g;
-  const codeBlocks = input.match(codeBlockPattern);
-
-  if (codeBlocks) {
-    for (const block of codeBlocks) {
-      const languageMatch = block.match(/^\`\`\`(\w*)/m);
-      const closingMatch = block.match(/\`\`\`$/);
-      if (!closingMatch) {
-        return { isValid: false, error: "Unclosed code block" };
-      }
-    }
+  // Check for unclosed code blocks by counting fences (``` or ~~~).
+  // A document is balanced only if every opening fence has a closing one.
+  const fenceCount = (input.match(/^[ \t]*(`{3,}|~{3,})/gm) || []).length;
+  if (fenceCount % 2 !== 0) {
+    return { isValid: false, error: "Unclosed code block" };
   }
 
-  // Check for unbalanced parentheses in links and images
-  const openParens = (input.match(/\(/g) || []).length;
-  const closeParens = (input.match(/\)/g) || []).length;
+  // Check for unbalanced parentheses in links and images, ignoring any
+  // parentheses that appear inside code spans, fenced code blocks, or
+  // emoticons (a bare ":-)" should not look like a broken link).
+  const prose = stripEmoticons(stripInlineCode(stripCodeBlocks(input)));
+  const openParens = (prose.match(/\(/g) || []).length;
+  const closeParens = (prose.match(/\)/g) || []).length;
   if (openParens !== closeParens) {
     return { isValid: false, error: "Unbalanced parentheses in Markdown" };
   }

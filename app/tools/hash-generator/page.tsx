@@ -8,6 +8,7 @@ import {
   Trash2,
   Hash,
 } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 const algorithms = [
   "SHA-1",
@@ -62,13 +63,16 @@ export default function HashGeneratorPage() {
   async function copyHash() {
     if (!output) return;
 
-    await navigator.clipboard.writeText(output);
+    setError("");
 
-    setCopied(true);
+    const ok = await copyToClipboard(output, setError);
+    if (ok) {
+      setCopied(true);
 
-    setTimeout(() => {
-      setCopied(false);
-    }, 1500);
+      setTimeout(() => {
+        setCopied(false);
+      }, 1500);
+    }
   }
 
   function clearAll() {

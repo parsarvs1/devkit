@@ -39,7 +39,7 @@ export default function MarkdownFormatter() {
 
       setOutput(formatted);
       setError("");
-    } catch (err) {
+    } catch {
       setOutput("");
       setError("Error formatting Markdown. Please check your syntax.");
     }

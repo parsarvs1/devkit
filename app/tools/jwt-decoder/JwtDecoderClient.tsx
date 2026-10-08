@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import RecentToolTracker from "@/components/RecentToolTracker";
 import TrackToolUsage from "@/components/TrackToolUsage";
+import { copyToClipboard } from "@/lib/clipboard";
 
 interface JwtPayload {
   [key: string]: unknown;
@@ -29,36 +30,28 @@ function decodeBase64Url(value: string) {
     "="
   );
 
-  return decodeURIComponent(
-    atob(padded)
-      .split("")
-      .map(
-        (char) =>
-          "%" +
-          ("00" + char.charCodeAt(0).toString(16)).slice(-2)
-      )
-      .join("")
+  // Decode via TextDecoder so segments containing non-UTF-8 bytes
+  // fail cleanly instead of throwing "URI malformed".
+  const binary = atob(padded);
+  const bytes = Uint8Array.from(binary, (char) =>
+    char.charCodeAt(0)
   );
+
+  return new TextDecoder("utf-8", { fatal: false }).decode(bytes);
 }
 
 export default function JwtDecoderClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(() =>
+    searchParams.get("token") ?? ""
+  );
   const [header, setHeader] = useState<JwtPayload | null>(null);
   const [payload, setPayload] = useState<JwtPayload | null>(null);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState("");
   const [shared, setShared] = useState(false);
-
-  useEffect(() => {
-    const sharedToken = searchParams.get("token");
-
-    if (sharedToken) {
-      setToken(sharedToken);
-    }
-  }, [searchParams]);
 
   function decodeToken() {
     try {
@@ -79,13 +72,6 @@ export default function JwtDecoderClient() {
       setHeader(decodedHeader);
       setPayload(decodedPayload);
       setError("");
-
-      const params = new URLSearchParams();
-      params.set("token", token.trim());
-
-      router.replace(
-        `/tools/jwt-decoder?${params.toString()}`
-      );
     } catch {
       setHeader(null);
       setPayload(null);
@@ -95,6 +81,18 @@ export default function JwtDecoderClient() {
       );
     }
   }
+
+  // Auto-decode on first mount when arriving via a share link, so the
+  // decoded panes aren't empty.
+  useEffect(() => {
+    if (token) {
+      // Only on mount: this reads the token seeded from the share URL.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      decodeToken();
+    }
+    // Only on mount: this reads the token seeded from the share URL.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function clearAll() {
     setToken("");
@@ -113,15 +111,18 @@ export default function JwtDecoderClient() {
   ) {
     if (!data) return;
 
-    await navigator.clipboard.writeText(
-      JSON.stringify(data, null, 2)
+    const ok = await copyToClipboard(
+      JSON.stringify(data, null, 2),
+      setError
     );
 
-    setCopied(type);
+    if (ok) {
+      setCopied(type);
 
-    setTimeout(() => {
-      setCopied("");
-    }, 1500);
+      setTimeout(() => {
+        setCopied("");
+      }, 1500);
+    }
   }
 
   async function shareTool() {

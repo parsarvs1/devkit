@@ -8,6 +8,7 @@ import {
   RefreshCw,
   LockKeyhole,
 } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 const lowercase = "abcdefghijklmnopqrstuvwxyz";
 const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -44,13 +45,16 @@ function generateSecurePassword(
   ).join("");
 }
 
-function getPasswordStrength(
-  password: string
-) {
+function getPasswordStrength(password: string) {
   let score = 0;
 
+  // Length carries the most weight: a 64-char lowercase string has
+  // far more entropy than an 8-char mixed one.
   if (password.length >= 8) score++;
   if (password.length >= 12) score++;
+  if (password.length >= 16) score++;
+  if (password.length >= 24) score++;
+
   if (/[A-Z]/.test(password)) score++;
   if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
@@ -62,14 +66,14 @@ function getPasswordStrength(
     };
   }
 
-  if (score === 3) {
+  if (score <= 4) {
     return {
       label: "Fair",
-      width: "50%",
+      width: "45%",
     };
   }
 
-  if (score === 4) {
+  if (score <= 5) {
     return {
       label: "Strong",
       width: "75%",
@@ -93,8 +97,26 @@ export default function PasswordGeneratorPage() {
 
   const [password, setPassword] = useState("");
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState("");
 
   function generate() {
+    setError("");
+
+    if (
+      typeof crypto === "undefined" ||
+      typeof crypto.getRandomValues !== "function"
+    ) {
+      setError(
+        "Secure generation is unavailable in this context (secure context required)."
+      );
+      return;
+    }
+
+    if (!useUppercase && !useNumbers && !useSymbols) {
+      setError("Select at least one character set besides lowercase.");
+      return;
+    }
+
     const result = generateSecurePassword(
       length,
       useUppercase,
@@ -109,7 +131,8 @@ export default function PasswordGeneratorPage() {
   async function copyPassword() {
     if (!password) return;
 
-    await navigator.clipboard.writeText(password);
+    const ok = await copyToClipboard(password, setError);
+    if (!ok) return;
 
     setCopied(true);
 
@@ -189,7 +212,10 @@ export default function PasswordGeneratorPage() {
 
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <label className="text-sm text-zinc-400">
+              <label
+                htmlFor="password-length"
+                className="text-sm text-zinc-400"
+              >
                 Password Length
               </label>
 
@@ -199,6 +225,7 @@ export default function PasswordGeneratorPage() {
             </div>
 
             <input
+              id="password-length"
               type="range"
               min="8"
               max="64"
@@ -268,6 +295,16 @@ export default function PasswordGeneratorPage() {
             <RefreshCw size={16} />
             Generate Password
           </button>
+
+          {error && (
+            <p
+              className="mt-4 text-sm text-red-400"
+              role="status"
+              aria-live="polite"
+            >
+              {error}
+            </p>
+          )}
         </div>
 
         {/* Strength */}

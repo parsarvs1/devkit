@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 
 import RecentToolTracker from "@/components/RecentToolTracker";
+import { copyToClipboard } from "@/lib/clipboard";
 
 import {
   ArrowLeft,
@@ -17,6 +19,7 @@ import {
 export default function MarkdownPlaygroundPage() {
   const [markdown, setMarkdown] = useState("");
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState("");
   const [view, setView] = useState<"preview" | "source">("preview");
 
   function loadExample() {
@@ -58,93 +61,15 @@ console.log(greeting);
   async function copyMarkdown() {
     if (!markdown) return;
 
-    await navigator.clipboard.writeText(markdown);
+    const ok = await copyToClipboard(markdown, setError);
+    if (ok) {
+      setCopied(true);
 
-    setCopied(true);
-
-    setTimeout(() => {
-      setCopied(false);
-    }, 1500);
+      setTimeout(() => {
+        setCopied(false);
+      }, 1500);
+    }
   }
-
-  function renderMarkdown(text: string) {
-    let html = text;
-
-    html = html.replace(
-      /```(\w+)?\n([\s\S]*?)```/g,
-      (_, language, code) => {
-        return `<pre><code>${escapeHtml(code.trim())}</code></pre>`;
-      }
-    );
-
-    html = html.replace(
-      /^### (.*)$/gm,
-      "<h3>$1</h3>"
-    );
-
-    html = html.replace(
-      /^## (.*)$/gm,
-      "<h2>$1</h2>"
-    );
-
-    html = html.replace(
-      /^# (.*)$/gm,
-      "<h1>$1</h1>"
-    );
-
-    html = html.replace(
-      /^\> (.*)$/gm,
-      "<blockquote>$1</blockquote>"
-    );
-
-    html = html.replace(
-      /^\- (.*)$/gm,
-      "<li>$1</li>"
-    );
-
-    html = html.replace(
-      /\*\*(.*?)\*\*/g,
-      "<strong>$1</strong>"
-    );
-
-    html = html.replace(
-      /\*(.*?)\*/g,
-      "<em>$1</em>"
-    );
-
-    html = html.replace(
-      /`([^`]+)`/g,
-      "<code>$1</code>"
-    );
-
-    html = html.replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
-    );
-
-    html = html.replace(
-      /\n\n/g,
-      "</p><p>"
-    );
-
-    html = html.replace(
-      /\n/g,
-      "<br />"
-    );
-
-    return `<p>${html}</p>`;
-  }
-
-  function escapeHtml(value: string) {
-    return value
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  const preview = renderMarkdown(markdown);
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white">
@@ -230,6 +155,16 @@ Write your Markdown here..."
               spellCheck={false}
               className="h-[520px] w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-white outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
             />
+
+            {error && (
+              <p
+                className="mt-4 text-sm text-red-400"
+                role="status"
+                aria-live="polite"
+              >
+                {error}
+              </p>
+            )}
           </div>
 
           {/* Preview */}
@@ -268,14 +203,25 @@ Write your Markdown here..."
             </div>
 
             {view === "preview" ? (
-              <div
-                className="markdown-preview h-[520px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-zinc-300"
-                dangerouslySetInnerHTML={{
-                  __html:
-                    preview ||
-                    "<p>Markdown preview will appear here...</p>",
-                }}
-              />
+              <div className="markdown-body h-[520px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-zinc-300">
+                {markdown.trim() ? (
+                  <ReactMarkdown
+                    components={{
+                      a: (props) => (
+                        <a
+                          {...props}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        />
+                      ),
+                    }}
+                  >
+                    {markdown}
+                  </ReactMarkdown>
+                ) : (
+                  <p>Markdown preview will appear here...</p>
+                )}
+              </div>
             ) : (
               <pre className="h-[520px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300">
                 {markdown ||

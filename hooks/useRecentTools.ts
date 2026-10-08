@@ -18,6 +18,8 @@ export function useRecentTools() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // Recents are hydrated from localStorage on mount.
+    /* eslint-disable react-hooks/set-state-in-effect */
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
 
@@ -33,6 +35,7 @@ export function useRecentTools() {
     }
 
     setMounted(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   const saveRecentTools = useCallback(

@@ -19,6 +19,8 @@ export default function WorkspaceStats() {
   const [snippetCount, setSnippetCount] = useState(0);
 
   useEffect(() => {
+    // Recents and snippet count are hydrated from localStorage on mount.
+    /* eslint-disable react-hooks/set-state-in-effect */
     try {
       const storedRecent = localStorage.getItem(
         "devkit-recent-tools"
@@ -47,6 +49,7 @@ export default function WorkspaceStats() {
       setRecentTools([]);
       setSnippetCount(0);
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   return (

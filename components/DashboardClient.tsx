@@ -23,6 +23,8 @@ export default function DashboardClient() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    // Favorites and recents are hydrated from localStorage on mount.
+    /* eslint-disable react-hooks/set-state-in-effect */
     try {
       const savedFavorites =
         localStorage.getItem("devkit-favorites");
@@ -49,6 +51,7 @@ export default function DashboardClient() {
       setFavorites([]);
       setRecentTools([]);
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     setLoaded(true);
   }, []);

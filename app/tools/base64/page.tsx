@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Copy, Trash2, ArrowRight } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 export default function Base64Page() {
   const [input, setInput] = useState("");
@@ -52,13 +53,14 @@ export default function Base64Page() {
   async function copyOutput() {
     if (!output) return;
 
-    await navigator.clipboard.writeText(output);
+    const ok = await copyToClipboard(output, setError);
+    if (ok) {
+      setCopied(true);
 
-    setCopied(true);
-
-    setTimeout(() => {
-      setCopied(false);
-    }, 1500);
+      setTimeout(() => {
+        setCopied(false);
+      }, 1500);
+    }
   }
 
   return (

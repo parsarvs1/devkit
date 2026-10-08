@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import {
@@ -12,12 +12,64 @@ import {
 import RecentToolTracker from "@/components/RecentToolTracker";
 import TrackToolUsage from "@/components/TrackToolUsage";
 
+const MAX_TEXT_LENGTH = 100_000;
+const REGEX_TIMEOUT_MS = 3_000;
+
 export default function RegexTesterPage() {
   const [pattern, setPattern] = useState("");
   const [flags, setFlags] = useState("g");
   const [text, setText] = useState("");
   const [matches, setMatches] = useState<string[]>([]);
   const [error, setError] = useState("");
+  const [running, setRunning] = useState(false);
+
+  const workerRef = useRef<Worker | null>(null);
+  const requestIdRef = useRef(0);
+
+  useEffect(() => {
+    return () => {
+      const worker = workerRef.current;
+      worker?.terminate();
+      workerRef.current = null;
+    };
+  }, []);
+
+  function getWorker(): Worker | null {
+    if (workerRef.current) {
+      return workerRef.current;
+    }
+
+    if (typeof Worker === "undefined") {
+      return null;
+    }
+
+    const worker = new Worker(
+      new URL("./regex.worker.ts", import.meta.url)
+    );
+    worker.onmessage = (event: MessageEvent) => {
+      const { id, matches: result, error: workerError } = event.data;
+
+      // Drop results from a stale (timed-out or superseded) request.
+      if (id !== requestIdRef.current) {
+        return;
+      }
+
+      setRunning(false);
+
+      if (workerError) {
+        setError("Invalid regular expression or flags.");
+      } else {
+        setMatches(result);
+      }
+    };
+    worker.onerror = () => {
+      setRunning(false);
+      setError("Something went wrong while testing the expression.");
+    };
+
+    workerRef.current = worker;
+    return worker;
+  }
 
   function testRegex() {
     setError("");
@@ -28,24 +80,62 @@ export default function RegexTesterPage() {
       return;
     }
 
-    try {
-      const regex = new RegExp(pattern, flags);
-      const foundMatches = text.match(regex);
-
-      if (foundMatches) {
-        setMatches(foundMatches);
-      }
-    } catch {
-      setError("Invalid regular expression or flags.");
+    if (text.length > MAX_TEXT_LENGTH) {
+      setError(
+        `Text is too long for in-browser testing (limit ${MAX_TEXT_LENGTH.toLocaleString()} characters).`
+      );
+      return;
     }
+
+    const worker = getWorker();
+
+    if (!worker) {
+      // Worker unavailable (old browser): fall back to the main thread
+      // so the tool still works, at the cost of a possible freeze.
+      try {
+        const regex = new RegExp(pattern, flags);
+        const foundMatches = text.match(regex);
+
+        if (foundMatches) {
+          setMatches(foundMatches);
+        }
+      } catch {
+        setError("Invalid regular expression or flags.");
+      }
+      return;
+    }
+
+    const id = ++requestIdRef.current;
+    setRunning(true);
+
+    try {
+      worker.postMessage({ pattern, flags, text, id });
+    } catch {
+      setRunning(false);
+      setError("Invalid regular expression or flags.");
+      return;
+    }
+
+    // If the worker hangs on a pathological pattern, give up after a
+    // timeout so the UI stays responsive instead of spinning forever.
+    setTimeout(() => {
+      if (id === requestIdRef.current) {
+        setRunning(false);
+        setError(
+          "Timed out. This pattern may require catastrophic backtracking."
+        );
+      }
+    }, REGEX_TIMEOUT_MS);
   }
 
   function clearAll() {
+    requestIdRef.current++;
     setPattern("");
     setFlags("g");
     setText("");
     setMatches([]);
     setError("");
+    setRunning(false);
   }
 
   return (
@@ -155,10 +245,11 @@ export default function RegexTesterPage() {
             <button
               type="button"
               onClick={testRegex}
-              className="mt-4 flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200"
+              disabled={running}
+              className="mt-4 flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <RegexIcon size={16} />
-              Test Regex
+              {running ? "Testing…" : "Test Regex"}
             </button>
 
             {error && (

@@ -9,6 +9,7 @@ import {
   Palette,
   RefreshCw,
 } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 function hexToRgb(hex: string) {
   const value = hex.replace("#", "");
@@ -147,6 +148,8 @@ function generatePalette(hex: string) {
 
 export default function ColorPalettePage() {
   const [color, setColor] = useState("#6366f1");
+  // Draft lets the user type freely; color only updates on a complete hex.
+  const [draft, setDraft] = useState(color);
   const [copied, setCopied] = useState("");
 
   const rgb = useMemo(
@@ -177,16 +180,21 @@ export default function ColorPalettePage() {
     if (/^#[0-9a-fA-F]{6}$/.test(next)) {
       setColor(next.toLowerCase());
     }
+    // Keep the user's raw input so typing, backspace and partial
+    // entries don't snap the field back.
+    setDraft(value);
   }
 
   async function copy(value: string) {
-    await navigator.clipboard.writeText(value);
+    const ok = await copyToClipboard(value, () => setCopied(""));
 
-    setCopied(value);
+    if (ok) {
+      setCopied(value);
 
-    setTimeout(() => {
-      setCopied("");
-    }, 1200);
+      setTimeout(() => {
+        setCopied("");
+      }, 1200);
+    }
   }
 
   function randomColor() {
@@ -197,6 +205,7 @@ export default function ColorPalettePage() {
         .padStart(6, "0");
 
     setColor(value);
+    setDraft(value);
   }
 
   return (
@@ -242,18 +251,20 @@ export default function ColorPalettePage() {
                 <input
                   type="color"
                   value={color}
-                  onChange={(event) =>
-                    setColor(event.target.value)
-                  }
+                  onChange={(event) => {
+                    setColor(event.target.value);
+                    setDraft(event.target.value);
+                  }}
                   className="h-11 w-14 cursor-pointer rounded-lg border border-zinc-800 bg-zinc-900 p-1"
                 />
 
                 <input
                   type="text"
-                  value={color}
+                  value={draft}
                   onChange={(event) =>
                     normalizeColor(event.target.value)
                   }
+                  aria-label="Base color hex value"
                   className="h-11 flex-1 rounded-lg border border-zinc-800 bg-zinc-950 px-4 font-mono text-sm text-white outline-none transition focus:border-zinc-600"
                 />
 

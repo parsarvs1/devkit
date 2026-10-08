@@ -19,6 +19,8 @@ export default function DashboardStats() {
   const [recentTools, setRecentTools] = useState<RecentTool[]>([]);
 
   useEffect(() => {
+    // Favorites and recents are hydrated from localStorage on mount.
+    /* eslint-disable react-hooks/set-state-in-effect */
     try {
       const savedFavorites = localStorage.getItem(
         "devkit-favorites"
@@ -47,6 +49,7 @@ export default function DashboardStats() {
       setFavorites([]);
       setRecentTools([]);
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   return (
@@ -141,7 +144,7 @@ export default function DashboardStats() {
         ) : (
           <div className="mt-5 rounded-lg border border-dashed border-zinc-800 px-5 py-8 text-center">
             <p className="text-sm text-zinc-500">
-              You don't have any favorite tools yet.
+              You don&apos;t have any favorite tools yet.
             </p>
 
             <Link
@@ -165,7 +168,7 @@ export default function DashboardStats() {
             </h2>
 
             <p className="mt-1 text-sm text-zinc-500">
-              Tools you've opened recently.
+              Tools you&apos;ve opened recently.
             </p>
           </div>
 

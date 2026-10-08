@@ -42,9 +42,10 @@ export function compareHashes(
 }
 
 export function getHashCompareExample() {
+  // SHA-256 of "Hello DevKit" — 64 hex chars (a real hash, not a placeholder).
   return {
     text: "Hello DevKit",
-    hash: "6b1e4b8e7f7f3c3e7e9f8d7c2b4f4f6f",
+    hash: "4d4f15312a3c9f0fe284c9a8d6127580f9f03245c4ebeda30b2301a57f539f64",
     algorithm: "SHA-256" as HashCompareAlgorithm,
   };
 }

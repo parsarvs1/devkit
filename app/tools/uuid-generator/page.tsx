@@ -9,28 +9,39 @@ import {
   RefreshCw,
   Trash2,
 } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 export default function UuidGeneratorPage() {
   const [uuid, setUuid] = useState("");
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState("");
 
   function generateUuid() {
-    const newUuid = crypto.randomUUID();
+    try {
+      const newUuid = crypto.randomUUID();
 
-    setUuid(newUuid);
-    setCopied(false);
+      setUuid(newUuid);
+      setCopied(false);
+    } catch {
+      setError(
+        "UUID generation is unavailable in this context (secure context required)."
+      );
+    }
   }
 
   async function copyUuid() {
     if (!uuid) return;
 
-    await navigator.clipboard.writeText(uuid);
+    setError("");
 
-    setCopied(true);
+    const ok = await copyToClipboard(uuid, setError);
+    if (ok) {
+      setCopied(true);
 
-    setTimeout(() => {
-      setCopied(false);
-    }, 1500);
+      setTimeout(() => {
+        setCopied(false);
+      }, 1500);
+    }
   }
 
   function clearUuid() {
@@ -109,6 +120,16 @@ export default function UuidGeneratorPage() {
               </button>
             )}
           </div>
+
+          {error && (
+            <p
+              className="mt-4 text-sm text-red-400"
+              role="status"
+              aria-live="polite"
+            >
+              {error}
+            </p>
+          )}
         </div>
 
         <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/20 p-5">

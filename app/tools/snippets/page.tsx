@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
 import RecentToolTracker from "@/components/RecentToolTracker";
+import { copyToClipboard } from "@/lib/clipboard";
 
 import {
   ArrowLeft,
@@ -64,7 +65,6 @@ function increment() {
 ];
 
 export default function SnippetsPage() {
-  const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [search, setSearch] = useState("");
   const [language, setLanguage] = useState("All");
   const [category, setCategory] = useState("All");
@@ -82,26 +82,59 @@ export default function SnippetsPage() {
     null
   );
 
-  useEffect(() => {
+  // Validates a stored payload before trusting it, so a corrupt or
+  // hand-edited localStorage entry can't take down the whole page.
+  function isValidSnippets(value: unknown): value is Snippet[] {
+    return (
+      Array.isArray(value) &&
+      value.every(
+        (item) =>
+          item !== null &&
+          typeof item === "object" &&
+          typeof (item as Snippet).id === "number" &&
+          typeof (item as Snippet).title === "string" &&
+          typeof (item as Snippet).language === "string" &&
+          typeof (item as Snippet).category === "string" &&
+          typeof (item as Snippet).code === "string"
+      )
+    );
+  }
+
+  // Seed state once from storage so the effect below only has to
+  // handle the "storage is missing/corrupt" repair path.
+  const [snippets, setSnippets] = useState<Snippet[]>(() => {
+    if (typeof window === "undefined") return [];
+
     const stored = localStorage.getItem(STORAGE_KEY);
 
     if (stored) {
       try {
-        setSnippets(JSON.parse(stored));
+        const parsed: unknown = JSON.parse(stored);
+        if (isValidSnippets(parsed)) {
+          return parsed;
+        }
+        // Corrupt payload: drop it rather than trusting broken data.
+        localStorage.removeItem(STORAGE_KEY);
       } catch {
-        setSnippets(exampleSnippets);
+        localStorage.removeItem(STORAGE_KEY);
       }
-    } else {
-      setSnippets(exampleSnippets);
     }
-  }, []);
+
+    return exampleSnippets;
+  });
 
   useEffect(() => {
+    // Persist on change; repair runs on the first mount only if the
+    // lazy initializer above couldn't read a valid value.
     if (snippets.length > 0) {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(snippets)
-      );
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(snippets)
+        );
+      } catch {
+        // Storage is full or blocked — keep working in memory.
+      }
     }
   }, [snippets]);
 
@@ -150,13 +183,17 @@ export default function SnippetsPage() {
     });
   }, [snippets, search, language, category]);
 
+  const idCounter = useRef(0);
+
   function addSnippet() {
     if (!title.trim() || !code.trim()) {
       return;
     }
 
     const newSnippet: Snippet = {
-      id: Date.now(),
+      // Date.now() alone can collide on a rapid double-add; the counter
+      // guarantees uniqueness within the session.
+      id: Date.now() + ++idCounter.current,
       title: title.trim(),
       language: snippetLanguage,
       category: snippetCategory.trim() || "General",
@@ -180,7 +217,8 @@ export default function SnippetsPage() {
   }
 
   async function copySnippet(snippet: Snippet) {
-    await navigator.clipboard.writeText(snippet.code);
+    const ok = await copyToClipboard(snippet.code);
+    if (!ok) return;
 
     setCopiedId(snippet.id);
 

@@ -8,9 +8,21 @@ import {
   Trash2,
   Palette,
 } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 function hexToRgb(hex: string) {
   const cleanHex = hex.replace("#", "");
+
+  // Support 3-digit shorthand (e.g. #fff) by expanding it to 6 digits.
+  if (/^[0-9A-Fa-f]{3}$/.test(cleanHex)) {
+    return hexToRgb(
+      "#" +
+        cleanHex
+          .split("")
+          .map((char) => char + char)
+          .join("")
+    );
+  }
 
   if (!/^[0-9A-Fa-f]{6}$/.test(cleanHex)) {
     return null;
@@ -89,7 +101,7 @@ export default function ColorConverterPage() {
     if (!result) {
       setRgb("");
       setHsl("");
-      setError("Enter a valid 6-digit HEX color.");
+      setError("Enter a valid HEX color (e.g. #6366f1 or #fff).");
       return;
     }
 
@@ -113,13 +125,14 @@ export default function ColorConverterPage() {
   async function copyValue(value: string, name: string) {
     if (!value) return;
 
-    await navigator.clipboard.writeText(value);
+    const ok = await copyToClipboard(value, setError);
+    if (ok) {
+      setCopied(name);
 
-    setCopied(name);
-
-    setTimeout(() => {
-      setCopied("");
-    }, 1500);
+      setTimeout(() => {
+        setCopied("");
+      }, 1500);
+    }
   }
 
   function clearAll() {

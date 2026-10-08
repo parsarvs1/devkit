@@ -28,12 +28,35 @@ score: 0,
 
 let score = 0;
 
+// Length is the dominant factor in brute-force resistance.
 if (password.length >= 8) score++;
 if (password.length >= 12) score++;
+if (password.length >= 16) score++;
 if (/[a-z]/.test(password)) score++;
 if (/[A-Z]/.test(password)) score++;
 if (/[0-9]/.test(password)) score++;
 if (/[^A-Za-z0-9]/.test(password)) score++;
+
+// Short passwords are crackable in seconds regardless of variety.
+if (password.length < 8) {
+return {
+label: "Very Weak",
+score: 1,
+};
+}
+
+// Penalise well-known patterns that score highly on variety alone.
+const isCommon = /^(?:password|qwerty|123456|admin|letmein|welcome)/i.test(
+password
+);
+const hasSequence = /(?:0123|1234|2345|3456|4567|5678|6789|abcd|bcde|cdef|qwer|wert|erty|rtyu|asdf|sdfg|dfgh|fghj|zxcv|xcvb|cvbn)/i.test(
+password
+);
+const hasRepeat = /(.)\1{2,}/.test(password);
+
+if (isCommon) score -= 3;
+if (hasSequence) score -= 2;
+if (hasRepeat) score -= 1;
 
 if (score <= 2) {
 return {

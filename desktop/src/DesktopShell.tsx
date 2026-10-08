@@ -11,6 +11,7 @@ import {
   Code2,
   Command,
   FileKey2,
+  FileText,
   GitCompare,
   Hash,
   Heart,
@@ -22,6 +23,7 @@ import {
   Pipette,
   Regex,
   Settings,
+  Type,
   UserRound,
   X,
 } from "lucide-react";
@@ -102,7 +104,12 @@ const toolItems: {
   {
     id: "lorem",
     name: "Lorem Ipsum",
-    icon: Link,
+    icon: Type,
+  },
+  {
+    id: "markdown",
+    name: "Markdown Formatter",
+    icon: FileText,
   },
 ];
 

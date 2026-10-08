@@ -55,6 +55,8 @@ export default function SettingsPage({
      ===================================================== */
 
   useEffect(() => {
+    // Settings are hydrated from localStorage on mount.
+    /* eslint-disable react-hooks/set-state-in-effect */
     try {
       const storedTheme =
         localStorage.getItem("devkit-theme");
@@ -123,6 +125,7 @@ export default function SettingsPage({
     } catch {
       // Ignore localStorage errors.
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   /* =====================================================

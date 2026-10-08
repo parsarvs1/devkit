@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { copyToClipboard } from "@/lib/clipboard";
 import {
   ArrowLeft,
   ArrowDown,
@@ -78,11 +79,11 @@ const TOOLS: {
 
 const DEFAULT_CHAIN: ChainStep[] = [
   {
-    id: crypto.randomUUID(),
+    id: "chain-step-1",
     tool: "json-formatter",
   },
   {
-    id: crypto.randomUUID(),
+    id: "chain-step-2",
     tool: "json-to-typescript",
   },
 ];
@@ -91,7 +92,7 @@ function getTool(toolId: ToolId) {
   return TOOLS.find((tool) => tool.id === toolId)!;
 }
 
-function runTool(tool: ToolId, input: string): string {
+async function runTool(tool: ToolId, input: string): Promise<string> {
   if (!input.trim()) {
     return "";
   }
@@ -216,9 +217,15 @@ function runTool(tool: ToolId, input: string): string {
     }
 
     case "hash-generator": {
-      throw new Error(
-        "Hash Generator cannot currently be chained directly because Web Crypto is asynchronous. Use it as the final step for now."
+      const encoder = new TextEncoder();
+      const hashBuffer = await crypto.subtle.digest(
+        "SHA-256",
+        encoder.encode(input)
       );
+
+      return Array.from(new Uint8Array(hashBuffer))
+        .map((byte) => byte.toString(16).padStart(2, "0"))
+        .join("");
     }
 
     case "color-converter": {
@@ -227,15 +234,27 @@ function runTool(tool: ToolId, input: string): string {
       if (value.startsWith("#")) {
         const hex = value.replace("#", "");
 
-        if (hex.length !== 6) {
-          throw new Error("Use a 6-digit HEX color.");
+        if (hex.length !== 6 && hex.length !== 3) {
+          throw new Error("Use a 3- or 6-digit HEX color.");
         }
 
-        const r = parseInt(hex.slice(0, 2), 16);
-        const g = parseInt(hex.slice(2, 4), 16);
-        const b = parseInt(hex.slice(4, 6), 16);
+        const expanded =
+          hex.length === 3
+            ? hex
+                .split("")
+                .map((char) => char + char)
+                .join("")
+            : hex;
 
-        return `HEX: #${hex.toUpperCase()}\nRGB: rgb(${r}, ${g}, ${b})`;
+        const r = parseInt(expanded.slice(0, 2), 16);
+        const g = parseInt(expanded.slice(2, 4), 16);
+        const b = parseInt(expanded.slice(4, 6), 16);
+
+        if ([r, g, b].some(Number.isNaN)) {
+          throw new Error("Invalid HEX color.");
+        }
+
+        return `HEX: #${expanded.toUpperCase()}\nRGB: rgb(${r}, ${g}, ${b})`;
       }
 
       const rgbMatch = value.match(
@@ -245,13 +264,21 @@ function runTool(tool: ToolId, input: string): string {
       if (rgbMatch) {
         const [, r, g, b] = rgbMatch;
 
-        const hex = [r, g, b]
-          .map((number) =>
-            Number(number).toString(16).padStart(2, "0")
-          )
+        const numbers = [Number(r), Number(g), Number(b)];
+
+        // Clamp to the valid 0-255 channel range so rgb(999,0,0)
+        // doesn't silently produce the wrong hex.
+        const clamped = numbers.map((number) =>
+          Math.max(0, Math.min(255, number))
+        );
+
+        const hex = clamped
+          .map((number) => number.toString(16).padStart(2, "0"))
           .join("");
 
-        return `RGB: rgb(${r}, ${g}, ${b})\nHEX: #${hex.toUpperCase()}`;
+        return `RGB: rgb(${clamped.join(
+          ", "
+        )})\nHEX: #${hex.toUpperCase()}`;
       }
 
       throw new Error("Use HEX or RGB color format.");
@@ -373,7 +400,7 @@ export default function ToolChainingPage() {
     setError("");
   }
 
-  function runChain() {
+  async function runChain() {
     if (!canRun) return;
 
     setRunning(true);
@@ -384,7 +411,7 @@ export default function ToolChainingPage() {
       let current = input;
 
       for (const step of steps) {
-        current = runTool(step.tool, current);
+        current = await runTool(step.tool, current);
       }
 
       setOutput(current);
@@ -402,7 +429,8 @@ export default function ToolChainingPage() {
   async function copyOutput() {
     if (!output) return;
 
-    await navigator.clipboard.writeText(output);
+    const ok = await copyToClipboard(output, setError);
+    if (!ok) return;
 
     setCopied(true);
 

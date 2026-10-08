@@ -13,6 +13,8 @@ export default function FavoriteButton({
   const [favorite, setFavorite] = useState(false);
 
   useEffect(() => {
+    // Favorite state is hydrated from localStorage on mount.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const saved = localStorage.getItem("devkit-favorites");
 
     if (!saved) return;
@@ -24,6 +26,7 @@ export default function FavoriteButton({
     } catch {
       setFavorite(false);
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [toolName]);
 
   function toggleFavorite() {

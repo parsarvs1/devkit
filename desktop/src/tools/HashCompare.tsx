@@ -71,9 +71,7 @@ export default function HashCompare() {
     setText(example.text);
     setAlgorithm(example.algorithm);
 
-    setExpectedHash(
-      "a1f775d5f5f7b2c2f8a0a9f8d0b5e3d1"
-    );
+    setExpectedHash(example.hash);
 
     setHashA("");
     setHashB("");

@@ -6,14 +6,11 @@ import RecentlyUsedWidget from "@/components/RecentlyUsedWidget";
 import {
   ArrowRight,
   Code2,
-  Clock3,
   FileCode2,
-  Wrench,
 } from "lucide-react";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { tools } from "@/data/tools";
 import WorkspaceStats from "@/components/WorkspaceStats";
 import PinnedToolsWidget from "@/components/PinnedToolsWidget";
 

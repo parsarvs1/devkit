@@ -105,8 +105,18 @@ export default function MarkdownPreviewPage() {
 
             <div className="h-[500px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-6">
               {markdown.trim() ? (
-                <article className="prose prose-invert max-w-none">
-                  <ReactMarkdown>
+                <article className="markdown-body max-w-none">
+                  <ReactMarkdown
+                    components={{
+                      a: (props) => (
+                        <a
+                          {...props}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        />
+                      ),
+                    }}
+                  >
                     {markdown}
                   </ReactMarkdown>
                 </article>

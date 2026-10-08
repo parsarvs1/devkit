@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Build output (OpenNext / Wrangler) — gitignored generated bundles:
+    ".open-next/**",
+    ".wrangler/**",
+    // Tauri Rust build output:
+    "src-tauri/target/**",
   ]),
 ]);
 

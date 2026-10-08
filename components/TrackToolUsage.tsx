@@ -16,8 +16,8 @@ export default function TrackToolUsage({
   category,
 }: TrackToolUsageProps) {
   useEffect(() => {
-    addToolToHistory(toolName, toolHref);
-  }, [toolName, toolHref]);
+    addToolToHistory(toolName, toolHref, category);
+  }, [toolName, toolHref, category]);
 
   return null;
 }

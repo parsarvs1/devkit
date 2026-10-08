@@ -1,7 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import {
   Search,
@@ -263,7 +269,7 @@ export default function CommandPalette() {
    * Load localStorage data
    */
 
-  function loadLocalData() {
+  const loadLocalData = useCallback(() => {
     try {
       const savedFavorites =
         localStorage.getItem("devkit-favorites");
@@ -290,25 +296,25 @@ export default function CommandPalette() {
       setFavorites([]);
       setRecentTools([]);
     }
-  }
+  }, []);
 
   /*
    * Open / close
    */
 
-  function openPalette() {
+  const openPalette = useCallback(() => {
     loadLocalData();
 
     setOpen(true);
     setQuery("");
     setSelectedIndex(0);
-  }
+  }, [loadLocalData]);
 
-  function closePalette() {
+  const closePalette = useCallback(() => {
     setOpen(false);
     setQuery("");
     setSelectedIndex(0);
-  }
+  }, []);
 
   /*
    * Keyboard shortcuts
@@ -363,7 +369,7 @@ export default function CommandPalette() {
         handleKeyDown
       );
     };
-  }, [open]);
+  }, [open, openPalette, closePalette]);
 
   /*
    * Lock body scroll
@@ -391,12 +397,14 @@ export default function CommandPalette() {
       return;
     }
 
+    // Reading localStorage on open is a hydration, not a reaction.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadLocalData();
 
     setTimeout(() => {
       inputRef.current?.focus();
     }, 0);
-  }, [open]);
+  }, [open, loadLocalData]);
 
   /*
    * Build command list
@@ -475,16 +483,18 @@ export default function CommandPalette() {
   }, [allCommands, query]);
 
   /*
-   * Keep selected item valid
+   * Keep the selected index inside the result list. Derived here
+   * rather than patched in an effect, so it stays valid even while
+   * the filtered list is shrinking.
    */
 
-  useEffect(() => {
-    if (selectedIndex >= filteredCommands.length) {
-      setSelectedIndex(
-        Math.max(0, filteredCommands.length - 1)
-      );
-    }
-  }, [filteredCommands.length, selectedIndex]);
+  const clampedSelectedIndex =
+    filteredCommands.length === 0
+      ? 0
+      : Math.min(
+          selectedIndex,
+          filteredCommands.length - 1
+        );
 
   /*
    * Keyboard navigation
@@ -496,36 +506,38 @@ export default function CommandPalette() {
     if (event.key === "ArrowDown") {
       event.preventDefault();
 
-      setSelectedIndex((current) => {
-        if (filteredCommands.length === 0) {
-          return 0;
-        }
+      if (filteredCommands.length === 0) {
+        setSelectedIndex(0);
+        return;
+      }
 
-        return current + 1 >= filteredCommands.length
-          ? 0
-          : current + 1;
-      });
+      const next = clampedSelectedIndex + 1;
+
+      setSelectedIndex(
+        next >= filteredCommands.length ? 0 : next
+      );
     }
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
 
-      setSelectedIndex((current) => {
-        if (filteredCommands.length === 0) {
-          return 0;
-        }
+      if (filteredCommands.length === 0) {
+        setSelectedIndex(0);
+        return;
+      }
 
-        return current - 1 < 0
-          ? filteredCommands.length - 1
-          : current - 1;
-      });
+      const next = clampedSelectedIndex - 1;
+
+      setSelectedIndex(
+        next < 0 ? filteredCommands.length - 1 : next
+      );
     }
 
     if (event.key === "Enter") {
       event.preventDefault();
 
       const selected =
-        filteredCommands[selectedIndex];
+        filteredCommands[clampedSelectedIndex];
 
       if (selected) {
         window.location.href = selected.href;
@@ -550,7 +562,7 @@ export default function CommandPalette() {
 
     const selected =
       container.querySelector(
-        `[data-command-index="${selectedIndex}"]`
+        `[data-command-index="${clampedSelectedIndex}"]`
       );
 
     if (selected instanceof HTMLElement) {
@@ -558,7 +570,7 @@ export default function CommandPalette() {
         block: "nearest",
       });
     }
-  }, [selectedIndex, open]);
+  }, [clampedSelectedIndex, open]);
 
   /*
    * Change search
@@ -614,15 +626,17 @@ export default function CommandPalette() {
     );
 
   /*
-   * Track global index
+   * Flat index offsets for each section. Derived from the section
+   * lengths so every command keeps a stable index across renders
+   * (keyboard navigation walks one continuous list).
    */
 
-  let globalIndex = -1;
+  const favoritesStartIndex = navigationCommands.length;
 
-  function getNextIndex() {
-    globalIndex += 1;
-    return globalIndex;
-  }
+  const recentStartIndex =
+    favoritesStartIndex + favoriteCommands.length;
+
+  const toolsStartIndex = recentStartIndex + recentCommands.length;
 
   return (
     <div
@@ -713,8 +727,8 @@ export default function CommandPalette() {
                   title="Navigation"
                   icon={<Home size={13} />}
                   commands={navigationCommands}
-                  selectedIndex={selectedIndex}
-                  getNextIndex={getNextIndex}
+                  selectedIndex={clampedSelectedIndex}
+                  startIndex={0}
                   onClose={closePalette}
                 />
               )}
@@ -724,8 +738,8 @@ export default function CommandPalette() {
                   title="Favorites"
                   icon={<Star size={13} />}
                   commands={favoriteCommands}
-                  selectedIndex={selectedIndex}
-                  getNextIndex={getNextIndex}
+                  selectedIndex={clampedSelectedIndex}
+                  startIndex={favoritesStartIndex}
                   onClose={closePalette}
                 />
               )}
@@ -735,8 +749,8 @@ export default function CommandPalette() {
                   title="Recently Used"
                   icon={<History size={13} />}
                   commands={recentCommands}
-                  selectedIndex={selectedIndex}
-                  getNextIndex={getNextIndex}
+                  selectedIndex={clampedSelectedIndex}
+                  startIndex={recentStartIndex}
                   onClose={closePalette}
                 />
               )}
@@ -746,8 +760,8 @@ export default function CommandPalette() {
                   title="Developer Tools"
                   icon={<Wrench size={13} />}
                   commands={toolCommands}
-                  selectedIndex={selectedIndex}
-                  getNextIndex={getNextIndex}
+                  selectedIndex={clampedSelectedIndex}
+                  startIndex={toolsStartIndex}
                   onClose={closePalette}
                 />
               )}
@@ -794,14 +808,14 @@ function CommandSection({
   icon,
   commands,
   selectedIndex,
-  getNextIndex,
+  startIndex,
   onClose,
 }: {
   title: string;
   icon: React.ReactNode;
   commands: Command[];
   selectedIndex: number;
-  getNextIndex: () => number;
+  startIndex: number;
   onClose: () => void;
 }) {
   return (
@@ -821,18 +835,18 @@ function CommandSection({
 
       <div className="space-y-1">
 
-        {commands.map((command) => {
+        {commands.map((command, index) => {
 
-          const index = getNextIndex();
+          const globalIndex = startIndex + index;
 
           const active =
-            index === selectedIndex;
+            globalIndex === selectedIndex;
 
           return (
             <Link
               key={`${command.category}-${command.href}`}
               href={command.href}
-              data-command-index={index}
+              data-command-index={globalIndex}
               onClick={onClose}
               className={`group flex items-center gap-3 rounded-xl px-3 py-3 transition ${
                 active

@@ -10,6 +10,7 @@ Plus,
 Copy,
 Check,
 } from "lucide-react";
+import { copyToClipboard } from "@/lib/clipboard";
 
 type HeaderItem = {
 key: string;
@@ -38,8 +39,9 @@ index: number,
 field: "key" | "value",
 value: string
 ) {
-const updated = [...headers];
-updated[index][field] = value;
+const updated = headers.map((header, i) =>
+  i === index ? { ...header, [field]: value } : header
+);
 setHeaders(updated);
 }
 
@@ -84,9 +86,23 @@ try {
 
   if (method !== "GET" && method !== "HEAD" && body.trim()) {
     options.body = body;
+
+    // Default to JSON so a JSON body isn't sent as text/plain.
+    if (
+      !Object.keys(requestHeaders).some(
+        (key) => key.toLowerCase() === "content-type"
+      )
+    ) {
+      requestHeaders["Content-Type"] = "application/json";
+    }
   }
 
-  const res = await fetch(url, options);
+  // A bare host would otherwise fetch this site itself.
+  const targetUrl = /^https?:\/\//i.test(url.trim())
+    ? url.trim()
+    : `https://${url.trim()}`;
+
+  const res = await fetch(targetUrl, options);
 
   setStatus(`${res.status} ${res.statusText}`);
 
@@ -104,11 +120,20 @@ try {
     setResponse(data);
   }
 } catch (err) {
-  setError(
+  const message =
     err instanceof Error
       ? err.message
-      : "Request failed. Check the URL and try again."
-  );
+      : "Request failed. Check the URL and try again.";
+
+  // Surface the real cause: browsers block cross-origin reads and
+  // https→http requests, both reported as a bare "Failed to fetch".
+  if (/Failed to fetch/i.test(message)) {
+    setError(
+      "The request was blocked. Browsers block cross-origin responses (CORS) unless the API sends permissive headers, and block https→http requests as mixed content."
+    );
+  } else {
+    setError(message);
+  }
 } finally {
   setLoading(false);
 }
@@ -118,7 +143,9 @@ try {
 async function copyResponse() {
 if (!response) return;
 
-await navigator.clipboard.writeText(response);
+const ok = await copyToClipboard(response, setError);
+if (!ok) return;
+
 setCopied(true);
 
 setTimeout(() => {

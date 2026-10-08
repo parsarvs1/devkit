@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import "./App.css";
 
@@ -126,6 +126,8 @@ export default function App() {
   ========================================= */
 
   useEffect(() => {
+    // The signed-in user is hydrated from localStorage on mount.
+    /* eslint-disable react-hooks/set-state-in-effect */
     const savedUser = localStorage.getItem("devkit-user");
 
     if (!savedUser) {
@@ -145,6 +147,7 @@ export default function App() {
     } catch {
       localStorage.removeItem("devkit-user");
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   /* =========================================
@@ -313,25 +316,21 @@ export default function App() {
     setCommandPaletteOpen(false);
   };
 
-  const closeFavorites = () => {
-    setFavoritesOpen(false);
-  };
-
   /* =========================================
      COMMAND PALETTE
   ========================================= */
 
-  const openCommandPalette = () => {
+  const openCommandPalette = useCallback(() => {
     if (!commandPaletteEnabled) {
       return;
     }
 
     setCommandPaletteOpen(true);
-  };
+  }, [commandPaletteEnabled]);
 
-  const closeCommandPalette = () => {
+  const closeCommandPalette = useCallback(() => {
     setCommandPaletteOpen(false);
-  };
+  }, []);
 
   /* =========================================
      HOME COMMAND PALETTE EVENT
@@ -342,18 +341,30 @@ export default function App() {
       openCommandPalette();
     };
 
+    // Ctrl/Cmd+K opens the palette — the shortcut the UI advertises.
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        openCommandPalette();
+      }
+    };
+
     window.addEventListener(
       "devkit-open-command-palette",
       handleOpenCommandPalette,
     );
+
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       window.removeEventListener(
         "devkit-open-command-palette",
         handleOpenCommandPalette,
       );
+
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [commandPaletteEnabled]);
+  }, [commandPaletteEnabled, openCommandPalette]);
 
   /* =========================================
      RENDER TOOL

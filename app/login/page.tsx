@@ -48,7 +48,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
 
         <Link
@@ -78,7 +78,10 @@ export default function LoginPage() {
           className="space-y-5"
         >
           <div>
-            <label className="mb-2 block text-sm text-zinc-400">
+            <label
+              htmlFor="email"
+              className="mb-2 block text-sm text-zinc-400"
+            >
               Email
             </label>
 
@@ -89,18 +92,25 @@ export default function LoginPage() {
               />
 
               <input
+                id="email"
                 type="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "login-error" : undefined}
                 className="h-11 w-full rounded-lg border border-zinc-800 bg-zinc-900 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
               />
             </div>
           </div>
 
           <div>
-            <label className="mb-2 block text-sm text-zinc-400">
+            <label
+              htmlFor="password"
+              className="mb-2 block text-sm text-zinc-400"
+            >
               Password
             </label>
 
@@ -111,18 +121,26 @@ export default function LoginPage() {
               />
 
               <input
+                id="password"
                 type="password"
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Your password"
                 required
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "login-error" : undefined}
                 className="h-11 w-full rounded-lg border border-zinc-800 bg-zinc-900 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
               />
             </div>
           </div>
 
           {error && (
-            <div className="rounded-lg border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-400">
+            <div
+              id="login-error"
+              role="alert"
+              className="rounded-lg border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-400"
+            >
               {error}
             </div>
           )}

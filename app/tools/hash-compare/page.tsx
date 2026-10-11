@@ -92,8 +92,8 @@ try {
 }
 
 return (
-<main className="min-h-screen bg-zinc-950 text-white">
-<nav className="border-b border-zinc-800">
+<main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+<header className="border-b border-zinc-800">
 <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
 <Link href="/tools" className="flex items-center gap-2 text-sm text-zinc-400 transition hover:text-white" >
 <ArrowLeft size={18} />
@@ -102,13 +102,14 @@ Back to tools
 
       <button
         onClick={clearAll}
-        className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+        disabled={!hashOne.trim() && !hashTwo.trim()}
+        className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
       >
         <Trash2 size={15} />
         Clear
       </button>
     </div>
-  </nav>
+  </header>
 
   <section className="mx-auto max-w-6xl px-6 py-14">
     <div className="mb-10">
@@ -143,24 +144,23 @@ Back to tools
             )}
           </div>
 
-          {hashOne && (
-            <button
-              onClick={() =>
-                copyHash(hashOne, "hash-one")
-              }
-              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-            >
-              {copied === "hash-one" ? (
-                <Check size={15} />
-              ) : (
-                <Copy size={15} />
-              )}
+          <button
+            onClick={() =>
+              copyHash(hashOne, "hash-one")
+            }
+            disabled={!hashOne.trim()}
+            className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            {copied === "hash-one" ? (
+              <Check size={15} />
+            ) : (
+              <Copy size={15} />
+            )}
 
-              {copied === "hash-one"
-                ? "Copied!"
-                : "Copy"}
-            </button>
-          )}
+            {copied === "hash-one"
+              ? "Copied!"
+              : "Copy"}
+          </button>
         </div>
 
         <textarea
@@ -168,6 +168,7 @@ Back to tools
           onChange={(event) =>
             setHashOne(event.target.value)
           }
+          aria-label="First hash"
           placeholder="Enter first hash..."
           spellCheck={false}
           className="h-40 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
@@ -190,24 +191,23 @@ Back to tools
             )}
           </div>
 
-          {hashTwo && (
-            <button
-              onClick={() =>
-                copyHash(hashTwo, "hash-two")
-              }
-              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-            >
-              {copied === "hash-two" ? (
-                <Check size={15} />
-              ) : (
-                <Copy size={15} />
-              )}
+          <button
+            onClick={() =>
+              copyHash(hashTwo, "hash-two")
+            }
+            disabled={!hashTwo.trim()}
+            className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            {copied === "hash-two" ? (
+              <Check size={15} />
+            ) : (
+              <Copy size={15} />
+            )}
 
-              {copied === "hash-two"
-                ? "Copied!"
-                : "Copy"}
-            </button>
-          )}
+            {copied === "hash-two"
+              ? "Copied!"
+              : "Copy"}
+          </button>
         </div>
 
         <textarea
@@ -215,6 +215,7 @@ Back to tools
           onChange={(event) =>
             setHashTwo(event.target.value)
           }
+          aria-label="Second hash"
           placeholder="Enter second hash..."
           spellCheck={false}
           className="h-40 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
@@ -224,7 +225,10 @@ Back to tools
 
     {/* Result */}
 
-    <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+    <div
+      role="status"
+      className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900 p-6"
+    >
       <div className="flex flex-col items-center justify-center py-8 text-center">
         {!hasBothHashes ? (
           <>

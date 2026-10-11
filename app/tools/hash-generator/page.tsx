@@ -83,8 +83,8 @@ export default function HashGeneratorPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <nav className="border-b border-zinc-800">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -94,7 +94,7 @@ export default function HashGeneratorPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-5xl px-6 py-14">
         {/* Header */}
@@ -130,7 +130,8 @@ export default function HashGeneratorPage() {
 
             <button
               onClick={clearAll}
-              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+              disabled={!input.trim() && !output}
+              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
             >
               <Trash2 size={15} />
               Clear
@@ -140,6 +141,9 @@ export default function HashGeneratorPage() {
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            aria-label="Text to hash"
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? "hash-error" : undefined}
             placeholder="Enter text to hash..."
             className="h-52 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-950 p-5 font-mono text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
           />
@@ -148,11 +152,15 @@ export default function HashGeneratorPage() {
 
           <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end">
             <div className="flex-1">
-              <label className="mb-2 block text-sm text-zinc-500">
+              <label
+                htmlFor="hash-algorithm"
+                className="mb-2 block text-sm text-zinc-500"
+              >
                 Algorithm
               </label>
 
               <select
+                id="hash-algorithm"
                 value={algorithm}
                 onChange={(e) =>
                   setAlgorithm(e.target.value as Algorithm)
@@ -169,14 +177,19 @@ export default function HashGeneratorPage() {
 
             <button
               onClick={generateHash}
-              className="rounded-lg bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
+              disabled={!input.trim()}
+              className="rounded-lg bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Generate Hash
             </button>
           </div>
 
           {error && (
-            <p className="mt-4 text-sm text-red-400">
+            <p
+              id="hash-error"
+              role="alert"
+              className="mt-4 text-sm text-red-400"
+            >
               {error}
             </p>
           )}
@@ -190,19 +203,21 @@ export default function HashGeneratorPage() {
               Output
             </h2>
 
-            {output && (
-              <button
-                onClick={copyHash}
-                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-              >
-                <Copy size={15} />
+            <button
+              onClick={copyHash}
+              disabled={!output}
+              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              <Copy size={15} />
 
-                {copied ? "Copied!" : "Copy"}
-              </button>
-            )}
+              {copied ? "Copied!" : "Copy"}
+            </button>
           </div>
 
-          <div className="min-h-32 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+          <div
+            role="status"
+            className="min-h-32 rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+          >
             <p className="break-all font-mono text-sm leading-7 text-zinc-300">
               {output || "Generated hash will appear here..."}
             </p>

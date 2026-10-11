@@ -74,8 +74,8 @@ export default function UrlEncoderPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <nav className="border-b border-zinc-800">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -85,7 +85,7 @@ export default function UrlEncoderPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-5xl px-6 py-14">
         {/* Header */}
@@ -120,7 +120,8 @@ export default function UrlEncoderPage() {
 
             <button
               onClick={clearAll}
-              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+              disabled={!input.trim() && !output}
+              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
             >
               <Trash2 size={15} />
               Clear
@@ -130,6 +131,9 @@ export default function UrlEncoderPage() {
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            aria-label="Input text"
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? "url-error" : undefined}
             placeholder="https://example.com/search?q=hello world"
             className="h-52 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-950 p-5 font-mono text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
           />
@@ -139,7 +143,8 @@ export default function UrlEncoderPage() {
           <div className="mt-4 flex flex-wrap gap-3">
             <button
               onClick={encodeUrl}
-              className="flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
+              disabled={!input.trim()}
+              className="flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Encode
               <ArrowRightLeft size={16} />
@@ -147,7 +152,8 @@ export default function UrlEncoderPage() {
 
             <button
               onClick={decodeUrl}
-              className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-3 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white"
+              disabled={!input.trim()}
+              className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-3 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               Decode
               <ArrowRightLeft size={16} />
@@ -155,7 +161,11 @@ export default function UrlEncoderPage() {
           </div>
 
           {error && (
-            <p className="mt-4 text-sm text-red-400">
+            <p
+              id="url-error"
+              role="alert"
+              className="mt-4 text-sm text-red-400"
+            >
               {error}
             </p>
           )}
@@ -169,19 +179,21 @@ export default function UrlEncoderPage() {
               Output
             </h2>
 
-            {output && (
-              <button
-                onClick={copyOutput}
-                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-              >
-                <Copy size={15} />
+            <button
+              onClick={copyOutput}
+              disabled={!output}
+              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              <Copy size={15} />
 
-                {copied ? "Copied!" : "Copy"}
-              </button>
-            )}
+              {copied ? "Copied!" : "Copy"}
+            </button>
           </div>
 
-          <div className="min-h-40 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+          <div
+            role="status"
+            className="min-h-40 rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+          >
             <p className="break-all whitespace-pre-wrap font-mono text-sm leading-7 text-zinc-300">
               {output || "Encoded or decoded result will appear here..."}
             </p>

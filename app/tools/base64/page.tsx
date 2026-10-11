@@ -64,8 +64,8 @@ export default function Base64Page() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <nav className="border-b border-zinc-800">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -75,7 +75,7 @@ export default function Base64Page() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="mb-10">
@@ -97,7 +97,8 @@ export default function Base64Page() {
 
               <button
                 onClick={clearAll}
-                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+                disabled={!input.trim() && !output}
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <Trash2 size={15} />
                 Clear
@@ -107,6 +108,9 @@ export default function Base64Page() {
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              aria-label="Input text"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "base64-error" : undefined}
               placeholder="Enter text or Base64..."
               spellCheck={false}
               className="h-80 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
@@ -115,7 +119,8 @@ export default function Base64Page() {
             <div className="mt-4 flex flex-wrap gap-3">
               <button
                 onClick={encodeBase64}
-                className="flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200"
+                disabled={!input.trim()}
+                className="flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Encode
                 <ArrowRight size={16} />
@@ -123,13 +128,22 @@ export default function Base64Page() {
 
               <button
                 onClick={decodeBase64}
-                className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white"
+                disabled={!input.trim()}
+                className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Decode
               </button>
             </div>
 
-            {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+            {error && (
+              <p
+                id="base64-error"
+                role="alert"
+                className="mt-3 text-sm text-red-400"
+              >
+                {error}
+              </p>
+            )}
           </div>
 
           {/* Output */}
@@ -138,18 +152,20 @@ export default function Base64Page() {
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-sm font-medium">Output</h2>
 
-              {output && (
-                <button
-                  onClick={copyOutput}
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                >
-                  <Copy size={15} />
-                  {copied ? "Copied!" : "Copy"}
-                </button>
-              )}
+              <button
+                onClick={copyOutput}
+                disabled={!output}
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <Copy size={15} />
+                {copied ? "Copied!" : "Copy"}
+              </button>
             </div>
 
-            <pre className="h-80 overflow-auto whitespace-pre-wrap break-all rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300">
+            <pre
+              role="status"
+              className="h-80 overflow-auto whitespace-pre-wrap break-all rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300"
+            >
               {output || "Result will appear here..."}
             </pre>
           </div>

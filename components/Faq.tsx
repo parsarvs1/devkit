@@ -54,7 +54,7 @@ export default function Faq() {
         Everything you might want to know before getting started.
       </p>
 
-      <div className="mt-10 space-y-3">
+      <dl className="mt-10 space-y-3">
         {faqItems.map((item, index) => {
           const isOpen = openIndex === index;
 
@@ -67,25 +67,27 @@ export default function Faq() {
                   : "border-zinc-800/80 bg-zinc-900/30"
               }`}
             >
-              <button
-                type="button"
-                onClick={() => toggle(index)}
-                aria-expanded={isOpen}
-                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left sm:px-6"
-              >
-                <span className="text-sm font-medium text-white sm:text-base">
-                  {item.question}
-                </span>
+              <dt>
+                <button
+                  type="button"
+                  onClick={() => toggle(index)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left sm:px-6"
+                >
+                  <span className="text-sm font-medium text-white sm:text-base">
+                    {item.question}
+                  </span>
 
-                <ChevronDown
-                  size={18}
-                  className={`shrink-0 text-zinc-500 transition-transform duration-200 ${
-                    isOpen ? "rotate-180 text-zinc-300" : ""
-                  }`}
-                />
-              </button>
+                  <ChevronDown
+                    size={18}
+                    className={`shrink-0 text-zinc-500 transition-transform duration-200 ${
+                      isOpen ? "rotate-180 text-zinc-300" : ""
+                    }`}
+                  />
+                </button>
+              </dt>
 
-              <div
+              <dd
                 className={`grid transition-all duration-200 ease-in-out ${
                   isOpen
                     ? "grid-rows-[1fr] opacity-100"
@@ -97,11 +99,11 @@ export default function Faq() {
                     {item.answer}
                   </p>
                 </div>
-              </div>
+              </dd>
             </div>
           );
         })}
-      </div>
+      </dl>
     </div>
   );
 }

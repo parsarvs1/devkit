@@ -16,8 +16,11 @@ import {
   type ToolHistoryItem,
 } from "@/lib/toolHistory";
 
+import { ToolRowSkeleton } from "@/components/ToolCardSkeleton";
+
 export default function RecentlyUsedWidget() {
   const [history, setHistory] = useState<ToolHistoryItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   function loadHistory() {
     setHistory(getToolHistory());
@@ -27,6 +30,8 @@ export default function RecentlyUsedWidget() {
     // History is hydrated from localStorage once on mount.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadHistory();
+
+    setLoaded(true);
 
     window.addEventListener(
       "tool-history-updated",
@@ -75,7 +80,15 @@ export default function RecentlyUsedWidget() {
           )}
         </div>
 
-        {history.length === 0 ? (
+        {!loaded ? (
+          /* Skeletons while history hydrates from localStorage */
+
+          <div className="space-y-3">
+            {[0, 1, 2].map((index) => (
+              <ToolRowSkeleton key={index} />
+            ))}
+          </div>
+        ) : history.length === 0 ? (
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 px-6 py-14 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900">
               <Clock3

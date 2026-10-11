@@ -50,8 +50,8 @@ export default function UuidGeneratorPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <nav className="border-b border-zinc-800">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -61,7 +61,7 @@ export default function UuidGeneratorPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-3xl px-6 py-20">
         <div className="mb-10">
@@ -84,18 +84,20 @@ export default function UuidGeneratorPage() {
               Generated UUID
             </h2>
 
-            {uuid && (
-              <button
-                onClick={clearUuid}
-                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-              >
-                <Trash2 size={15} />
-                Clear
-              </button>
-            )}
+            <button
+              onClick={clearUuid}
+              disabled={!uuid}
+              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              <Trash2 size={15} />
+              Clear
+            </button>
           </div>
 
-          <div className="flex min-h-28 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 px-6">
+          <div
+            role="status"
+            className="flex min-h-28 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 px-6"
+          >
             <p className="break-all text-center font-mono text-lg text-zinc-300">
               {uuid || "Your UUID will appear here..."}
             </p>
@@ -110,22 +112,21 @@ export default function UuidGeneratorPage() {
               Generate UUID
             </button>
 
-            {uuid && (
-              <button
-                onClick={copyUuid}
-                className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white"
-              >
-                <Copy size={16} />
-                {copied ? "Copied!" : "Copy"}
-              </button>
-            )}
+            <button
+              onClick={copyUuid}
+              disabled={!uuid}
+              className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Copy size={16} />
+              {copied ? "Copied!" : "Copy"}
+            </button>
           </div>
 
           {error && (
             <p
+              id="uuid-error"
               className="mt-4 text-sm text-red-400"
-              role="status"
-              aria-live="polite"
+              role="alert"
             >
               {error}
             </p>

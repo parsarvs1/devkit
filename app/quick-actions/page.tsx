@@ -101,7 +101,7 @@ export default function QuickActionsPage() {
   }, [query]);
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       <nav className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
@@ -139,13 +139,17 @@ export default function QuickActionsPage() {
             type="text"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
+            aria-label="Search actions"
             placeholder="Search actions..."
             className="h-12 w-full rounded-xl border border-zinc-800 bg-zinc-900 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
           />
         </div>
 
         {filteredActions.length === 0 ? (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-6 py-12 text-center">
+          <div
+            role="status"
+            className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-6 py-12 text-center"
+          >
             <p className="text-sm text-zinc-500">
               No actions found.
             </p>
@@ -187,7 +191,10 @@ export default function QuickActionsPage() {
           </div>
         )}
 
-        <p className="mt-8 text-center text-xs text-zinc-700">
+        <p
+          className="mt-8 text-center text-xs text-zinc-700"
+          role="status"
+        >
           {filteredActions.length}{" "}
           {filteredActions.length === 1 ? "action" : "actions"} available
         </p>

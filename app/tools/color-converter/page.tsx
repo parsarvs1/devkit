@@ -144,8 +144,8 @@ export default function ColorConverterPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <nav className="border-b border-zinc-800">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -155,7 +155,7 @@ export default function ColorConverterPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-5xl px-6 py-14">
         <div className="mb-10">
@@ -180,13 +180,14 @@ export default function ColorConverterPage() {
 
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-6">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-medium">
+            <h2 id="hex-color-heading" className="text-sm font-medium">
               HEX Color
             </h2>
 
             <button
               onClick={clearAll}
-              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+              disabled={!hex.trim() && !rgb && !hsl}
+              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
             >
               <Trash2 size={15} />
               Clear
@@ -197,20 +198,28 @@ export default function ColorConverterPage() {
             <input
               value={hex}
               onChange={(e) => setHex(e.target.value)}
+              aria-labelledby="hex-color-heading"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "color-error" : undefined}
               placeholder="#6366f1"
               className="flex-1 rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-3 font-mono text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
             />
 
             <button
               onClick={convertColor}
-              className="rounded-lg bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
+              disabled={!hex.trim()}
+              className="rounded-lg bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Convert
             </button>
           </div>
 
           {error && (
-            <p className="mt-4 text-sm text-red-400">
+            <p
+              id="color-error"
+              role="alert"
+              className="mt-4 text-sm text-red-400"
+            >
               {error}
             </p>
           )}
@@ -219,6 +228,7 @@ export default function ColorConverterPage() {
         {hex && hexToRgb(hex) && (
           <div
             className="mt-6 h-32 rounded-xl border border-zinc-800"
+            role="status"
             style={{ backgroundColor: hex }}
           />
         )}
@@ -230,22 +240,24 @@ export default function ColorConverterPage() {
                 RGB
               </h2>
 
-              {rgb && (
-                <button
-                  onClick={() =>
-                    copyValue(rgb, "rgb")
-                  }
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                >
-                  <Copy size={15} />
-                  {copied === "rgb"
-                    ? "Copied!"
-                    : "Copy"}
-                </button>
-              )}
+              <button
+                onClick={() =>
+                  copyValue(rgb, "rgb")
+                }
+                disabled={!rgb}
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <Copy size={15} />
+                {copied === "rgb"
+                  ? "Copied!"
+                  : "Copy"}
+              </button>
             </div>
 
-            <p className="break-all font-mono text-sm text-zinc-300">
+            <p
+              className="break-all font-mono text-sm text-zinc-300"
+              role="status"
+            >
               {rgb || "RGB value will appear here..."}
             </p>
           </div>
@@ -256,22 +268,24 @@ export default function ColorConverterPage() {
                 HSL
               </h2>
 
-              {hsl && (
-                <button
-                  onClick={() =>
-                    copyValue(hsl, "hsl")
-                  }
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                >
-                  <Copy size={15} />
-                  {copied === "hsl"
-                    ? "Copied!"
-                    : "Copy"}
-                </button>
-              )}
+              <button
+                onClick={() =>
+                  copyValue(hsl, "hsl")
+                }
+                disabled={!hsl}
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <Copy size={15} />
+                {copied === "hsl"
+                  ? "Copied!"
+                  : "Copy"}
+              </button>
             </div>
 
-            <p className="break-all font-mono text-sm text-zinc-300">
+            <p
+              className="break-all font-mono text-sm text-zinc-300"
+              role="status"
+            >
               {hsl || "HSL value will appear here..."}
             </p>
           </div>

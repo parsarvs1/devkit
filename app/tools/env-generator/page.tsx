@@ -242,13 +242,13 @@ export default env;`;
   const output = generateOutput();
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       <RecentToolTracker
         name="Environment Variable Generator"
         href="/tools/env-generator"
       />
 
-      <nav className="border-b border-zinc-800">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -258,7 +258,7 @@ export default env;`;
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="mb-10">
@@ -296,7 +296,12 @@ export default env;`;
 
                 <button
                   onClick={clearAll}
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+                  disabled={
+                    variables.length === 1 &&
+                    !variables[0].key.trim() &&
+                    !variables[0].value.trim()
+                  }
+                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   <Trash2 size={15} />
                   Clear
@@ -312,11 +317,15 @@ export default env;`;
                 >
                   <div className="flex gap-3">
                     <div className="min-w-0 flex-1">
-                      <label className="mb-2 block text-xs text-zinc-500">
+                      <label
+                        htmlFor={`env-key-${variable.id}`}
+                        className="mb-2 block text-xs text-zinc-500"
+                      >
                         Key
                       </label>
 
                       <input
+                        id={`env-key-${variable.id}`}
                         value={variable.key}
                         onChange={(event) =>
                           updateVariable(
@@ -332,12 +341,16 @@ export default env;`;
                     </div>
 
                     <div className="min-w-0 flex-[1.5]">
-                      <label className="mb-2 block text-xs text-zinc-500">
+                      <label
+                        htmlFor={`env-value-${variable.id}`}
+                        className="mb-2 block text-xs text-zinc-500"
+                      >
                         Value
                       </label>
 
                       <div className="flex gap-2">
                         <input
+                          id={`env-value-${variable.id}`}
                           value={variable.value}
                           onChange={(event) =>
                             updateVariable(
@@ -357,6 +370,7 @@ export default env;`;
                             generateSecretFor(variable.id)
                           }
                           title="Generate secret"
+                          aria-label="Generate secret"
                           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-500 transition hover:border-zinc-700 hover:text-white"
                         >
                           <KeyRound size={16} />
@@ -368,6 +382,7 @@ export default env;`;
                             removeVariable(variable.id)
                           }
                           title="Remove variable"
+                          aria-label="Remove variable"
                           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-600 transition hover:border-red-900/50 hover:text-red-400"
                         >
                           <X size={16} />
@@ -396,25 +411,25 @@ export default env;`;
                 Output
               </h2>
 
-              {output && (
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={copyOutput}
-                    className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                  >
-                    <Copy size={15} />
-                    {copied ? "Copied!" : "Copy"}
-                  </button>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={copyOutput}
+                  disabled={!output}
+                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  <Copy size={15} />
+                  {copied ? "Copied!" : "Copy"}
+                </button>
 
-                  <button
-                    onClick={downloadOutput}
-                    className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                  >
-                    <Download size={15} />
-                    Download
-                  </button>
-                </div>
-              )}
+                <button
+                  onClick={downloadOutput}
+                  disabled={!output}
+                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  <Download size={15} />
+                  Download
+                </button>
+              </div>
             </div>
 
             {/* Format */}
@@ -460,7 +475,10 @@ export default env;`;
               ))}
             </div>
 
-            <pre className="h-[500px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300">
+            <pre
+              className="h-[500px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300"
+              role="status"
+            >
               {output ||
                 "Generated environment variables will appear here..."}
             </pre>

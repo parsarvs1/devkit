@@ -72,13 +72,13 @@ console.log(greeting);
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       <RecentToolTracker
         name="Markdown Playground"
         href="/tools/markdown-playground"
       />
 
-      <nav className="border-b border-zinc-800">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -88,7 +88,7 @@ console.log(greeting);
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="mb-10">
@@ -125,22 +125,22 @@ console.log(greeting);
 
                 <button
                   onClick={clearAll}
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+                  disabled={!markdown.trim()}
+                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   <Trash2 size={15} />
                   Clear
                 </button>
 
-                {markdown && (
-                  <button
-                    onClick={copyMarkdown}
-                    className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                  >
-                    <Copy size={15} />
+                <button
+                  onClick={copyMarkdown}
+                  disabled={!markdown.trim()}
+                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  <Copy size={15} />
 
-                    {copied ? "Copied!" : "Copy"}
-                  </button>
-                )}
+                  {copied ? "Copied!" : "Copy"}
+                </button>
               </div>
             </div>
 
@@ -149,6 +149,9 @@ console.log(greeting);
               onChange={(event) =>
                 setMarkdown(event.target.value)
               }
+              aria-label="Markdown input"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "markdown-error" : undefined}
               placeholder="# Hello DevKit
 
 Write your Markdown here..."
@@ -158,9 +161,9 @@ Write your Markdown here..."
 
             {error && (
               <p
+                id="markdown-error"
                 className="mt-4 text-sm text-red-400"
-                role="status"
-                aria-live="polite"
+                role="alert"
               >
                 {error}
               </p>
@@ -203,7 +206,10 @@ Write your Markdown here..."
             </div>
 
             {view === "preview" ? (
-              <div className="markdown-body h-[520px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-zinc-300">
+              <div
+                role="status"
+                className="markdown-body h-[520px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-zinc-300"
+              >
                 {markdown.trim() ? (
                   <ReactMarkdown
                     components={{

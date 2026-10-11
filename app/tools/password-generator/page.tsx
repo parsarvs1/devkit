@@ -146,8 +146,8 @@ export default function PasswordGeneratorPage() {
     : null;
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <nav className="border-b border-zinc-800">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -157,7 +157,7 @@ export default function PasswordGeneratorPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-4xl px-6 py-14">
         <div className="mb-10">
@@ -190,19 +190,21 @@ export default function PasswordGeneratorPage() {
                 Generated Password
               </h2>
 
-              {password && (
-                <button
-                  onClick={copyPassword}
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                >
-                  <Copy size={15} />
+              <button
+                onClick={copyPassword}
+                disabled={!password}
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <Copy size={15} />
 
-                  {copied ? "Copied!" : "Copy"}
-                </button>
-              )}
+                {copied ? "Copied!" : "Copy"}
+              </button>
             </div>
 
-            <div className="min-h-16 break-all rounded-lg border border-zinc-800 bg-zinc-950 p-4 font-mono text-sm text-zinc-300">
+            <div
+              className="min-h-16 break-all rounded-lg border border-zinc-800 bg-zinc-950 p-4 font-mono text-sm text-zinc-300"
+              role="status"
+            >
               {password ||
                 "Your generated password will appear here..."}
             </div>
@@ -219,7 +221,11 @@ export default function PasswordGeneratorPage() {
                 Password Length
               </label>
 
-              <span className="font-mono text-sm text-white">
+              <span
+                id="password-length-value"
+                className="font-mono text-sm text-white"
+                aria-live="polite"
+              >
                 {length}
               </span>
             </div>
@@ -233,6 +239,7 @@ export default function PasswordGeneratorPage() {
               onChange={(e) =>
                 setLength(Number(e.target.value))
               }
+              aria-describedby="password-length-value"
               className="w-full"
             />
           </div>
@@ -290,7 +297,10 @@ export default function PasswordGeneratorPage() {
 
           <button
             onClick={generate}
-            className="mt-8 flex w-full items-center justify-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
+            disabled={
+              !useUppercase && !useNumbers && !useSymbols
+            }
+            className="mt-8 flex w-full items-center justify-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <RefreshCw size={16} />
             Generate Password
@@ -298,9 +308,9 @@ export default function PasswordGeneratorPage() {
 
           {error && (
             <p
+              id="password-generator-error"
               className="mt-4 text-sm text-red-400"
-              role="status"
-              aria-live="polite"
+              role="alert"
             >
               {error}
             </p>
@@ -310,7 +320,10 @@ export default function PasswordGeneratorPage() {
         {/* Strength */}
 
         {password && strength && (
-          <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+          <div
+            className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+            role="status"
+          >
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-sm font-medium">
                 Password Strength

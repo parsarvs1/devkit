@@ -6,9 +6,10 @@ import { ArrowRight, Pin, PinOff, Wrench  } from "lucide-react";
 import { tools } from "@/data/tools";
 import usePinnedTools from "@/hooks/usePinnedTools";
 import PinButton from "@/components/PinButton";
+import ToolCardSkeleton from "@/components/ToolCardSkeleton";
 
 export default function PinnedToolsWidget() {
-  const { pinnedTools } = usePinnedTools();
+  const { pinnedTools, loaded } = usePinnedTools();
 
   const pinned = tools.filter((tool) =>
     pinnedTools.includes(tool.href)
@@ -38,7 +39,15 @@ export default function PinnedToolsWidget() {
           </Link>
         </div>
 
-        {pinned.length === 0 ? (
+        {!loaded ? (
+          /* Skeletons while pins hydrate from localStorage */
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[0, 1, 2].map((index) => (
+              <ToolCardSkeleton key={index} />
+            ))}
+          </div>
+        ) : pinned.length === 0 ? (
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 px-6 py-14 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900">
               <PinOff size={20} className="text-zinc-500" />

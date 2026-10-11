@@ -32,34 +32,40 @@ export default function Footer() {
 
           {/* Links */}
 
-          <div>
+          <nav aria-label="Explore">
             <p className="mb-3 text-xs font-medium uppercase tracking-wider text-zinc-600">
               Explore
             </p>
 
-            <div className="flex flex-col gap-2 text-sm text-zinc-500">
-              <Link
-                href="/"
-                className="transition hover:text-white"
-              >
-                Home
-              </Link>
+            <ul className="flex flex-col gap-2 text-sm text-zinc-500">
+              <li>
+                <Link
+                  href="/"
+                  className="transition hover:text-white"
+                >
+                  Home
+                </Link>
+              </li>
 
-              <Link
-                href="/tools"
-                className="transition hover:text-white"
-              >
-                Tools
-              </Link>
+              <li>
+                <Link
+                  href="/tools"
+                  className="transition hover:text-white"
+                >
+                  Tools
+                </Link>
+              </li>
 
-              <Link
-                href="/about"
-                className="transition hover:text-white"
-              >
-                About
-              </Link>
-            </div>
-          </div>
+              <li>
+                <Link
+                  href="/about"
+                  className="transition hover:text-white"
+                >
+                  About
+                </Link>
+              </li>
+            </ul>
+          </nav>
 
           {/* Project */}
 

@@ -2,9 +2,7 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ========================================
-   THEME
-======================================== */
+
 
 :root {
   --background: #f4f4f5;
@@ -37,6 +35,10 @@ html.dark {
 
   --input: #09090b;
 
+
+
+  --focus-ring: #a78bfa;
+
   color-scheme: dark;
 }
 
@@ -55,12 +57,14 @@ html.light {
 
   --input: #ffffff;
 
+
+
+  --focus-ring: #7c3aed;
+
   color-scheme: light;
 }
 
-/* ========================================
-   TAILWIND
-======================================== */
+
 
 @theme inline {
   --color-background: var(--background);
@@ -70,9 +74,7 @@ html.light {
   --font-mono: var(--font-geist-mono);
 }
 
-/* ========================================
-   BASE
-======================================== */
+
 
 html {
   background: var(--background);
@@ -92,10 +94,7 @@ body {
     color 200ms ease;
 }
 
-/* ========================================
-   LIGHT MODE
-   BACKGROUNDS
-======================================== */
+
 
 html.light .bg-zinc-950 {
   background-color: var(--background) !important;
@@ -113,7 +112,7 @@ html.light .bg-zinc-700 {
   background-color: #d4d4d8 !important;
 }
 
-/* Transparent backgrounds */
+
 
 html.light .bg-zinc-900\/20 {
   background-color: rgb(250 250 250 / 0.2) !important;
@@ -135,10 +134,7 @@ html.light .bg-zinc-900\/60 {
   background-color: rgb(250 250 250 / 0.9) !important;
 }
 
-/* ========================================
-   LIGHT MODE
-   BORDERS
-======================================== */
+
 
 html.light .border-zinc-900 {
   border-color: #eaeaec !important;
@@ -156,10 +152,7 @@ html.light .border-zinc-600 {
   border-color: #a1a1aa !important;
 }
 
-/* ========================================
-   LIGHT MODE
-   HOVER
-======================================== */
+
 
 html.light .hover\:bg-zinc-800:hover {
   background-color: #e4e4e7 !important;
@@ -177,10 +170,7 @@ html.light .hover\:border-zinc-600:hover {
   border-color: #a1a1aa !important;
 }
 
-/* ========================================
-   LIGHT MODE
-   TEXT COLORS
-======================================== */
+
 
 html.light .text-white {
   color: var(--foreground) !important;
@@ -220,9 +210,7 @@ html.light .hover\:text-zinc-300:hover {
   color: var(--foreground) !important;
 }
 
-/* ========================================
-   INPUTS
-======================================== */
+
 
 html.light input,
 html.light textarea,
@@ -247,18 +235,148 @@ html.light .hover\:bg-zinc-200:hover {
   color: #ffffff !important;
 }
 
-/* ========================================
-   SELECTION
-======================================== */
+
+
+/*
+ * WCAG 2.2 AA — dark-mode text contrast (1.4.3 Contrast Minimum)
+ *
+ * The default Tailwind zinc-500/600/700 values fail the 4.5:1 ratio for
+ * normal-size text on the dark surface palette (zinc-500 is 4.12:1 on
+ * zinc-950, zinc-600 is 2.57:1). Remapping the utility classes here lifts
+ * every page at once; light mode keeps the defaults, which already pass.
+ *
+ *   text-zinc-500  #71717a (4.12:1) -> #a1a1aa (7.76:1 on zinc-950)
+ *   text-zinc-600  #52525b (2.57:1) -> #8f8f9a (6.22:1 on zinc-950)
+ *   text-zinc-700  #3f3f46 (1.91:1) -> #8f8f9a (6.22:1 on zinc-950)
+ *
+ * Non-text chrome still only needs 3:1, but the values above clear that too.
+ */
+
+html.dark .text-zinc-500 {
+  color: #a1a1aa !important;
+}
+
+html.dark .text-zinc-600 {
+  color: #8f8f9a !important;
+}
+
+html.dark .text-zinc-700 {
+  color: #8f8f9a !important;
+}
+
+/* Placeholder text is real content here ("Result will appear here..."), so
+ * it needs the same 4.5:1 ratio as body copy, not the 3:1 of decoration. */
+html.dark .placeholder\:text-zinc-600::placeholder,
+html.dark .placeholder\:text-zinc-700::placeholder,
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #8f8f9a !important;
+}
+
+/* Scrollbar thumb is a UI control — 1.4.11 non-text contrast needs 3:1. */
+html.dark ::-webkit-scrollbar-thumb {
+  background: #71717a;
+}
+
+html.dark {
+  scrollbar-color: #71717a #09090b;
+}
+
+
+
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+
+.prose a:focus-visible,
+.markdown-body a:focus-visible,
+p > a:focus-visible,
+span > a:focus-visible {
+  border-radius: 0;
+}
+
+
+a:focus-visible,
+button:focus-visible {
+  outline-offset: 2px;
+}
+
+
+.overflow-hidden:focus-visible,
+.\!overflow-hidden:focus-visible,
+[style*="overflow:hidden"]:focus-visible,
+[style*="overflow: hidden"]:focus-visible {
+  outline-offset: -2px;
+}
+
+
+/*
+ * WCAG 2.2 — 2.2.2 Pause, Stop, Hide / 2.3.3 Animation from Interactions
+ *
+ * Loading skeletons pulse on a loop and cards shift on hover. Neither carries
+ * information, so users who ask for reduced motion get the final state with
+ * the movement removed.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+
+.skip-to-content {
+  position: fixed;
+  top: 0.75rem;
+  left: 50%;
+  z-index: 200;
+  transform: translate(-50%, -150%);
+
+  border-radius: 0.75rem;
+  border: 1px solid #3f3f46;
+  background: #18181b;
+  padding: 0.6rem 1.15rem;
+
+  color: #fafafa;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  transition: transform 180ms ease;
+}
+
+.skip-to-content:focus-visible {
+  transform: translate(-50%, 0);
+
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 
 ::selection {
   background-color: #71717a;
   color: #ffffff;
 }
 
-/* ========================================
-   SCROLLBAR
-======================================== */
+
 
 ::-webkit-scrollbar {
   width: 12px;
@@ -275,7 +393,7 @@ html.light .hover\:bg-zinc-200:hover {
 }
 
 html.dark ::-webkit-scrollbar-thumb {
-  background: #52525b;
+  background: #71717a;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -283,15 +401,13 @@ html.dark ::-webkit-scrollbar-thumb {
 }
 
 html.dark {
-  scrollbar-color: #52525b #09090b;
+  scrollbar-color: #71717a #09090b;
 }
 
 html.light {
   scrollbar-color: #a1a1aa #f4f4f5;
 }
-/* =========================
-   REAL PROFILE
-========================= */
+
 
 .profile-page {
   min-height: calc(100vh - 60px);
@@ -505,12 +621,7 @@ html.light {
     text-align: left;
   }
 }
-/* ========================================
-   MARKDOWN PREVIEW
-   Provides prose styling for the markdown
-   preview tools without the @tailwindcss/typography
-   plugin (not installed). Works on dark surfaces.
-======================================== */
+
 
 .markdown-body {
   color: rgb(212 212 216);
@@ -660,4 +771,237 @@ html.light {
 
 .markdown-body > :last-child {
   margin-bottom: 0;
+}
+
+
+html.dark {
+  --bg: #09090b;
+  --surface: #111113;
+  --surface-3: #202023;
+  --input-bg: #0d0d0f;
+  --text: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --accent: #8b5cf6;
+  --accent-hover: #a78bfa;
+}
+
+html.light {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-3: #f1eefe;
+  --input-bg: #ffffff;
+  --text: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+}
+
+html.light .profile-card,
+html.light .profile-edit {
+  box-shadow: 0 8px 30px -12px rgba(76, 29, 149, 0.15);
+}
+
+
+
+html.light .bg-zinc-900\/30 {
+  background-color: rgb(255 255 255 / 0.85) !important;
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.04);
+}
+
+html.light [class*="hover:shadow-[0_12px_40px"]:hover {
+  box-shadow: 0 16px 36px -14px rgba(109, 40, 217, 0.28) !important;
+}
+
+html.light .bg-zinc-900\/70:hover,
+html.light .hover\:bg-zinc-900\/70:hover {
+  background-color: #ffffff !important;
+}
+
+
+
+html.light .from-zinc-800\/80 {
+  --tw-gradient-from: #ffffff !important;
+}
+
+html.light .to-zinc-900 {
+  --tw-gradient-to: #f1eefe !important;
+}
+
+
+
+html.light .text-violet-300,
+html.light .text-violet-400,
+html.light .group:hover .group-hover\:text-violet-300,
+html.light .group:hover .group-hover\:text-violet-400,
+html.light .group-focus-within\:text-violet-400:focus-within {
+  color: #6d28d9 !important;
+}
+
+html.light .border-violet-600\/30 {
+  border-color: rgb(124 58 237 / 0.35) !important;
+}
+
+html.light .bg-violet-600\/10 {
+  background-color: rgb(124 58 237 / 0.08) !important;
+}
+
+
+
+html.light .from-violet-400 {
+  --tw-gradient-from: #7c3aed !important;
+}
+
+html.light .via-fuchsia-400 {
+  --tw-gradient-via: #c026d3 !important;
+}
+
+html.light .to-indigo-400 {
+  --tw-gradient-to: #4f46e5 !important;
+}
+
+
+
+html.light [class*="rgba(255,255,255,0.035)"] {
+  background-image:
+    linear-gradient(to right, rgba(24, 24, 27, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(24, 24, 27, 0.05) 1px, transparent 1px) !important;
+}
+
+
+
+html.light .blur-\[100px\],
+html.light .blur-\[90px\],
+html.light .blur-\[80px\] {
+  opacity: 0.6;
+}
+
+
+
+html.light .group:hover .group-hover\:bg-zinc-800 {
+  background-color: #ede9fe !important;
+}
+
+
+
+html.light .markdown-body {
+  color: #3f3f46;
+}
+
+html.light .markdown-body h1,
+html.light .markdown-body h2,
+html.light .markdown-body h3,
+html.light .markdown-body h4,
+html.light .markdown-body h5,
+html.light .markdown-body h6 {
+  color: #18181b;
+}
+
+html.light .markdown-body h1,
+html.light .markdown-body h2,
+html.light .markdown-body th,
+html.light .markdown-body td,
+html.light .markdown-body hr {
+  border-color: #e4e4e7;
+}
+
+html.light .markdown-body a {
+  color: #4f46e5;
+}
+
+html.light .markdown-body code {
+  background-color: #f1f1f3;
+  color: #18181b;
+}
+
+html.light .markdown-body pre {
+  background-color: #fafafa;
+  border-color: #e4e4e7;
+}
+
+html.light .markdown-body pre code {
+  background-color: transparent;
+  color: #3f3f46;
+}
+
+html.light .markdown-body th {
+  background-color: #f4f4f5;
+  color: #18181b;
+}
+
+html.light .markdown-body blockquote {
+  border-left-color: #c4b5fd;
+  color: #71717a;
+}
+
+
+html.light [class*="from-zinc-"] {
+  --tw-gradient-from: #ffffff !important;
+}
+
+html.light [class*="via-zinc-"] {
+  --tw-gradient-via: #fcfcfd !important;
+}
+
+html.light [class*="to-zinc-"] {
+  --tw-gradient-to: #f8f8fa !important;
+}
+
+
+html.light .pointer-events-none[class*="rounded-full"][class*="blur-["] {
+  display: none !important;
+}
+
+
+
+html.light [class*="via-fuchsia-"] {
+  --tw-gradient-via: rgb(124 58 237 / 0.1) !important;
+}
+
+html.light [class*="to-fuchsia-"] {
+  --tw-gradient-to: rgb(124 58 237 / 0.1) !important;
+}
+
+html.light [class*="to-indigo-"] {
+  --tw-gradient-to: rgb(79 70 229 / 0.12) !important;
+}
+
+
+html.light .from-violet-400 {
+  --tw-gradient-from: #7c3aed !important;
+}
+
+html.light .via-fuchsia-400 {
+  --tw-gradient-via: #6d28d9 !important;
+}
+
+html.light .to-indigo-400 {
+  --tw-gradient-to: #4338ca !important;
+}
+
+
+
+html.light .bg-gradient-to-br.rounded-2xl,
+html.light .bg-gradient-to-r.rounded-2xl,
+html.light .bg-gradient-to-b.rounded-2xl {
+  border-color: #e4e4e7 !important;
+  box-shadow:
+    0 1px 2px rgba(24, 24, 27, 0.04),
+    0 16px 36px -24px rgba(24, 24, 27, 0.18);
+}
+
+
+html.light .bg-violet-600\/20 {
+  background-color: rgb(124 58 237 / 0.1) !important;
+}
+
+html.light .border-violet-600\/40,
+html.light .border-violet-600\/50 {
+  border-color: rgb(124 58 237 / 0.3) !important;
+}
+
+
+html.light [class*="shadow-[0_0_"] {
+  box-shadow: 0 4px 14px -6px rgba(109, 40, 217, 0.25) !important;
 }

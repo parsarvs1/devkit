@@ -122,7 +122,7 @@ export default function JsonFormatterPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       <TrackToolUsage
         toolName="JSON Formatter"
         toolHref="/tools/json-formatter"
@@ -135,7 +135,7 @@ export default function JsonFormatterPage() {
       />
 
       {/* Navigation */}
-      <nav className="border-b border-zinc-800">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -145,7 +145,7 @@ export default function JsonFormatterPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       {/* Main content */}
       <section className="mx-auto max-w-6xl px-6 py-14">
@@ -180,7 +180,7 @@ export default function JsonFormatterPage() {
           {/* Input */}
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-sm font-medium">
+              <h2 id="json-input-heading" className="text-sm font-medium">
                 Input
               </h2>
 
@@ -197,7 +197,8 @@ export default function JsonFormatterPage() {
                 <button
                   type="button"
                   onClick={clearAll}
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+                  disabled={!input.trim() && !output}
+                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   <Trash2 size={15} />
                   Clear
@@ -208,6 +209,9 @@ export default function JsonFormatterPage() {
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              aria-labelledby="json-input-heading"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "json-error" : undefined}
               placeholder='{"name":"John","age":25}'
               spellCheck={false}
               className="h-96 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
@@ -218,7 +222,8 @@ export default function JsonFormatterPage() {
               <button
                 type="button"
                 onClick={handleFormatJson}
-                className="flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200"
+                disabled={!input.trim()}
+                className="flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Sparkles size={16} />
                 Format
@@ -227,7 +232,8 @@ export default function JsonFormatterPage() {
               <button
                 type="button"
                 onClick={handleMinifyJson}
-                className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white"
+                disabled={!input.trim()}
+                className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Minimize2 size={16} />
                 Minify
@@ -236,7 +242,11 @@ export default function JsonFormatterPage() {
 
             {/* Error */}
             {error && (
-              <p className="mt-3 text-sm text-red-400">
+              <p
+                id="json-error"
+                role="alert"
+                className="mt-3 text-sm text-red-400"
+              >
                 {error}
               </p>
             )}
@@ -249,20 +259,22 @@ export default function JsonFormatterPage() {
                 Output
               </h2>
 
-              {output && (
-                <button
-                  type="button"
-                  onClick={copyOutput}
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                >
-                  <Copy size={15} />
+              <button
+                type="button"
+                onClick={copyOutput}
+                disabled={!output}
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <Copy size={15} />
 
-                  {copied ? "Copied!" : "Copy"}
-                </button>
-              )}
+                {copied ? "Copied!" : "Copy"}
+              </button>
             </div>
 
-            <pre className="h-96 overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300">
+            <pre
+              role="status"
+              className="h-96 overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300"
+            >
               {output || "Formatted JSON will appear here..."}
             </pre>
           </div>

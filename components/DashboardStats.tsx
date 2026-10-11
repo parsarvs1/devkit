@@ -17,6 +17,7 @@ interface RecentTool {
 export default function DashboardStats() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [recentTools, setRecentTools] = useState<RecentTool[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     // Favorites and recents are hydrated from localStorage on mount.
@@ -50,7 +51,56 @@ export default function DashboardStats() {
       setRecentTools([]);
     }
     /* eslint-enable react-hooks/set-state-in-effect */
+
+    setLoaded(true);
   }, []);
+
+  if (!loaded) {
+    return (
+      <div
+        className="animate-pulse"
+        aria-hidden="true"
+      >
+        {/* Stat tiles */}
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[0, 1, 2].map((index) => (
+            <div
+              key={index}
+              className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 shrink-0 rounded-lg border border-zinc-800 bg-zinc-800/60" />
+
+                <div className="space-y-2">
+                  <div className="h-3 w-24 rounded bg-zinc-800/60" />
+
+                  <div className="h-5 w-12 rounded bg-zinc-800/40" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Panels */}
+
+        {[0, 1].map((index) => (
+          <div
+            key={index}
+            className="mt-5 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 sm:mt-8"
+          >
+            <div className="space-y-2">
+              <div className="h-4 w-36 rounded bg-zinc-800/60" />
+
+              <div className="h-3 w-52 rounded bg-zinc-800/40" />
+            </div>
+
+            <div className="mt-5 h-20 rounded-lg border border-zinc-800/60 bg-zinc-800/30" />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <>

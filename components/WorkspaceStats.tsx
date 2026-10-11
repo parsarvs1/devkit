@@ -13,10 +13,11 @@ import { tools } from "@/data/tools";
 import  usePinnedTools  from "@/hooks/usePinnedTools";
 
 export default function WorkspaceStats() {
-  const { pinnedTools } = usePinnedTools();
+  const { pinnedTools, loaded: pinsLoaded } = usePinnedTools();
 
   const [recentTools, setRecentTools] = useState<string[]>([]);
   const [snippetCount, setSnippetCount] = useState(0);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     // Recents and snippet count are hydrated from localStorage on mount.
@@ -50,7 +51,42 @@ export default function WorkspaceStats() {
       setSnippetCount(0);
     }
     /* eslint-enable react-hooks/set-state-in-effect */
+
+    setLoaded(true);
   }, []);
+
+  // Wait for both sources (pins from the hook, the rest locally)
+  // so counts do not flash 0 before hydration.
+
+  if (!loaded || !pinsLoaded) {
+    return (
+      <div
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        aria-hidden="true"
+      >
+        {[0, 1, 2, 3].map((index) => (
+          <div
+            key={index}
+            className="animate-pulse rounded-2xl border border-zinc-800 bg-zinc-900/30 p-5"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 shrink-0 rounded-xl border border-zinc-800 bg-zinc-800/60" />
+
+                <div className="space-y-2">
+                  <div className="h-3 w-24 rounded bg-zinc-800/60" />
+
+                  <div className="h-2.5 w-32 rounded bg-zinc-800/40" />
+                </div>
+              </div>
+
+              <div className="h-6 w-8 rounded bg-zinc-800/60" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

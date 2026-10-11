@@ -11,8 +11,13 @@ import {
   type ToolHistoryItem,
 } from "@/lib/toolHistory";
 
+import {
+  ToolRowSkeleton,
+} from "@/components/ToolCardSkeleton";
+
 export default function ToolHistory() {
   const [history, setHistory] = useState<ToolHistoryItem[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   function loadHistory() {
     setHistory(getToolHistory());
@@ -22,6 +27,8 @@ export default function ToolHistory() {
     // History is hydrated from localStorage once on mount.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadHistory();
+
+    setLoaded(true);
 
     function handleUpdate() {
       loadHistory();
@@ -39,6 +46,34 @@ export default function ToolHistory() {
       );
     };
   }, []);
+
+  if (!loaded) {
+    // Skeletons while history hydrates from localStorage.
+
+    return (
+      <section>
+        <div className="mb-6 flex items-center gap-2">
+          <Clock3 size={18} className="text-zinc-400" />
+
+          <div>
+            <h2 className="text-lg font-semibold">
+              Tool History
+            </h2>
+
+            <p className="mt-1 text-sm text-zinc-500">
+              Your recently used tools will appear here.
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {[0, 1, 2].map((index) => (
+            <ToolRowSkeleton key={index} />
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   if (history.length === 0) {
     return (

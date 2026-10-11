@@ -14,12 +14,14 @@ import {
   Check,
   Menu,
   X,
+  Search,
 } from "lucide-react";
 
 import { useSession, signOut } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useTheme } from "@/components/ThemeProvider";
+import { openCommandPalette } from "@/lib/openCommandPalette";
 
 type Theme = "light" | "dark" | "system";
 
@@ -32,7 +34,54 @@ export default function Navbar() {
   const [themeOpen, setThemeOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const navRef = useRef<HTMLElement>(null);
+
   const isLoggedIn = status === "authenticated";
+
+  /*
+   * Close every open menu on Escape, and on any click outside the
+   * navbar. Without this, dropdowns stay open while keyboard users
+   * tab away from them.
+   */
+
+  useEffect(() => {
+    if (!open && !themeOpen && !mobileOpen) {
+      return;
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpen(false);
+        setThemeOpen(false);
+        setMobileOpen(false);
+      }
+    }
+
+    function handlePointerDown(event: MouseEvent) {
+      if (
+        navRef.current &&
+        !navRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+        setThemeOpen(false);
+        setMobileOpen(false);
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener(
+      "mousedown",
+      handlePointerDown,
+    );
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener(
+        "mousedown",
+        handlePointerDown,
+      );
+    };
+  }, [open, themeOpen, mobileOpen]);
 
   function changeTheme(newTheme: Theme) {
     setTheme(newTheme);
@@ -58,7 +107,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="border-b border-zinc-800 bg-zinc-950">
+    <nav ref={navRef} className="border-b border-zinc-800 bg-zinc-950">
       <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
 
         {/* =========================
@@ -82,6 +131,17 @@ export default function Navbar() {
         ========================== */}
 
         <div className="hidden items-center gap-6 text-sm text-zinc-400 md:flex">
+
+          {/* Search */}
+
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            aria-label="Search DevKit (Ctrl+K)"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:border-zinc-700 hover:text-white"
+          >
+            <Search size={17} />
+          </button>
 
           {/* Home */}
 
@@ -122,19 +182,27 @@ export default function Navbar() {
                 setOpen(false);
               }}
               aria-label="Change theme"
+              aria-expanded={themeOpen}
+              aria-haspopup="menu"
               className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:border-zinc-700 hover:text-white"
             >
               {getThemeIcon()}
             </button>
 
             {themeOpen && (
-              <div className="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-1 shadow-2xl">
+              <div
+                role="menu"
+                aria-label="Theme options"
+                className="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-1 shadow-2xl"
+              >
 
                 {/* Light */}
 
                 <button
                   type="button"
                   onClick={() => changeTheme("light")}
+                  role="menuitemradio"
+                  aria-checked={theme === "light"}
                   className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
                 >
                   <span className="flex items-center gap-3">
@@ -155,6 +223,8 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => changeTheme("dark")}
+                  role="menuitemradio"
+                  aria-checked={theme === "dark"}
                   className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
                 >
                   <span className="flex items-center gap-3">
@@ -175,6 +245,8 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => changeTheme("system")}
+                  role="menuitemradio"
+                  aria-checked={theme === "system"}
                   className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
                 >
                   <span className="flex items-center gap-3">
@@ -210,6 +282,9 @@ export default function Navbar() {
                   setOpen((value) => !value);
                   setThemeOpen(false);
                 }}
+                aria-label="Account menu"
+                aria-expanded={open}
+                aria-haspopup="menu"
                 className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-300 transition hover:border-zinc-700 hover:text-white"
               >
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800">
@@ -228,7 +303,11 @@ export default function Navbar() {
               {/* Dashboard Dropdown */}
 
               {open && (
-                <div className="absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl">
+              <div
+                role="menu"
+                aria-label="Account menu"
+                className="absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl"
+              >
 
                   {/* User Info */}
 
@@ -249,6 +328,7 @@ export default function Navbar() {
                     <Link
                       href="/dashboard"
                       onClick={() => setOpen(false)}
+                      role="menuitem"
                       className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
                     >
                       <LayoutDashboard size={16} />
@@ -261,6 +341,7 @@ export default function Navbar() {
                     <Link
                       href="/settings"
                       onClick={() => setOpen(false)}
+                      role="menuitem"
                       className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
                     >
                       <Settings size={16} />
@@ -274,6 +355,7 @@ export default function Navbar() {
                   <div className="border-t border-zinc-800 p-1">
                     <button
                       type="button"
+                      role="menuitem"
                       onClick={() =>
                         signOut({
                           callbackUrl: "/",
@@ -305,6 +387,17 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2 md:hidden">
 
+          {/* Mobile Search */}
+
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            aria-label="Search DevKit (Ctrl+K)"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:border-zinc-700 hover:text-white"
+          >
+            <Search size={17} />
+          </button>
+
           {/* Mobile Theme */}
 
           <div className="relative">
@@ -315,19 +408,27 @@ export default function Navbar() {
                 setMobileOpen(false);
               }}
               aria-label="Change theme"
+              aria-expanded={themeOpen}
+              aria-haspopup="menu"
               className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:border-zinc-700 hover:text-white"
             >
               {getThemeIcon()}
             </button>
 
             {themeOpen && (
-              <div className="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-1 shadow-2xl">
+              <div
+                role="menu"
+                aria-label="Theme options"
+                className="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-1 shadow-2xl"
+              >
 
                 {/* Light */}
 
                 <button
                   type="button"
                   onClick={() => changeTheme("light")}
+                  role="menuitemradio"
+                  aria-checked={theme === "light"}
                   className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
                 >
                   <span className="flex items-center gap-3">
@@ -348,6 +449,8 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => changeTheme("dark")}
+                  role="menuitemradio"
+                  aria-checked={theme === "dark"}
                   className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
                 >
                   <span className="flex items-center gap-3">
@@ -368,6 +471,8 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => changeTheme("system")}
+                  role="menuitemradio"
+                  aria-checked={theme === "system"}
                   className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
                 >
                   <span className="flex items-center gap-3">

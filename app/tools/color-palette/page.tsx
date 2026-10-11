@@ -209,7 +209,7 @@ export default function ColorPalettePage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       <div className="mx-auto max-w-6xl px-6 py-10">
 
         <Link
@@ -242,13 +242,17 @@ export default function ColorPalettePage() {
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
 
             <div className="flex-1">
-              <label className="mb-2 block text-sm text-zinc-400">
+              <label
+                htmlFor="base-color"
+                className="mb-2 block text-sm text-zinc-400"
+              >
                 Base Color
               </label>
 
               <div className="flex gap-3">
 
                 <input
+                  id="base-color"
                   type="color"
                   value={color}
                   onChange={(event) => {
@@ -371,7 +375,10 @@ export default function ColorPalettePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-11">
+          <div
+            className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-11"
+            role="status"
+          >
             {palette.map((item) => (
               <button
                 key={item.name}

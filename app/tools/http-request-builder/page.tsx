@@ -155,15 +155,15 @@ setTimeout(() => {
 }
 
 return (
-<main className="min-h-screen bg-zinc-950 text-white">
-<nav className="border-b border-zinc-800">
+<main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+<header className="border-b border-zinc-800">
 <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
 <Link href="/tools" className="flex items-center gap-2 text-sm text-zinc-400 transition hover:text-white" >
 <ArrowLeft size={18} />
 Back to tools
 </Link>
 </div>
-</nav>
+</header>
 
   <section className="mx-auto max-w-6xl px-6 py-14">
     <div className="mb-10">
@@ -202,6 +202,7 @@ Back to tools
           <select
             value={method}
             onChange={(e) => setMethod(e.target.value)}
+            aria-label="HTTP method"
             className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm font-medium outline-none focus:border-zinc-600"
           >
             <option>GET</option>
@@ -215,6 +216,9 @@ Back to tools
           <input
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            aria-label="Request URL"
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? "request-url-error" : undefined}
             placeholder="https://api.example.com/data"
             spellCheck={false}
             className="flex-1 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 font-mono text-sm outline-none placeholder:text-zinc-600 focus:border-zinc-600"
@@ -253,6 +257,7 @@ Back to tools
                       e.target.value
                     )
                   }
+                  aria-label={`Header ${index + 1} name`}
                   placeholder="Content-Type"
                   className="min-w-0 flex-1 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2.5 font-mono text-xs outline-none placeholder:text-zinc-600 focus:border-zinc-600"
                 />
@@ -266,12 +271,14 @@ Back to tools
                       e.target.value
                     )
                   }
+                  aria-label={`Header ${index + 1} value`}
                   placeholder="application/json"
                   className="min-w-0 flex-1 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2.5 font-mono text-xs outline-none placeholder:text-zinc-600 focus:border-zinc-600"
                 />
 
                 <button
                   onClick={() => removeHeader(index)}
+                  aria-label={`Remove header row ${index + 1}`}
                   className="rounded-lg border border-zinc-800 bg-zinc-900 px-3 text-zinc-500 transition hover:border-red-900 hover:text-red-400"
                 >
                   <Trash2 size={15} />
@@ -292,6 +299,7 @@ Back to tools
             <textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
+              aria-label="Request body"
               placeholder='{"name":"Parsa","role":"developer"}'
               spellCheck={false}
               className="h-48 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-4 font-mono text-sm leading-6 outline-none placeholder:text-zinc-600 focus:border-zinc-600"
@@ -310,7 +318,11 @@ Back to tools
         </button>
 
         {error && (
-          <p className="mt-3 rounded-lg border border-red-900/50 bg-red-950/20 p-3 text-sm text-red-400">
+          <p
+            id="request-url-error"
+            role="alert"
+            className="mt-3 rounded-lg border border-red-900/50 bg-red-950/20 p-3 text-sm text-red-400"
+          >
             {error}
           </p>
         )}
@@ -326,29 +338,34 @@ Back to tools
             </h2>
 
             {status && (
-              <span className="rounded-md border border-zinc-800 bg-zinc-900 px-2 py-1 font-mono text-xs text-zinc-400">
+              <span
+                role="status"
+                className="rounded-md border border-zinc-800 bg-zinc-900 px-2 py-1 font-mono text-xs text-zinc-400"
+              >
                 {status}
               </span>
             )}
           </div>
 
-          {response && (
-            <button
-              onClick={copyResponse}
-              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-            >
-              {copied ? (
-                <Check size={15} />
-              ) : (
-                <Copy size={15} />
-              )}
+          <button
+            onClick={copyResponse}
+            disabled={!response}
+            className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+          >
+            {copied ? (
+              <Check size={15} />
+            ) : (
+              <Copy size={15} />
+            )}
 
-              {copied ? "Copied!" : "Copy"}
-            </button>
-          )}
+            {copied ? "Copied!" : "Copy"}
+          </button>
         </div>
 
-        <pre className="min-h-[520px] max-h-[700px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300">
+        <pre
+          role="status"
+          className="min-h-[520px] max-h-[700px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300"
+        >
           {response ||
             "Response will appear here..."}
         </pre>

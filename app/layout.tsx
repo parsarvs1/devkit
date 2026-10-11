@@ -99,6 +99,13 @@ export default function RootLayout({
       <body>
         <SessionProvider>
           <ThemeProvider>
+            <a
+              href="#main-content"
+              className="skip-to-content"
+            >
+              Skip to content
+            </a>
+
             {children}
             <ToolUsageTracker/>
             <CommandPalette />

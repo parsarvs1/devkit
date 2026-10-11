@@ -33,8 +33,9 @@ export default async function DashboardPage() {
   const userInitial = userName.charAt(0).toUpperCase();
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <div className="flex min-h-screen flex-col bg-zinc-950 text-white">
       <Navbar />
+      <main id="main-content" className="flex-1">
 
       <section className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         {/* HEADER */}
@@ -267,7 +268,9 @@ export default async function DashboardPage() {
         </section>
       </section>
 
+      </main>
+
       <Footer />
-    </main>
+    </div>
   );
 }

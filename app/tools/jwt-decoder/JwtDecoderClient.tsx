@@ -153,7 +153,7 @@ export default function JwtDecoderClient() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       <TrackToolUsage
         toolName="JWT Decoder"
         toolHref="/tools/jwt-decoder"
@@ -165,7 +165,7 @@ export default function JwtDecoderClient() {
         href="/tools/jwt-decoder"
       />
 
-      <nav className="border-b border-zinc-800">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -175,7 +175,7 @@ export default function JwtDecoderClient() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="mb-10">
@@ -198,7 +198,8 @@ export default function JwtDecoderClient() {
             <button
               type="button"
               onClick={shareTool}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:bg-zinc-800 hover:text-white"
+              disabled={!token.trim()}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:bg-zinc-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               {shared ? (
                 <>
@@ -217,14 +218,15 @@ export default function JwtDecoderClient() {
 
         <div>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-medium">
+            <h2 id="jwt-token-heading" className="text-sm font-medium">
               JWT Token
             </h2>
 
             <button
               type="button"
               onClick={clearAll}
-              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+              disabled={!token.trim() && !header && !payload}
+              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
             >
               <Trash2 size={15} />
               Clear
@@ -234,6 +236,9 @@ export default function JwtDecoderClient() {
           <textarea
             value={token}
             onChange={(e) => setToken(e.target.value)}
+            aria-labelledby="jwt-token-heading"
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? "jwt-error" : undefined}
             placeholder="Paste your JWT token here..."
             spellCheck={false}
             className="h-40 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
@@ -242,13 +247,18 @@ export default function JwtDecoderClient() {
           <button
             type="button"
             onClick={decodeToken}
-            className="mt-4 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200"
+            disabled={!token.trim()}
+            className="mt-4 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Decode JWT
           </button>
 
           {error && (
-            <p className="mt-3 text-sm text-red-400">
+            <p
+              id="jwt-error"
+              role="alert"
+              className="mt-3 text-sm text-red-400"
+            >
               {error}
             </p>
           )}
@@ -261,24 +271,26 @@ export default function JwtDecoderClient() {
                 Header
               </h2>
 
-              {header && (
-                <button
-                  type="button"
-                  onClick={() =>
-                    copyJson(header, "header")
-                  }
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                >
-                  <Copy size={15} />
+              <button
+                type="button"
+                onClick={() =>
+                  copyJson(header, "header")
+                }
+                disabled={!header}
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <Copy size={15} />
 
-                  {copied === "header"
-                    ? "Copied!"
-                    : "Copy"}
-                </button>
-              )}
+                {copied === "header"
+                  ? "Copied!"
+                  : "Copy"}
+              </button>
             </div>
 
-            <pre className="min-h-64 overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300">
+            <pre
+              role="status"
+              className="min-h-64 overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300"
+            >
               {header
                 ? JSON.stringify(header, null, 2)
                 : "Decoded header will appear here..."}
@@ -291,24 +303,26 @@ export default function JwtDecoderClient() {
                 Payload
               </h2>
 
-              {payload && (
-                <button
-                  type="button"
-                  onClick={() =>
-                    copyJson(payload, "payload")
-                  }
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                >
-                  <Copy size={15} />
+              <button
+                type="button"
+                onClick={() =>
+                  copyJson(payload, "payload")
+                }
+                disabled={!payload}
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <Copy size={15} />
 
-                  {copied === "payload"
-                    ? "Copied!"
-                    : "Copy"}
-                </button>
-              )}
+                {copied === "payload"
+                  ? "Copied!"
+                  : "Copy"}
+              </button>
             </div>
 
-            <pre className="min-h-64 overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300">
+            <pre
+              role="status"
+              className="min-h-64 overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300"
+            >
               {payload
                 ? JSON.stringify(payload, null, 2)
                 : "Decoded payload will appear here..."}

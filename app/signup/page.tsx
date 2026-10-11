@@ -60,7 +60,7 @@ export default function SignupPage() {
 
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
 
       <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
 
@@ -101,7 +101,10 @@ export default function SignupPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-zinc-400">
+            <label
+              htmlFor="name"
+              className="mb-2 block text-sm text-zinc-400"
+            >
               Name
             </label>
 
@@ -115,11 +118,15 @@ export default function SignupPage() {
 
 
               <input
+                id="name"
                 type="text"
+                autoComplete="name"
                 value={name}
                 onChange={(e)=>setName(e.target.value)}
                 placeholder="Your name"
                 required
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "signup-error" : undefined}
                 className="h-11 w-full rounded-lg border border-zinc-800 bg-zinc-900 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
               />
 
@@ -129,7 +136,10 @@ export default function SignupPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-zinc-400">
+            <label
+              htmlFor="email"
+              className="mb-2 block text-sm text-zinc-400"
+            >
               Email
             </label>
 
@@ -143,11 +153,15 @@ export default function SignupPage() {
 
 
               <input
+                id="email"
                 type="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e)=>setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "signup-error" : undefined}
                 className="h-11 w-full rounded-lg border border-zinc-800 bg-zinc-900 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
               />
 
@@ -157,7 +171,10 @@ export default function SignupPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-zinc-400">
+            <label
+              htmlFor="password"
+              className="mb-2 block text-sm text-zinc-400"
+            >
               Password
             </label>
 
@@ -171,11 +188,16 @@ export default function SignupPage() {
 
 
               <input
+                id="password"
                 type="password"
+                autoComplete="new-password"
                 value={password}
                 onChange={(e)=>setPassword(e.target.value)}
                 placeholder="Create a password"
                 required
+                minLength={6}
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "signup-error" : undefined}
                 className="h-11 w-full rounded-lg border border-zinc-800 bg-zinc-900 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
               />
 
@@ -188,7 +210,11 @@ export default function SignupPage() {
 
           {error && (
 
-            <div className="rounded-lg border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-400">
+            <div
+              id="signup-error"
+              role="alert"
+              className="rounded-lg border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-400"
+            >
 
               {error}
 

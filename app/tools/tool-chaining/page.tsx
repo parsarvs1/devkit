@@ -440,8 +440,8 @@ export default function ToolChainingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <nav className="border-b border-zinc-800">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -451,7 +451,7 @@ export default function ToolChainingPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         <div className="mb-10">
@@ -511,6 +511,7 @@ export default function ToolChainingPage() {
 
                         <select
                           value={step.tool}
+                          aria-label={`Step ${index + 1} tool`}
                           onChange={(event) =>
                             updateStep(
                               step.id,
@@ -531,6 +532,7 @@ export default function ToolChainingPage() {
 
                         <button
                           onClick={() => removeStep(step.id)}
+                          aria-label={`Remove step ${index + 1}`}
                           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-zinc-600 transition hover:bg-red-950/30 hover:text-red-400"
                           title="Remove step"
                         >
@@ -549,6 +551,7 @@ export default function ToolChainingPage() {
                               moveStep(index, -1)
                             }
                             disabled={index === 0}
+                            aria-label={`Move step ${index + 1} up`}
                             className="rounded px-2 text-xs text-zinc-600 transition hover:text-white disabled:opacity-30"
                           >
                             ↑
@@ -561,6 +564,7 @@ export default function ToolChainingPage() {
                             disabled={
                               index === steps.length - 1
                             }
+                            aria-label={`Move step ${index + 1} down`}
                             className="rounded px-2 text-xs text-zinc-600 transition hover:text-white disabled:opacity-30"
                           >
                             ↓
@@ -618,6 +622,9 @@ export default function ToolChainingPage() {
                 onChange={(event) =>
                   setInput(event.target.value)
                 }
+                aria-label="Chain input"
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? "chain-error" : undefined}
                 spellCheck={false}
                 className="h-64 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300 outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
                 placeholder="Enter your chain input..."
@@ -630,29 +637,35 @@ export default function ToolChainingPage() {
                   Final Output
                 </h2>
 
-                {output && (
-                  <button
-                    onClick={copyOutput}
-                    className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                  >
-                    {copied ? (
-                      <Check size={15} />
-                    ) : (
-                      <Copy size={15} />
-                    )}
+                <button
+                  onClick={copyOutput}
+                  disabled={!output}
+                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  {copied ? (
+                    <Check size={15} />
+                  ) : (
+                    <Copy size={15} />
+                  )}
 
-                    {copied ? "Copied!" : "Copy"}
-                  </button>
-                )}
+                  {copied ? "Copied!" : "Copy"}
+                </button>
               </div>
 
-              <pre className="min-h-64 max-h-[500px] overflow-auto whitespace-pre-wrap rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300">
+              <pre
+                role="status"
+                className="min-h-64 max-h-[500px] overflow-auto whitespace-pre-wrap rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-6 text-zinc-300"
+              >
                 {output ||
                   "The final output of your chain will appear here..."}
               </pre>
 
               {error && (
-                <div className="mt-3 rounded-lg border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-400">
+                <div
+                  id="chain-error"
+                  role="alert"
+                  className="mt-3 rounded-lg border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-400"
+                >
                   {error}
                 </div>
               )}

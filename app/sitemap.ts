@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { tools } from "@/data/tools";
+import { categories, categoryToSlug } from "@/lib/categories";
 
 const SITE_URL =
   "https://devkit.pars-paris1.workers.dev";
@@ -27,6 +28,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
+  const categoryPages: MetadataRoute.Sitemap = categories.map(
+    (category) => ({
+      url: `${SITE_URL}/tools/category/${categoryToSlug(category)}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    }),
+  );
+
   const toolPages: MetadataRoute.Sitemap = tools.map((tool) => ({
     url: `${SITE_URL}${tool.href}`,
     lastModified: new Date(),
@@ -34,5 +44,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticPages, ...toolPages];
+  return [...staticPages, ...categoryPages, ...toolPages];
 }

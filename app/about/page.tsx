@@ -22,8 +22,9 @@ export default function AboutPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <div className="flex min-h-screen flex-col bg-zinc-950 text-white">
       <Navbar />
+      <main id="main-content" className="flex-1">
 
       <section className="mx-auto max-w-4xl px-6 py-20">
         {/* Header */}
@@ -181,7 +182,9 @@ export default function AboutPage() {
         </div>
       </section>
 
+      </main>
+
       <Footer />
-    </main>
+    </div>
   );
 }

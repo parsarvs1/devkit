@@ -31,10 +31,10 @@ export default function MarkdownPreviewPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       {/* Navigation */}
 
-      <nav className="border-b border-zinc-800">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -44,7 +44,7 @@ export default function MarkdownPreviewPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       {/* Header */}
 
@@ -77,7 +77,8 @@ export default function MarkdownPreviewPage() {
 
               <button
                 onClick={clearAll}
-                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+                disabled={!markdown.trim()}
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <Trash2 size={15} />
                 Clear
@@ -89,6 +90,7 @@ export default function MarkdownPreviewPage() {
               onChange={(e) =>
                 setMarkdown(e.target.value)
               }
+              aria-label="Markdown input"
               placeholder="# Start writing..."
               className="h-[500px] w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 font-mono text-sm leading-7 text-zinc-300 outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
             />
@@ -103,7 +105,10 @@ export default function MarkdownPreviewPage() {
               </h2>
             </div>
 
-            <div className="h-[500px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+            <div
+              role="status"
+              className="h-[500px] overflow-auto rounded-xl border border-zinc-800 bg-zinc-900 p-6"
+            >
               {markdown.trim() ? (
                 <article className="markdown-body max-w-none">
                   <ReactMarkdown

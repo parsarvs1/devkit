@@ -47,7 +47,43 @@ export default function RecentTools() {
     setRecentTools([]);
   }
 
-  if (!loaded || recentTools.length === 0) {
+  if (!loaded) {
+    // Skeletons while recents hydrate from localStorage.
+
+    return (
+      <section className="mb-12">
+        <div className="mb-4 flex items-center gap-2">
+          <Clock3
+            size={17}
+            className="text-zinc-500"
+          />
+
+          <h2 className="text-sm font-medium text-white">
+            Recently Used
+          </h2>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[0, 1, 2, 3, 4, 5].map((index) => (
+            <div
+              key={index}
+              aria-hidden="true"
+              className="flex animate-pulse items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/40 px-4 py-3"
+            >
+              <div className="h-3.5 w-1/2 rounded bg-zinc-800/60" />
+
+              <ArrowUpRight
+                size={15}
+                className="text-zinc-800"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (recentTools.length === 0) {
     return null;
   }
 

@@ -141,8 +141,8 @@ try {
 }
 
 return (
-<main className="min-h-screen bg-zinc-950 text-white">
-<nav className="border-b border-zinc-800">
+<main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+<header className="border-b border-zinc-800">
 <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
 <Link href="/tools" className="flex items-center gap-2 text-sm text-zinc-400 transition hover:text-white" >
 <ArrowLeft size={18} />
@@ -151,13 +151,14 @@ Back to tools
 
       <button
         onClick={clearAll}
-        className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+        disabled={!password}
+        className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
       >
         <Trash2 size={15} />
         Clear
       </button>
     </div>
-  </nav>
+  </header>
 
   <section className="mx-auto max-w-6xl px-6 py-14">
     <div className="mb-10">
@@ -180,28 +181,29 @@ Back to tools
 
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-medium">
+          <h2 id="password-heading" className="text-sm font-medium">
             Password
           </h2>
 
-          {password && (
             <button
               onClick={copyPassword}
-              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+              disabled={!password}
+              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
             >
               <Copy size={15} />
               {copied ? "Copied!" : "Copy"}
             </button>
-          )}
         </div>
 
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
+            autoComplete="off"
             value={password}
             onChange={(event) =>
               setPassword(event.target.value)
             }
+            aria-labelledby="password-heading"
             placeholder="Enter a password..."
             spellCheck={false}
             className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-4 pr-14 font-mono text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
@@ -209,6 +211,7 @@ Back to tools
 
           <button
             type="button"
+            aria-label="Toggle password visibility"
             onClick={() =>
               setShowPassword((current) => !current)
             }
@@ -224,7 +227,10 @@ Back to tools
 
         {/* Strength */}
 
-        <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+        <div
+          className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+          role="status"
+        >
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShieldCheck

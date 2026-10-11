@@ -43,6 +43,7 @@ export default function ShareButton({
     <button
       type="button"
       onClick={handleShare}
+      aria-label={copied ? "Link copied" : "Share this tool"}
       className="inline-flex h-10 items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-3.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:bg-zinc-800 hover:text-white"
     >
       {copied ? (

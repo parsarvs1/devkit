@@ -59,7 +59,7 @@ export default function JsonToTypeScriptPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       <div className="mx-auto max-w-6xl px-6 py-10">
 
         <Link
@@ -110,6 +110,9 @@ export default function JsonToTypeScriptPage() {
                 setInput(event.target.value);
                 setError("");
               }}
+              aria-label="JSON input"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "ts-error" : undefined}
               spellCheck={false}
               placeholder='{"name":"Parsa","age":20}'
               className="min-h-[420px] w-full resize-y bg-transparent p-5 font-mono text-sm leading-7 text-zinc-300 outline-none placeholder:text-zinc-700"
@@ -144,7 +147,10 @@ export default function JsonToTypeScriptPage() {
               </button>
             </div>
 
-            <pre className="min-h-[420px] overflow-auto p-5 font-mono text-sm leading-7 text-zinc-300">
+            <pre
+              role="status"
+              className="min-h-[420px] overflow-auto p-5 font-mono text-sm leading-7 text-zinc-300"
+            >
               {output || (
                 <span className="text-zinc-700">
                   Your TypeScript interface will appear here...
@@ -156,7 +162,11 @@ export default function JsonToTypeScriptPage() {
         </div>
 
         {error && (
-          <div className="mt-4 rounded-lg border border-red-900/50 bg-red-950/20 px-4 py-3 text-sm text-red-400">
+          <div
+            id="ts-error"
+            role="alert"
+            className="mt-4 rounded-lg border border-red-900/50 bg-red-950/20 px-4 py-3 text-sm text-red-400"
+          >
             {error}
           </div>
         )}

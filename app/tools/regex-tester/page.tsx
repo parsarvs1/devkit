@@ -20,7 +20,8 @@ export default function RegexTesterPage() {
   const [flags, setFlags] = useState("g");
   const [text, setText] = useState("");
   const [matches, setMatches] = useState<string[]>([]);
-  const [error, setError] = useState("");
+  const [patternError, setPatternError] = useState("");
+  const [textError, setTextError] = useState("");
   const [running, setRunning] = useState(false);
 
   const workerRef = useRef<Worker | null>(null);
@@ -57,14 +58,14 @@ export default function RegexTesterPage() {
       setRunning(false);
 
       if (workerError) {
-        setError("Invalid regular expression or flags.");
+        setPatternError("Invalid regular expression or flags.");
       } else {
         setMatches(result);
       }
     };
     worker.onerror = () => {
       setRunning(false);
-      setError("Something went wrong while testing the expression.");
+      setPatternError("Something went wrong while testing the expression.");
     };
 
     workerRef.current = worker;
@@ -72,16 +73,17 @@ export default function RegexTesterPage() {
   }
 
   function testRegex() {
-    setError("");
+    setPatternError("");
+    setTextError("");
     setMatches([]);
 
     if (!pattern) {
-      setError("Please enter a regular expression.");
+      setPatternError("Please enter a regular expression.");
       return;
     }
 
     if (text.length > MAX_TEXT_LENGTH) {
-      setError(
+      setTextError(
         `Text is too long for in-browser testing (limit ${MAX_TEXT_LENGTH.toLocaleString()} characters).`
       );
       return;
@@ -100,7 +102,7 @@ export default function RegexTesterPage() {
           setMatches(foundMatches);
         }
       } catch {
-        setError("Invalid regular expression or flags.");
+        setPatternError("Invalid regular expression or flags.");
       }
       return;
     }
@@ -112,7 +114,7 @@ export default function RegexTesterPage() {
       worker.postMessage({ pattern, flags, text, id });
     } catch {
       setRunning(false);
-      setError("Invalid regular expression or flags.");
+      setPatternError("Invalid regular expression or flags.");
       return;
     }
 
@@ -121,7 +123,7 @@ export default function RegexTesterPage() {
     setTimeout(() => {
       if (id === requestIdRef.current) {
         setRunning(false);
-        setError(
+        setPatternError(
           "Timed out. This pattern may require catastrophic backtracking."
         );
       }
@@ -134,12 +136,13 @@ export default function RegexTesterPage() {
     setFlags("g");
     setText("");
     setMatches([]);
-    setError("");
+    setPatternError("");
+    setTextError("");
     setRunning(false);
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
 
       <TrackToolUsage
         toolName="Regex Tester"
@@ -152,7 +155,7 @@ export default function RegexTesterPage() {
         href="/tools/regex-tester"
       />
 
-      <nav className="border-b border-zinc-800">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -162,7 +165,7 @@ export default function RegexTesterPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-6xl px-6 py-14">
 
@@ -213,6 +216,11 @@ export default function RegexTesterPage() {
                 <input
                   value={pattern}
                   onChange={(e) => setPattern(e.target.value)}
+                  aria-label="Regular expression pattern"
+                  aria-invalid={patternError ? true : undefined}
+                  aria-describedby={
+                    patternError ? "regex-pattern-error" : undefined
+                  }
                   placeholder="\d+"
                   spellCheck={false}
                   className="w-full bg-transparent py-3 font-mono text-sm outline-none placeholder:text-zinc-600"
@@ -227,6 +235,7 @@ export default function RegexTesterPage() {
               <input
                 value={flags}
                 onChange={(e) => setFlags(e.target.value)}
+                aria-label="Regular expression flags"
                 placeholder="g"
                 spellCheck={false}
                 className="w-20 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-3 font-mono text-sm outline-none placeholder:text-zinc-600 focus:border-zinc-600"
@@ -237,6 +246,9 @@ export default function RegexTesterPage() {
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
+              aria-label="Text to test"
+              aria-invalid={textError ? true : undefined}
+              aria-describedby={textError ? "regex-text-error" : undefined}
               placeholder="Enter text to test..."
               spellCheck={false}
               className="mt-4 h-64 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-900 p-5 text-sm leading-6 outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
@@ -246,15 +258,29 @@ export default function RegexTesterPage() {
               type="button"
               onClick={testRegex}
               disabled={running}
-              className="mt-4 flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-4 flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <RegexIcon size={16} />
               {running ? "Testing…" : "Test Regex"}
             </button>
 
-            {error && (
-              <p className="mt-3 text-sm text-red-400">
-                {error}
+            {patternError && (
+              <p
+                id="regex-pattern-error"
+                className="mt-3 text-sm text-red-400"
+                role="alert"
+              >
+                {patternError}
+              </p>
+            )}
+
+            {textError && (
+              <p
+                id="regex-text-error"
+                className="mt-3 text-sm text-red-400"
+                role="alert"
+              >
+                {textError}
               </p>
             )}
 
@@ -267,7 +293,10 @@ export default function RegexTesterPage() {
               Matches
             </h2>
 
-            <div className="min-h-64 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+            <div
+              role="status"
+              className="min-h-64 rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+            >
 
               {matches.length > 0 ? (
 

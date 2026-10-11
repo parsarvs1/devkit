@@ -16,8 +16,9 @@ import PinnedToolsWidget from "@/components/PinnedToolsWidget";
 
 export default function WorkspacePage() {
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <div className="flex min-h-screen flex-col bg-zinc-950 text-white">
       <Navbar />
+      <main id="main-content" className="flex-1">
 
       {/* HERO */}
       <section className="border-b border-zinc-900">
@@ -91,7 +92,9 @@ export default function WorkspacePage() {
         </div>
       </section>
 
+      </main>
+
       <Footer />
-    </main>
+    </div>
   );
 }

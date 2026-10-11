@@ -38,6 +38,36 @@ export default function ApiTesterPage() {
     "params" | "headers" | "body"
   >("params");
 
+  // Arrow-key navigation for the tablist, per the ARIA Authoring Practices.
+  const TAB_ORDER = ["params", "headers", "body"] as const;
+
+  function handleTabKeyDown(
+    event: React.KeyboardEvent<HTMLDivElement>,
+  ) {
+    const current = TAB_ORDER.indexOf(activeTab);
+    let next: number | null = null;
+
+    if (event.key === "ArrowRight") {
+      next = (current + 1) % TAB_ORDER.length;
+    } else if (event.key === "ArrowLeft") {
+      next =
+        (current - 1 + TAB_ORDER.length) % TAB_ORDER.length;
+    } else if (event.key === "Home") {
+      next = 0;
+    } else if (event.key === "End") {
+      next = TAB_ORDER.length - 1;
+    }
+
+    if (next === null) return;
+
+    event.preventDefault();
+    setActiveTab(TAB_ORDER[next]);
+
+    document
+      .getElementById(`api-tester-tab-${TAB_ORDER[next]}`)
+      ?.focus();
+  }
+
   const [response, setResponse] = useState("");
   const [status, setStatus] = useState<number | null>(null);
   const [responseTime, setResponseTime] = useState<number | null>(null);
@@ -218,11 +248,11 @@ export default function ApiTesterPage() {
         : "text-zinc-400";
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
 
       {/* Navigation */}
 
-      <nav className="border-b border-zinc-800">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
 
           <Link
@@ -234,7 +264,7 @@ export default function ApiTesterPage() {
           </Link>
 
         </div>
-      </nav>
+      </header>
 
       {/* Content */}
 
@@ -269,6 +299,7 @@ export default function ApiTesterPage() {
                   e.target.value as Method
                 )
               }
+              aria-label="HTTP method"
               className="h-11 rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-sm font-medium outline-none focus:border-zinc-600"
             >
               <option>GET</option>
@@ -283,6 +314,9 @@ export default function ApiTesterPage() {
               onChange={(e) =>
                 setUrl(e.target.value)
               }
+              aria-label="Request URL"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "api-tester-error" : undefined}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   sendRequest();
@@ -294,8 +328,8 @@ export default function ApiTesterPage() {
 
             <button
               onClick={sendRequest}
-              disabled={loading}
-              className="flex h-11 items-center justify-center gap-2 rounded-lg bg-white px-5 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={loading || !url.trim()}
+              className="flex h-11 items-center justify-center gap-2 rounded-lg bg-white px-5 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? (
                 <>
@@ -317,23 +351,27 @@ export default function ApiTesterPage() {
 
           {/* Tabs */}
 
-          <div className="flex border-b border-zinc-800">
+          <div
+            role="tablist"
+            aria-label="Request options"
+            onKeyDown={handleTabKeyDown}
+            className="flex border-b border-zinc-800"
+          >
 
-            {[
+            {([
               ["params", "Params"],
               ["headers", "Headers"],
               ["body", "Body"],
-            ].map(([value, label]) => (
+            ] as const).map(([value, label]) => (
               <button
                 key={value}
-                onClick={() =>
-                  setActiveTab(
-                    value as
-                      | "params"
-                      | "headers"
-                      | "body"
-                  )
-                }
+                type="button"
+                role="tab"
+                id={`api-tester-tab-${value}`}
+                aria-controls={`api-tester-panel-${value}`}
+                aria-selected={activeTab === value}
+                tabIndex={activeTab === value ? 0 : -1}
+                onClick={() => setActiveTab(value)}
                 className={`px-5 py-3 text-sm transition ${
                   activeTab === value
                     ? "border-b border-white text-white"
@@ -349,7 +387,13 @@ export default function ApiTesterPage() {
           {/* Params */}
 
           {activeTab === "params" && (
-            <div className="p-5">
+            <div
+              role="tabpanel"
+              id="api-tester-panel-params"
+              aria-labelledby="api-tester-tab-params"
+              tabIndex={0}
+              className="p-5 focus:outline-none"
+            >
 
               <div className="mb-3 grid grid-cols-[1fr_1fr_auto] gap-3 text-xs text-zinc-600">
                 <span>Key</span>
@@ -372,6 +416,7 @@ export default function ApiTesterPage() {
                         e.target.value
                       )
                     }
+                    aria-label={`Parameter ${index + 1} key`}
                     placeholder="page"
                     className="h-10 rounded-lg border border-zinc-800 bg-zinc-950 px-3 font-mono text-sm outline-none placeholder:text-zinc-700 focus:border-zinc-600"
                   />
@@ -386,6 +431,7 @@ export default function ApiTesterPage() {
                         e.target.value
                       )
                     }
+                    aria-label={`Parameter ${index + 1} value`}
                     placeholder="1"
                     className="h-10 rounded-lg border border-zinc-800 bg-zinc-950 px-3 font-mono text-sm outline-none placeholder:text-zinc-700 focus:border-zinc-600"
                   />
@@ -421,7 +467,13 @@ export default function ApiTesterPage() {
           {/* Headers */}
 
           {activeTab === "headers" && (
-            <div className="p-5">
+            <div
+              role="tabpanel"
+              id="api-tester-panel-headers"
+              aria-labelledby="api-tester-tab-headers"
+              tabIndex={0}
+              className="p-5 focus:outline-none"
+            >
 
               <div className="mb-3 grid grid-cols-[1fr_1fr_auto] gap-3 text-xs text-zinc-600">
                 <span>Header</span>
@@ -444,6 +496,7 @@ export default function ApiTesterPage() {
                         e.target.value
                       )
                     }
+                    aria-label={`Header ${index + 1} name`}
                     placeholder="Authorization"
                     className="h-10 rounded-lg border border-zinc-800 bg-zinc-950 px-3 font-mono text-sm outline-none placeholder:text-zinc-700 focus:border-zinc-600"
                   />
@@ -458,6 +511,7 @@ export default function ApiTesterPage() {
                         e.target.value
                       )
                     }
+                    aria-label={`Header ${index + 1} value`}
                     placeholder="Bearer token"
                     className="h-10 rounded-lg border border-zinc-800 bg-zinc-950 px-3 font-mono text-sm outline-none placeholder:text-zinc-700 focus:border-zinc-600"
                   />
@@ -493,13 +547,20 @@ export default function ApiTesterPage() {
           {/* Body */}
 
           {activeTab === "body" && (
-            <div className="p-5">
+            <div
+              role="tabpanel"
+              id="api-tester-panel-body"
+              aria-labelledby="api-tester-tab-body"
+              tabIndex={0}
+              className="p-5 focus:outline-none"
+            >
 
               <textarea
                 value={body}
                 onChange={(e) =>
                   setBody(e.target.value)
                 }
+                aria-label="Request body"
                 placeholder={`{
   "name": "Parsa",
   "role": "developer"
@@ -527,6 +588,7 @@ export default function ApiTesterPage() {
 
               {status !== null && (
                 <span
+                  role="status"
                   className={`text-xs font-medium ${statusClass}`}
                 >
                   {status}
@@ -543,21 +605,26 @@ export default function ApiTesterPage() {
 
             <div className="flex items-center gap-4">
 
-              {response && (
-                <button
-                  onClick={copyResponse}
-                  className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
-                >
-                  <Copy size={15} />
-                  {copied
-                    ? "Copied!"
-                    : "Copy"}
-                </button>
-              )}
+              <button
+                onClick={copyResponse}
+                disabled={!response}
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                <Copy size={15} />
+                {copied
+                  ? "Copied!"
+                  : "Copy"}
+              </button>
 
               <button
                 onClick={clearAll}
-                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+                disabled={
+                  !url.trim() &&
+                  !response &&
+                  status === null &&
+                  !error
+                }
+                className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <Trash2 size={15} />
                 Clear
@@ -568,11 +635,18 @@ export default function ApiTesterPage() {
           </div>
 
           {error ? (
-            <div className="p-5 text-sm text-red-400">
+            <div
+              id="api-tester-error"
+              role="alert"
+              className="p-5 text-sm text-red-400"
+            >
               {error}
             </div>
           ) : (
-            <pre className="min-h-72 overflow-auto p-5 font-mono text-sm leading-6 text-zinc-300">
+            <pre
+              role="status"
+              className="min-h-72 overflow-auto p-5 font-mono text-sm leading-6 text-zinc-300"
+            >
               {response ||
                 "API response will appear here..."}
             </pre>

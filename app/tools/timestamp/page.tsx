@@ -12,7 +12,9 @@ import {
 export default function TimestampPage() {
   const [timestamp, setTimestamp] = useState("");
   const [date, setDate] = useState("");
-  const [error, setError] = useState("");
+  const [timestampError, setTimestampError] =
+    useState("");
+  const [dateError, setDateError] = useState("");
 
   function timestampToDate() {
     try {
@@ -32,10 +34,10 @@ export default function TimestampPage() {
       }
 
       setDate(result.toISOString());
-      setError("");
+      setTimestampError("");
     } catch {
       setDate("");
-      setError("Invalid Unix timestamp.");
+      setTimestampError("Invalid Unix timestamp.");
     }
   }
 
@@ -55,10 +57,10 @@ export default function TimestampPage() {
         Math.floor(result.getTime() / 1000).toString()
       );
 
-      setError("");
+      setDateError("");
     } catch {
       setTimestamp("");
-      setError("Invalid date.");
+      setDateError("Invalid date.");
     }
   }
 
@@ -67,18 +69,20 @@ export default function TimestampPage() {
 
     setTimestamp(now.toString());
     setDate(new Date().toISOString());
-    setError("");
+    setTimestampError("");
+    setDateError("");
   }
 
   function clearAll() {
     setTimestamp("");
     setDate("");
-    setError("");
+    setTimestampError("");
+    setDateError("");
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <nav className="border-b border-zinc-800">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -88,7 +92,7 @@ export default function TimestampPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-4xl px-6 py-14">
         <div className="mb-10">
@@ -116,6 +120,11 @@ export default function TimestampPage() {
             <input
               value={timestamp}
               onChange={(e) => setTimestamp(e.target.value)}
+              aria-label="Unix timestamp"
+              aria-invalid={timestampError ? true : undefined}
+              aria-describedby={
+                timestampError ? "timestamp-error" : undefined
+              }
               placeholder="1750000000"
               inputMode="numeric"
               className="mt-4 w-full rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 font-mono text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
@@ -123,11 +132,22 @@ export default function TimestampPage() {
 
             <button
               onClick={timestampToDate}
-              className="mt-4 flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200"
+              disabled={!timestamp.trim()}
+              className="mt-4 flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Convert to Date
               <ArrowRightLeft size={16} />
             </button>
+
+            {timestampError && (
+              <p
+                id="timestamp-error"
+                role="alert"
+                className="mt-3 text-sm text-red-400"
+              >
+                {timestampError}
+              </p>
+            )}
           </div>
 
           {/* Date */}
@@ -140,17 +160,31 @@ export default function TimestampPage() {
             <input
               value={date}
               onChange={(e) => setDate(e.target.value)}
+              aria-label="ISO date"
+              aria-invalid={dateError ? true : undefined}
+              aria-describedby={dateError ? "date-error" : undefined}
               placeholder="2026-08-11T12:00:00.000Z"
               className="mt-4 w-full rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 font-mono text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
             />
 
             <button
               onClick={dateToTimestamp}
-              className="mt-4 flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white"
+              disabled={!date.trim()}
+              className="mt-4 flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-5 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               Convert to Timestamp
               <ArrowRightLeft size={16} />
             </button>
+
+            {dateError && (
+              <p
+                id="date-error"
+                role="alert"
+                className="mt-3 text-sm text-red-400"
+              >
+                {dateError}
+              </p>
+            )}
           </div>
         </div>
 
@@ -164,18 +198,13 @@ export default function TimestampPage() {
 
           <button
             onClick={clearAll}
-            className="flex items-center gap-2 rounded-lg text-sm text-zinc-500 transition hover:text-white"
+            disabled={!timestamp.trim() && !date.trim()}
+            className="flex items-center gap-2 rounded-lg text-sm text-zinc-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
           >
             <Trash2 size={15} />
             Clear
           </button>
         </div>
-
-        {error && (
-          <p className="mt-4 text-sm text-red-400">
-            {error}
-          </p>
-        )}
 
         <div className="mt-10 rounded-xl border border-zinc-800 bg-zinc-900/20 p-5">
           <h2 className="text-sm font-medium">

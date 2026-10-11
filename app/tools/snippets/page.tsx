@@ -59,7 +59,7 @@ function increment() {
     code: `export default async function Page() {
   const data = await getData();
 
-  return <main>{data.title}</main>;
+  return <main id="main-content">{data.title}</main>;
 }`,
   },
 ];
@@ -77,6 +77,15 @@ export default function SnippetsPage() {
   const [snippetCategory, setSnippetCategory] =
     useState("General");
   const [code, setCode] = useState("");
+
+  // Set when the user tries to save with empty required fields, so the
+  // editor can explain what's missing instead of silently doing nothing.
+  const [showValidation, setShowValidation] = useState(false);
+
+  const titleError =
+    showValidation && !title.trim() ? "Title is required." : "";
+  const codeError =
+    showValidation && !code.trim() ? "Code is required." : "";
 
   const [copiedId, setCopiedId] = useState<number | null>(
     null
@@ -187,6 +196,7 @@ export default function SnippetsPage() {
 
   function addSnippet() {
     if (!title.trim() || !code.trim()) {
+      setShowValidation(true);
       return;
     }
 
@@ -206,6 +216,7 @@ export default function SnippetsPage() {
     setSnippetLanguage("JavaScript");
     setSnippetCategory("General");
     setCode("");
+    setShowValidation(false);
 
     setShowEditor(false);
   }
@@ -237,13 +248,13 @@ export default function SnippetsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       <RecentToolTracker
         name="DevKit Snippets"
         href="/tools/snippets"
       />
 
-      <nav className="border-b border-zinc-800">
+      <header className="border-b border-zinc-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-6">
           <Link
             href="/tools"
@@ -253,7 +264,7 @@ export default function SnippetsPage() {
             Back to tools
           </Link>
         </div>
-      </nav>
+      </header>
 
       <section className="mx-auto max-w-6xl px-6 py-14">
         {/* Header */}
@@ -275,7 +286,11 @@ export default function SnippetsPage() {
           </div>
 
           <button
-            onClick={() => setShowEditor(true)}
+            type="button"
+            onClick={() => {
+              setShowValidation(false);
+              setShowEditor(true);
+            }}
             className="flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200"
           >
             <Plus size={16} />
@@ -298,6 +313,7 @@ export default function SnippetsPage() {
                 onChange={(event) =>
                   setSearch(event.target.value)
                 }
+                aria-label="Search snippets"
                 placeholder="Search snippets..."
                 className="h-10 w-full rounded-lg border border-zinc-800 bg-zinc-950 pl-10 pr-4 text-sm outline-none transition placeholder:text-zinc-600 focus:border-zinc-600"
               />
@@ -308,6 +324,7 @@ export default function SnippetsPage() {
               onChange={(event) =>
                 setLanguage(event.target.value)
               }
+              aria-label="Programming language"
               className="h-10 rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-sm text-zinc-300 outline-none focus:border-zinc-600"
             >
               {languages.map((item) => (
@@ -322,6 +339,7 @@ export default function SnippetsPage() {
               onChange={(event) =>
                 setCategory(event.target.value)
               }
+              aria-label="Category"
               className="h-10 rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-sm text-zinc-300 outline-none focus:border-zinc-600"
             >
               {categories.map((item) => (
@@ -350,6 +368,7 @@ export default function SnippetsPage() {
 
               <button
                 onClick={() => setShowEditor(false)}
+                aria-label="Close snippet editor"
                 className="text-zinc-500 transition hover:text-white"
               >
                 <X size={18} />
@@ -358,26 +377,50 @@ export default function SnippetsPage() {
 
             <div className="grid gap-4 md:grid-cols-3">
               <div>
-                <label className="mb-2 block text-xs text-zinc-500">
-                  Title
+                <label
+                  htmlFor="snippet-title"
+                  className="mb-2 block text-xs text-zinc-500"
+                >
+                  Title <span aria-hidden="true">*</span>
                 </label>
 
                 <input
+                  id="snippet-title"
                   value={title}
-                  onChange={(event) =>
-                    setTitle(event.target.value)
-                  }
+                  onChange={(event) => {
+                    setTitle(event.target.value);
+                    setShowValidation(false);
+                  }}
                   placeholder="API Request"
+                  required
+                  aria-invalid={titleError ? true : undefined}
+                  aria-describedby={
+                    titleError ? "snippet-title-error" : undefined
+                  }
                   className="h-10 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-sm outline-none placeholder:text-zinc-700 focus:border-zinc-600"
                 />
+
+                {titleError && (
+                  <p
+                    id="snippet-title-error"
+                    role="alert"
+                    className="mt-1.5 text-xs text-red-400"
+                  >
+                    {titleError}
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="mb-2 block text-xs text-zinc-500">
+                <label
+                  htmlFor="snippet-language"
+                  className="mb-2 block text-xs text-zinc-500"
+                >
                   Language
                 </label>
 
                 <select
+                  id="snippet-language"
                   value={snippetLanguage}
                   onChange={(event) =>
                     setSnippetLanguage(event.target.value)
@@ -397,11 +440,15 @@ export default function SnippetsPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-xs text-zinc-500">
+                <label
+                  htmlFor="snippet-category"
+                  className="mb-2 block text-xs text-zinc-500"
+                >
                   Category
                 </label>
 
                 <input
+                  id="snippet-category"
                   value={snippetCategory}
                   onChange={(event) =>
                     setSnippetCategory(event.target.value)
@@ -413,33 +460,57 @@ export default function SnippetsPage() {
             </div>
 
             <div className="mt-4">
-              <label className="mb-2 block text-xs text-zinc-500">
-                Code
+              <label
+                htmlFor="snippet-code"
+                className="mb-2 block text-xs text-zinc-500"
+              >
+                Code <span aria-hidden="true">*</span>
               </label>
 
               <textarea
+                id="snippet-code"
                 value={code}
-                onChange={(event) =>
-                  setCode(event.target.value)
-                }
+                onChange={(event) => {
+                  setCode(event.target.value);
+                  setShowValidation(false);
+                }}
                 placeholder={`const example = "Hello DevKit";`}
                 spellCheck={false}
+                required
+                aria-invalid={codeError ? true : undefined}
+                aria-describedby={
+                  codeError ? "snippet-code-error" : undefined
+                }
                 className="h-56 w-full resize-none rounded-lg border border-zinc-800 bg-zinc-950 p-4 font-mono text-sm leading-6 outline-none placeholder:text-zinc-700 focus:border-zinc-600"
               />
+
+              {codeError && (
+                <p
+                  id="snippet-code-error"
+                  role="alert"
+                  className="mt-1.5 text-xs text-red-400"
+                >
+                  {codeError}
+                </p>
+              )}
             </div>
 
             <div className="mt-4 flex justify-end gap-3">
               <button
-                onClick={() => setShowEditor(false)}
+                type="button"
+                onClick={() => {
+                  setShowValidation(false);
+                  setShowEditor(false);
+                }}
                 className="rounded-lg border border-zinc-800 px-4 py-2.5 text-sm text-zinc-400 transition hover:text-white"
               >
                 Cancel
               </button>
 
               <button
+                type="button"
                 onClick={addSnippet}
-                disabled={!title.trim() || !code.trim()}
-                className="rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200"
               >
                 Save Snippet
               </button>
@@ -468,7 +539,8 @@ export default function SnippetsPage() {
 
             <button
               onClick={clearAll}
-              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-red-400"
+              disabled={snippets.length === 0}
+              className="flex items-center gap-2 text-sm text-zinc-500 transition hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-30"
             >
               <Trash2 size={15} />
               Clear all
@@ -495,14 +567,18 @@ export default function SnippetsPage() {
             </p>
 
             <button
-              onClick={() => setShowEditor(true)}
+              type="button"
+              onClick={() => {
+                setShowValidation(false);
+                setShowEditor(true);
+              }}
               className="mt-6 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-black transition hover:bg-zinc-200"
             >
               Create Snippet
             </button>
           </div>
         ) : (
-          <div className="grid gap-5">
+          <div role="status" className="grid gap-5">
             {filteredSnippets.map((snippet) => (
               <article
                 key={snippet.id}

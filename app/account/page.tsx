@@ -16,7 +16,7 @@ export default function AccountPage() {
 
   if (status === "loading") {
     return (
-      <main className="min-h-screen bg-background text-foreground">
+      <main id="main-content" className="min-h-screen bg-background text-foreground">
         <div className="mx-auto max-w-4xl px-6 py-20">
           <div className="h-8 w-40 animate-pulse rounded-lg bg-zinc-200 dark:bg-zinc-800" />
 
@@ -35,7 +35,7 @@ export default function AccountPage() {
 
   if (status !== "authenticated") {
     return (
-      <main className="min-h-screen bg-background text-foreground">
+      <main id="main-content" className="min-h-screen bg-background text-foreground">
         <div className="mx-auto flex min-h-screen max-w-4xl items-center justify-center px-6">
           <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
@@ -68,7 +68,7 @@ export default function AccountPage() {
   const user = session.user;
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main id="main-content" className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
 
         {/* Back */}

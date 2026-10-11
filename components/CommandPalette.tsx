@@ -31,11 +31,20 @@ import {
   Star,
   History,
   ArrowUpRight,
+  Folder,
 } from "lucide-react";
+
+import {
+  categories,
+  categoryHref,
+  toolsInCategory,
+} from "@/lib/categories";
+import { OPEN_COMMAND_PALETTE_EVENT } from "@/lib/openCommandPalette";
 
 type CommandCategory =
   | "Navigation"
   | "Developer Tools"
+  | "Categories"
   | "Favorites"
   | "Recently Used";
 
@@ -89,6 +98,18 @@ const commands: Command[] = [
     category: "Navigation",
     icon: <Settings size={17} />,
   },
+
+  // Categories
+
+  ...categories.map((category) => ({
+    name: category,
+    description: `${toolsInCategory(category).length} ${
+      toolsInCategory(category).length === 1 ? "tool" : "tools"
+    } in ${category}`,
+    href: categoryHref(category),
+    category: "Categories" as const,
+    icon: <Folder size={17} />,
+  })),
 
   // Developer Tools
 
@@ -265,6 +286,13 @@ export default function CommandPalette() {
 
   const resultsRef = useRef<HTMLDivElement>(null);
 
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // Remembers the element that was focused when the palette opened,
+  // so focus can go back there once it closes.
+
+  const restoreRef = useRef<HTMLElement | null>(null);
+
   /*
    * Load localStorage data
    */
@@ -303,6 +331,14 @@ export default function CommandPalette() {
    */
 
   const openPalette = useCallback(() => {
+    if (typeof document !== "undefined") {
+      const active = document.activeElement;
+
+      if (active instanceof HTMLElement) {
+        restoreRef.current = active;
+      }
+    }
+
     loadLocalData();
 
     setOpen(true);
@@ -314,7 +350,33 @@ export default function CommandPalette() {
     setOpen(false);
     setQuery("");
     setSelectedIndex(0);
+
+    restoreRef.current?.focus();
+    restoreRef.current = null;
   }, []);
+
+  /*
+   * Open when triggered from anywhere in the app (e.g. the navbar
+   * search button) — not everyone can press Ctrl+K.
+   */
+
+  useEffect(() => {
+    function handleOpen() {
+      openPalette();
+    }
+
+    window.addEventListener(
+      OPEN_COMMAND_PALETTE_EVENT,
+      handleOpen,
+    );
+
+    return () => {
+      window.removeEventListener(
+        OPEN_COMMAND_PALETTE_EVENT,
+        handleOpen,
+      );
+    };
+  }, [openPalette]);
 
   /*
    * Keyboard shortcuts
@@ -389,8 +451,76 @@ export default function CommandPalette() {
   }, [open]);
 
   /*
-   * Load data when opened
+   * Focus trap — while the palette is open, Tab cycles inside it
+   * instead of reaching the page behind it.
    */
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    function isInsidePalette(
+      element: EventTarget | null,
+    ): boolean {
+      return Boolean(
+        element instanceof Node &&
+          panelRef.current?.contains(element),
+      );
+    }
+
+    function handleTrap(event: KeyboardEvent) {
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      // Tab out of the palette: pull focus back to the search input.
+
+      if (!isInsidePalette(event.target)) {
+        event.preventDefault();
+        inputRef.current?.focus();
+        return;
+      }
+
+      // Tab from the last focusable element: wrap to the first.
+
+      if (!panelRef.current) {
+        return;
+      }
+
+      const focusable =
+        panelRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        );
+
+      if (focusable.length === 0) {
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (
+        event.shiftKey &&
+        document.activeElement === first
+      ) {
+        event.preventDefault();
+        last.focus();
+      } else if (
+        !event.shiftKey &&
+        document.activeElement === last
+      ) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleTrap);
+
+    return () => {
+      document.removeEventListener("keydown", handleTrap);
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) {
@@ -619,6 +749,11 @@ export default function CommandPalette() {
         command.category === "Recently Used"
     );
 
+  const categoryCommands =
+    filteredCommands.filter(
+      (command) => command.category === "Categories",
+    );
+
   const toolCommands =
     filteredCommands.filter(
       (command) =>
@@ -631,7 +766,10 @@ export default function CommandPalette() {
    * (keyboard navigation walks one continuous list).
    */
 
-  const favoritesStartIndex = navigationCommands.length;
+  const categoriesStartIndex = navigationCommands.length;
+
+  const favoritesStartIndex =
+    categoriesStartIndex + categoryCommands.length;
 
   const recentStartIndex =
     favoritesStartIndex + favoriteCommands.length;
@@ -644,6 +782,10 @@ export default function CommandPalette() {
       onMouseDown={closePalette}
     >
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="DevKit command palette"
         className="mx-auto w-full max-w-2xl overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 shadow-2xl"
         onMouseDown={(event) =>
           event.stopPropagation()
@@ -662,6 +804,7 @@ export default function CommandPalette() {
             ref={inputRef}
             autoFocus
             value={query}
+            aria-label="Search DevKit"
             onChange={(event) =>
               handleSearchChange(
                 event.target.value
@@ -676,6 +819,7 @@ export default function CommandPalette() {
             <button
               type="button"
               onClick={clearSearch}
+              aria-label="Clear search"
               className="mr-2 rounded-md p-1.5 text-zinc-600 transition hover:bg-zinc-900 hover:text-zinc-300"
             >
               ×
@@ -729,6 +873,17 @@ export default function CommandPalette() {
                   commands={navigationCommands}
                   selectedIndex={clampedSelectedIndex}
                   startIndex={0}
+                  onClose={closePalette}
+                />
+              )}
+
+              {categoryCommands.length > 0 && (
+                <CommandSection
+                  title="Categories"
+                  icon={<Folder size={13} />}
+                  commands={categoryCommands}
+                  selectedIndex={clampedSelectedIndex}
+                  startIndex={categoriesStartIndex}
                   onClose={closePalette}
                 />
               )}
@@ -854,6 +1009,9 @@ function CommandSection({
                   : "hover:bg-zinc-900/70"
               }`}
             >
+              {active && (
+                <span className="sr-only">Selected</span>
+              )}
 
               {/* Icon */}
 

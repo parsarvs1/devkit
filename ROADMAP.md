@@ -112,27 +112,27 @@
 
 > هدف: سریع‌ترین تجربه ممکن
 
-* [ ] Lighthouse Audit
-* [ ] Core Web Vitals
-* [ ] Optimize LCP
-* [ ] Optimize CLS
-* [ ] Optimize INP
-* [ ] Reduce JavaScript
-* [ ] Dynamic Imports
-* [ ] Lazy Loading
-* [ ] Optimize Images
-* [ ] Remove Unused Dependencies
-* [ ] Bundle Analysis
-* [ ] Cache Optimization
-* [ ] CDN Optimization
-* [ ] Compression
+* [x] Lighthouse Audit
+* [x] Core Web Vitals
+* [x] Optimize LCP
+* [x] Optimize CLS
+* [x] Optimize INP
+* [x] Reduce JavaScript
+* [x] Dynamic Imports
+* [x] Lazy Loading
+* [x] Optimize Images
+* [x] Remove Unused Dependencies
+* [x] Bundle Analysis
+* [x] Cache Optimization
+* [x] CDN Optimization
+* [x] Compression
 
 ### Target
 
-* [ ] Performance: 95+
-* [ ] Accessibility: 95+
-* [ ] Best Practices: 95+
-* [ ] SEO: 95+
+* [x] Performance: 95+
+* [x] Accessibility: 95+
+* [x] Best Practices: 95+
+* [x] SEO: 95+
 
 ---
 

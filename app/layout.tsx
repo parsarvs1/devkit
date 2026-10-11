@@ -6,11 +6,15 @@ import ThemeProvider from "@/components/ThemeProvider";
 import CommandPalette from "@/components/CommandPalette";
 import ToolUsageTracker from "@/components/ToolUsageTracker";
 
-const SITE_URL =
-  "https://devkit.pars-paris1.workers.dev";
+const SITE_URL = "https://devkit.pars-paris1.workers.dev";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+
+  verification: {
+    google: "jh6iIOs2aklertgLMMnaSLmtZuftkbado4P8_aqnx4Q",
+  },
+
   title: {
     default: "DevKit — Free Online Developer Tools",
     template: "%s · DevKit",
@@ -99,15 +103,12 @@ export default function RootLayout({
       <body>
         <SessionProvider>
           <ThemeProvider>
-            <a
-              href="#main-content"
-              className="skip-to-content"
-            >
+            <a href="#main-content" className="skip-to-content">
               Skip to content
             </a>
 
             {children}
-            <ToolUsageTracker/>
+            <ToolUsageTracker />
             <CommandPalette />
           </ThemeProvider>
         </SessionProvider>

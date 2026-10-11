@@ -11,6 +11,11 @@ const SITE_URL =
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+
+  verification: {
+    google: "jh6iIOs2aklertgLMMnaSLmtZuftkbado4P8_aqnx4Q",
+  },
+
   title: {
     default: "DevKit — Free Online Developer Tools",
     template: "%s · DevKit",

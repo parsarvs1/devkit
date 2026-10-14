@@ -10,6 +10,7 @@ import {
   Hash,
   Binary,
   Code2,
+  ShieldCheck,
 } from "lucide-react";
 
 const actions = [
@@ -20,9 +21,21 @@ const actions = [
     icon: Braces,
   },
   {
+    name: "JSON Validator",
+    description: "Validate JSON",
+    href: "/tools/json-validator",
+    icon: ShieldCheck,
+  },
+  {
     name: "JWT Decoder",
     description: "Decode JWT",
     href: "/tools/jwt-decoder",
+    icon: KeyRound,
+  },
+  {
+    name: "JWT Generator",
+    description: "Generate JWT",
+    href: "/tools/jwt-generator",
     icon: KeyRound,
   },
   {

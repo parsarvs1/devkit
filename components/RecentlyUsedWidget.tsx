@@ -27,8 +27,7 @@ export default function RecentlyUsedWidget() {
   }
 
   useEffect(() => {
-    // History is hydrated from localStorage once on mount.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+ 
     loadHistory();
 
     setLoaded(true);
@@ -81,8 +80,7 @@ export default function RecentlyUsedWidget() {
         </div>
 
         {!loaded ? (
-          /* Skeletons while history hydrates from localStorage */
-
+          
           <div className="space-y-3">
             {[0, 1, 2].map((index) => (
               <ToolRowSkeleton key={index} />

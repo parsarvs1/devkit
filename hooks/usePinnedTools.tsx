@@ -9,8 +9,6 @@ export default function usePinnedTools() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // Pins are hydrated from localStorage once on mount.
-    /* eslint-disable react-hooks/set-state-in-effect */
     const stored = localStorage.getItem(STORAGE_KEY);
 
     if (stored) {
@@ -26,7 +24,6 @@ export default function usePinnedTools() {
     }
 
     setLoaded(true);
-    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   useEffect(() => {

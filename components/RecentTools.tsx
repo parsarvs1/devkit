@@ -21,8 +21,7 @@ export default function RecentTools() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // Recents are hydrated from localStorage on mount.
-    /* eslint-disable react-hooks/set-state-in-effect */
+ 
     try {
       const saved = localStorage.getItem(
         "devkit-recent-tools"
@@ -36,7 +35,7 @@ export default function RecentTools() {
     } catch {
       setRecentTools([]);
     }
-    /* eslint-enable react-hooks/set-state-in-effect */
+    
 
     setLoaded(true);
   }, []);
@@ -48,7 +47,7 @@ export default function RecentTools() {
   }
 
   if (!loaded) {
-    // Skeletons while recents hydrate from localStorage.
+  
 
     return (
       <section className="mb-12">

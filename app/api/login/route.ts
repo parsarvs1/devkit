@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         ? body.password
         : "";
 
-    // Validate email
+  
     if (!email) {
       return NextResponse.json(
         {
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate password
+ 
     if (!password) {
       return NextResponse.json(
         {
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 
     const db = env.DB;
 
-    // Find user
+   
     const user = await db
       .prepare(
         `
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
         password: string;
       }>();
 
-    // User does not exist
+    
     if (!user) {
       return NextResponse.json(
         {
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check password
+    
     const passwordMatches =
       await bcrypt.compare(
         password,
@@ -101,7 +101,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Login successful
+   
     return NextResponse.json(
       {
         success: true,

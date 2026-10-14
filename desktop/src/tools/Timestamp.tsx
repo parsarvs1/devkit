@@ -169,8 +169,6 @@ export default function Timestamp() {
         </div>
       </div>
 
-      {/* CURRENT TIMESTAMP */}
-
       <section className="timestamp-current">
         <div className="timestamp-current-header">
           <div>
@@ -243,7 +241,6 @@ export default function Timestamp() {
         </div>
 
         <div className="timestamp-grid">
-          {/* INPUT */}
 
           <section className="timestamp-editor">
             <div className="panel-header">
@@ -286,7 +283,6 @@ export default function Timestamp() {
             />
           </section>
 
-          {/* OUTPUT */}
 
           <section className="timestamp-editor">
             <div className="panel-header">

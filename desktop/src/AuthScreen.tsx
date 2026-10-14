@@ -70,9 +70,7 @@ export default function AuthScreen({
     setError("");
     setSuccess("");
 
-    /*
-     * LOGIN
-     */
+
 
     if (isLogin) {
       if (!email.trim()) {
@@ -89,11 +87,7 @@ export default function AuthScreen({
         return;
       }
 
-      /*
-       * Temporary local login.
-       *
-       * API will be connected later.
-       */
+  
 
       const loggedInUser = {
         name:
@@ -113,9 +107,6 @@ export default function AuthScreen({
       return;
     }
 
-    /*
-     * SIGN UP
-     */
 
     if (!name.trim()) {
       setError(
@@ -145,12 +136,7 @@ export default function AuthScreen({
       return;
     }
 
-    /*
-     * Temporary local signup.
-     *
-     * Real account creation will be
-     * connected later.
-     */
+    
 
     setSuccess(
       "Account created successfully."
@@ -170,7 +156,7 @@ export default function AuthScreen({
 
       <div className="auth-container">
 
-        {/* BACK */}
+       
 
         <button
           type="button"
@@ -186,19 +172,18 @@ export default function AuthScreen({
           </span>
         </button>
 
-        {/* AUTH CARD */}
+       
 
         <div className="auth-card">
 
-          {/* LOGO */}
-
+          
           <div className="auth-logo">
             <Code2
               size={22}
             />
           </div>
 
-          {/* HEADING */}
+          
 
           <div className="auth-heading">
 
@@ -216,7 +201,7 @@ export default function AuthScreen({
 
           </div>
 
-          {/* FORM */}
+          
 
           <form
             className="auth-form"
@@ -225,7 +210,7 @@ export default function AuthScreen({
             }
           >
 
-            {/* NAME */}
+           
 
             {!isLogin && (
               <div className="auth-field">
@@ -260,7 +245,7 @@ export default function AuthScreen({
               </div>
             )}
 
-            {/* EMAIL */}
+          
 
             <div className="auth-field">
 
@@ -293,7 +278,7 @@ export default function AuthScreen({
 
             </div>
 
-            {/* PASSWORD */}
+           
 
             <div className="auth-field">
 
@@ -360,7 +345,7 @@ export default function AuthScreen({
 
             </div>
 
-            {/* ERROR */}
+            
 
             {error && (
               <div className="auth-error">
@@ -368,7 +353,7 @@ export default function AuthScreen({
               </div>
             )}
 
-            {/* SUCCESS */}
+           
 
             {success && (
               <div className="auth-success">
@@ -376,7 +361,7 @@ export default function AuthScreen({
               </div>
             )}
 
-            {/* SUBMIT */}
+          
 
             <button
               type="submit"
@@ -389,7 +374,7 @@ export default function AuthScreen({
 
           </form>
 
-          {/* SWITCH */}
+          
 
           <div className="auth-switch">
 
@@ -412,7 +397,7 @@ export default function AuthScreen({
 
           </div>
 
-          {/* TERMS */}
+          
 
           <div className="auth-terms">
             By continuing, you agree to

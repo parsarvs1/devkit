@@ -38,7 +38,6 @@ export function testRegex(
         groups: match.slice(1),
       });
 
-      // Prevent infinite loops for zero-length matches.
       if (match[0] === "") {
         regex.lastIndex++;
       }

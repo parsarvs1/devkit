@@ -40,7 +40,7 @@ export default function PinnedToolsWidget() {
         </div>
 
         {!loaded ? (
-          /* Skeletons while pins hydrate from localStorage */
+         
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[0, 1, 2].map((index) => (

@@ -26,10 +26,26 @@ category: "JSON",
 },
 
 {
+name: "JSON Validator",
+description: "Validate JSON and pinpoint syntax errors.",
+icon: ShieldCheck,
+href: "/tools/json-validator",
+category: "JSON",
+},
+
+{
 name: "JWT Decoder",
 description: "Decode JWT tokens and inspect their contents.",
 icon: KeyRound,
 href: "/tools/jwt-decoder",
+category: "Security",
+},
+
+{
+name: "JWT Generator",
+description: "Generate and sign JSON Web Tokens with a secret.",
+icon: KeyRound,
+href: "/tools/jwt-generator",
 category: "Security",
 },
 

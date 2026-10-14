@@ -38,11 +38,7 @@ export default function Navbar() {
 
   const isLoggedIn = status === "authenticated";
 
-  /*
-   * Close every open menu on Escape, and on any click outside the
-   * navbar. Without this, dropdowns stay open while keyboard users
-   * tab away from them.
-   */
+  
 
   useEffect(() => {
     if (!open && !themeOpen && !mobileOpen) {
@@ -110,9 +106,7 @@ export default function Navbar() {
     <nav ref={navRef} className="border-b border-zinc-800 bg-zinc-950">
       <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
 
-        {/* =========================
-            LOGO
-        ========================== */}
+      
 
         <Link
           href="/"
@@ -126,13 +120,10 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* =========================
-            DESKTOP NAVIGATION
-        ========================== */}
+        
 
         <div className="hidden items-center gap-6 text-sm text-zinc-400 md:flex">
 
-          {/* Search */}
 
           <button
             type="button"
@@ -143,7 +134,7 @@ export default function Navbar() {
             <Search size={17} />
           </button>
 
-          {/* Home */}
+         
 
           <Link
             href="/"
@@ -152,7 +143,7 @@ export default function Navbar() {
             Home
           </Link>
 
-          {/* Tools */}
+         
 
           <Link
             href="/tools"
@@ -161,7 +152,7 @@ export default function Navbar() {
             Tools
           </Link>
 
-          {/* About */}
+        
 
           <Link
             href="/about"
@@ -170,9 +161,7 @@ export default function Navbar() {
             About
           </Link>
 
-          {/* =========================
-              THEME
-          ========================== */}
+        
 
           <div className="relative">
             <button
@@ -196,7 +185,7 @@ export default function Navbar() {
                 className="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-1 shadow-2xl"
               >
 
-                {/* Light */}
+             
 
                 <button
                   type="button"
@@ -218,7 +207,7 @@ export default function Navbar() {
                   )}
                 </button>
 
-                {/* Dark */}
+              
 
                 <button
                   type="button"
@@ -240,8 +229,7 @@ export default function Navbar() {
                   )}
                 </button>
 
-                {/* System */}
-
+              
                 <button
                   type="button"
                   onClick={() => changeTheme("system")}
@@ -265,16 +253,14 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* =========================
-              AUTHENTICATION
-          ========================== */}
+         
 
           {status === "loading" ? (
             <div className="h-9 w-24 animate-pulse rounded-lg bg-zinc-900" />
           ) : isLoggedIn ? (
             <div className="relative">
 
-              {/* Dashboard Button */}
+            
 
               <button
                 type="button"
@@ -300,7 +286,7 @@ export default function Navbar() {
                 </span>
               </button>
 
-              {/* Dashboard Dropdown */}
+            
 
               {open && (
               <div
@@ -309,7 +295,7 @@ export default function Navbar() {
                 className="absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl"
               >
 
-                  {/* User Info */}
+                
 
                   <div className="border-b border-zinc-800 px-4 py-3">
                     <p className="truncate text-sm font-medium text-white">
@@ -323,7 +309,7 @@ export default function Navbar() {
 
                   <div className="p-1">
 
-                    {/* Dashboard */}
+                   
 
                     <Link
                       href="/dashboard"
@@ -336,7 +322,7 @@ export default function Navbar() {
                       Dashboard
                     </Link>
 
-                    {/* Settings */}
+                  
 
                     <Link
                       href="/settings"
@@ -350,7 +336,7 @@ export default function Navbar() {
                     </Link>
                   </div>
 
-                  {/* Sign Out */}
+                
 
                   <div className="border-t border-zinc-800 p-1">
                     <button
@@ -381,13 +367,11 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* =========================
-            MOBILE CONTROLS
-        ========================== */}
+       
 
         <div className="flex items-center gap-2 md:hidden">
 
-          {/* Mobile Search */}
+          
 
           <button
             type="button"
@@ -398,7 +382,7 @@ export default function Navbar() {
             <Search size={17} />
           </button>
 
-          {/* Mobile Theme */}
+         
 
           <div className="relative">
             <button
@@ -422,8 +406,7 @@ export default function Navbar() {
                 className="absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 p-1 shadow-2xl"
               >
 
-                {/* Light */}
-
+              
                 <button
                   type="button"
                   onClick={() => changeTheme("light")}
@@ -444,7 +427,7 @@ export default function Navbar() {
                   )}
                 </button>
 
-                {/* Dark */}
+              
 
                 <button
                   type="button"
@@ -466,7 +449,7 @@ export default function Navbar() {
                   )}
                 </button>
 
-                {/* System */}
+                
 
                 <button
                   type="button"
@@ -491,8 +474,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Hamburger */}
-
+         
           <button
             type="button"
             onClick={() => {
@@ -512,15 +494,13 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* =========================
-          MOBILE MENU
-      ========================== */}
+     
 
       {mobileOpen && (
         <div className="border-t border-zinc-800 bg-zinc-950 md:hidden">
           <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
 
-            {/* Navigation */}
+           
 
             <div className="space-y-1">
 
@@ -549,18 +529,16 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Divider */}
-
+           
             <div className="my-3 border-t border-zinc-800" />
 
-            {/* Authentication */}
-
+           
             {status === "loading" ? (
               <div className="h-10 animate-pulse rounded-lg bg-zinc-900" />
             ) : isLoggedIn ? (
               <div className="space-y-1">
 
-                {/* User */}
+                
 
                 <div className="mb-2 rounded-lg bg-zinc-900 px-3 py-3">
                   <div className="flex items-center gap-3">
@@ -581,7 +559,7 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                {/* Dashboard */}
+                
 
                 <Link
                   href="/dashboard"
@@ -593,7 +571,7 @@ export default function Navbar() {
                   Dashboard
                 </Link>
 
-                {/* Settings */}
+               
 
                 <Link
                   href="/settings"
@@ -605,7 +583,7 @@ export default function Navbar() {
                   Settings
                 </Link>
 
-                {/* Sign Out */}
+                
 
                 <button
                   type="button"

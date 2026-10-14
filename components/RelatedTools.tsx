@@ -10,9 +10,7 @@ import { relatedTools } from "@/lib/categories";
 export default function RelatedTools() {
   const pathname = usePathname();
 
-  // Only render on individual tool pages (/tools/<slug>), never on
-  // the listing page or category pages.
-
+ 
   const match = pathname?.match(/^\/tools\/([^/]+)$/);
 
   const slug = match?.[1];

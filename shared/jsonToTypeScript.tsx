@@ -1,12 +1,10 @@
-// Shared conversion logic for the JSON → TypeScript tool.
-// Kept pure so it can be unit-tested independently of the page.
+
 
 export function formatKey(key: string): string {
   if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key)) {
     return key;
   }
 
-  // Escape embedded quotes and backslashes inside quoted keys.
   return `"${key.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
@@ -19,7 +17,6 @@ export function makeInterfaceName(
   base: string,
   interfaces: Map<string, string>
 ): string {
-  // PascalCase + unique, so two nested keys never collide.
   const clean = base
     .replace(/[^A-Za-z0-9_$]/g, "")
     .replace(/^[a-z]/, (char) => char.toUpperCase());
@@ -62,7 +59,6 @@ export function getType(
   }
 
   if (typeof value === "object") {
-    // Recurse into nested objects, giving each one its own interface.
     const interfaceName = makeInterfaceName(name, interfaces);
     const object = value as Record<string, unknown>;
 
@@ -104,7 +100,6 @@ export function jsonToTypeScript(
   value: unknown,
   name = "Root"
 ): string {
-  // A primitive or null root has no interface to declare.
   if (value === null || typeof value !== "object") {
     return `export type ${name} = ${getType(
       value,
@@ -116,8 +111,6 @@ export function jsonToTypeScript(
   const interfaces = new Map<string, string>();
 
   const rootType = getType(value, `${name}Shape`, interfaces);
-
-  // Nested interfaces are declared first so the root type resolves.
   return [
     ...interfaces.values(),
     `export type ${name} = ${rootType};`,

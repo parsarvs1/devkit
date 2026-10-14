@@ -38,7 +38,7 @@ export default async function DashboardPage() {
       <main id="main-content" className="flex-1">
 
       <section className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-        {/* HEADER */}
+      
         <div className="mb-10">
           <div className="mb-3 flex items-center gap-2 text-sm text-zinc-500">
             <Code2 size={16} />
@@ -55,7 +55,7 @@ export default async function DashboardPage() {
           </p>
         </div>
 
-        {/* OVERVIEW */}
+        
         <section>
           <div className="mb-4">
             <h2 className="text-lg font-semibold text-white">
@@ -70,7 +70,7 @@ export default async function DashboardPage() {
           <DashboardStats />
         </section>
 
-        {/* PERSONAL AREA */}
+        
         <section className="mt-10">
           <div className="mb-4">
             <h2 className="text-lg font-semibold text-white">
@@ -83,7 +83,7 @@ export default async function DashboardPage() {
           </div>
 
           <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
-            {/* PROFILE */}
+            
             <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
@@ -122,7 +122,7 @@ export default async function DashboardPage() {
               <EditProfile initialName={userName} />
             </div>
 
-            {/* QUICK ACTIONS */}
+           
             <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
               <div className="mb-6">
                 <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
@@ -192,7 +192,7 @@ export default async function DashboardPage() {
                 </Link>
               </div>
 
-              {/* ACCOUNT STATUS */}
+              
               <div className="mt-6 border-t border-zinc-800 pt-6">
                 <div className="mb-4 flex items-center gap-2">
                   <ShieldCheck
@@ -236,7 +236,6 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* DEVELOPER WORKSPACE */}
         <section className="mt-10">
           <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6 sm:p-8">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">

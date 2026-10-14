@@ -1,10 +1,5 @@
 "use client";
 
-/**
- * Copies text to the clipboard with a fallback for contexts where the
- * async Clipboard API is unavailable (insecure origins, denied permission,
- * or a browser/tab that isn't focused). Returns true on success.
- */
 export async function copyToClipboard(
   text: string,
   onError?: (message: string) => void
@@ -19,7 +14,6 @@ export async function copyToClipboard(
       return true;
     }
   } catch {
-    // Fall through to the legacy path below.
   }
 
   try {

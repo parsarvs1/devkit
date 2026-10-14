@@ -5,12 +5,7 @@ import { tools } from "@/data/tools";
 const SITE_URL =
   "https://devkit.pars-paris1.workers.dev";
 
-/**
- * Build SEO metadata for a single tool page.
- *
- * Tool routes are static (e.g. /tools/json-formatter), so
- * each tool gets its own layout.tsx that calls this helper.
- */
+
 export function toolMetadata(slug: string): Metadata {
   const tool = tools.find((item) => item.href === `/tools/${slug}`);
 

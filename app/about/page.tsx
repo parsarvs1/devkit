@@ -27,8 +27,7 @@ export default function AboutPage() {
       <main id="main-content" className="flex-1">
 
       <section className="mx-auto max-w-4xl px-6 py-20">
-        {/* Header */}
-
+        
         <div className="max-w-3xl">
           <p className="mb-3 text-sm text-zinc-500">About DevKit</p>
 
@@ -49,7 +48,7 @@ export default function AboutPage() {
           </p>
         </div>
 
-        {/* Features */}
+        
 
         <div className="mt-14 grid gap-5 sm:grid-cols-3">
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/30 p-5">
@@ -84,7 +83,7 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Built With */}
+       
 
         <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
           <h2 className="text-lg font-semibold">Built with</h2>
@@ -105,7 +104,7 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Open Source */}
+       
 
         <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
           <div className="flex items-start justify-between gap-5">
@@ -132,7 +131,7 @@ export default function AboutPage() {
           </a>
         </div>
 
-        {/* Creator */}
+       
 
         <div className="mt-6 rounded-2xl border border-zinc-800 bg-gradient-to-br from-violet-500/5 via-zinc-900/40 to-zinc-900/30 p-6">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">

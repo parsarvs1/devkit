@@ -25,6 +25,7 @@ import {
   Hash,
   LockKeyhole,
   Regex,
+  ShieldCheck,
   Link as LinkIcon,
   FileText,
   Zap,
@@ -57,8 +58,6 @@ type Command = {
 };
 
 const commands: Command[] = [
-  // Navigation
-
   {
     name: "Home",
     description: "Go to homepage",
@@ -99,7 +98,7 @@ const commands: Command[] = [
     icon: <Settings size={17} />,
   },
 
-  // Categories
+
 
   ...categories.map((category) => ({
     name: category,
@@ -111,7 +110,6 @@ const commands: Command[] = [
     icon: <Folder size={17} />,
   })),
 
-  // Developer Tools
 
   {
     name: "JSON Formatter",
@@ -122,9 +120,25 @@ const commands: Command[] = [
   },
 
   {
+    name: "JSON Validator",
+    description: "Validate JSON and find syntax errors",
+    href: "/tools/json-validator",
+    category: "Developer Tools",
+    icon: <ShieldCheck size={17} />,
+  },
+
+  {
     name: "JWT Decoder",
     description: "Decode JSON Web Tokens",
     href: "/tools/jwt-decoder",
+    category: "Developer Tools",
+    icon: <KeyRound size={17} />,
+  },
+
+  {
+    name: "JWT Generator",
+    description: "Sign and generate JSON Web Tokens",
+    href: "/tools/jwt-generator",
     category: "Developer Tools",
     icon: <KeyRound size={17} />,
   },
@@ -288,14 +302,10 @@ export default function CommandPalette() {
 
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Remembers the element that was focused when the palette opened,
-  // so focus can go back there once it closes.
-
+ 
   const restoreRef = useRef<HTMLElement | null>(null);
 
-  /*
-   * Load localStorage data
-   */
+ 
 
   const loadLocalData = useCallback(() => {
     try {
@@ -326,9 +336,7 @@ export default function CommandPalette() {
     }
   }, []);
 
-  /*
-   * Open / close
-   */
+  
 
   const openPalette = useCallback(() => {
     if (typeof document !== "undefined") {
@@ -355,10 +363,7 @@ export default function CommandPalette() {
     restoreRef.current = null;
   }, []);
 
-  /*
-   * Open when triggered from anywhere in the app (e.g. the navbar
-   * search button) — not everyone can press Ctrl+K.
-   */
+ 
 
   useEffect(() => {
     function handleOpen() {
@@ -378,13 +383,11 @@ export default function CommandPalette() {
     };
   }, [openPalette]);
 
-  /*
-   * Keyboard shortcuts
-   */
+  
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      // Ctrl + K
+      
       if (
         (event.ctrlKey || event.metaKey) &&
         event.key.toLowerCase() === "k"
@@ -400,7 +403,7 @@ export default function CommandPalette() {
         return;
       }
 
-      // Ctrl + P
+      
       if (
         (event.ctrlKey || event.metaKey) &&
         event.key.toLowerCase() === "p"
@@ -414,7 +417,7 @@ export default function CommandPalette() {
         return;
       }
 
-      // Escape
+      
       if (event.key === "Escape") {
         closePalette();
       }
@@ -433,9 +436,7 @@ export default function CommandPalette() {
     };
   }, [open, openPalette, closePalette]);
 
-  /*
-   * Lock body scroll
-   */
+ 
 
   useEffect(() => {
     if (!open) {
@@ -450,10 +451,7 @@ export default function CommandPalette() {
     };
   }, [open]);
 
-  /*
-   * Focus trap — while the palette is open, Tab cycles inside it
-   * instead of reaching the page behind it.
-   */
+  
 
   useEffect(() => {
     if (!open) {
@@ -474,16 +472,14 @@ export default function CommandPalette() {
         return;
       }
 
-      // Tab out of the palette: pull focus back to the search input.
-
+     
       if (!isInsidePalette(event.target)) {
         event.preventDefault();
         inputRef.current?.focus();
         return;
       }
 
-      // Tab from the last focusable element: wrap to the first.
-
+      
       if (!panelRef.current) {
         return;
       }
@@ -527,8 +523,7 @@ export default function CommandPalette() {
       return;
     }
 
-    // Reading localStorage on open is a hydration, not a reaction.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    
     loadLocalData();
 
     setTimeout(() => {
@@ -536,9 +531,7 @@ export default function CommandPalette() {
     }, 0);
   }, [open, loadLocalData]);
 
-  /*
-   * Build command list
-   */
+  
 
   const allCommands = useMemo(() => {
     const favoriteCommands: Command[] = [];
@@ -578,9 +571,7 @@ export default function CommandPalette() {
     ];
   }, [favorites, recentTools]);
 
-  /*
-   * Filter
-   */
+  
 
   const filteredCommands = useMemo(() => {
     const normalizedQuery = query
@@ -612,11 +603,7 @@ export default function CommandPalette() {
     });
   }, [allCommands, query]);
 
-  /*
-   * Keep the selected index inside the result list. Derived here
-   * rather than patched in an effect, so it stays valid even while
-   * the filtered list is shrinking.
-   */
+  
 
   const clampedSelectedIndex =
     filteredCommands.length === 0
@@ -626,9 +613,7 @@ export default function CommandPalette() {
           filteredCommands.length - 1
         );
 
-  /*
-   * Keyboard navigation
-   */
+  
 
   function handleInputKeyDown(
     event: React.KeyboardEvent<HTMLInputElement>
@@ -675,9 +660,7 @@ export default function CommandPalette() {
     }
   }
 
-  /*
-   * Scroll selected command into view
-   */
+ 
 
   useEffect(() => {
     if (!open) {
@@ -702,9 +685,7 @@ export default function CommandPalette() {
     }
   }, [clampedSelectedIndex, open]);
 
-  /*
-   * Change search
-   */
+  
 
   function handleSearchChange(
     value: string
@@ -713,9 +694,7 @@ export default function CommandPalette() {
     setSelectedIndex(0);
   }
 
-  /*
-   * Clear search
-   */
+ 
 
   function clearSearch() {
     setQuery("");
@@ -727,9 +706,7 @@ export default function CommandPalette() {
     return null;
   }
 
-  /*
-   * Group results
-   */
+  
 
   const navigationCommands =
     filteredCommands.filter(
@@ -760,11 +737,7 @@ export default function CommandPalette() {
         command.category === "Developer Tools"
     );
 
-  /*
-   * Flat index offsets for each section. Derived from the section
-   * lengths so every command keeps a stable index across renders
-   * (keyboard navigation walks one continuous list).
-   */
+  
 
   const categoriesStartIndex = navigationCommands.length;
 
@@ -791,7 +764,7 @@ export default function CommandPalette() {
           event.stopPropagation()
         }
       >
-        {/* Search */}
+        
 
         <div className="flex items-center border-b border-zinc-800 px-4">
 
@@ -836,7 +809,7 @@ export default function CommandPalette() {
 
         </div>
 
-        {/* Results */}
+       
 
         <div
           ref={resultsRef}
@@ -926,7 +899,7 @@ export default function CommandPalette() {
 
         </div>
 
-        {/* Footer */}
+        
 
         <div className="flex flex-col gap-2 border-t border-zinc-800 px-4 py-3 text-xs text-zinc-600 sm:flex-row sm:items-center sm:justify-between">
 
@@ -976,7 +949,7 @@ function CommandSection({
   return (
     <div className="mb-3">
 
-      {/* Section title */}
+      
 
       <div className="flex items-center gap-2 px-3 py-2 text-[11px] font-medium uppercase tracking-wider text-zinc-600">
 
@@ -986,7 +959,7 @@ function CommandSection({
 
       </div>
 
-      {/* Commands */}
+      
 
       <div className="space-y-1">
 
@@ -1013,7 +986,7 @@ function CommandSection({
                 <span className="sr-only">Selected</span>
               )}
 
-              {/* Icon */}
+              
 
               <div
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition ${
@@ -1025,7 +998,7 @@ function CommandSection({
                 {command.icon}
               </div>
 
-              {/* Text */}
+              
 
               <div className="min-w-0 flex-1">
 
@@ -1047,7 +1020,7 @@ function CommandSection({
 
               </div>
 
-              {/* Active arrow */}
+              
 
               {active ? (
                 <ArrowUpRight

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { copyToClipboard } from "@/lib/clipboard";
+import { signJwt } from "@/shared/jwt";
 import {
   ArrowLeft,
   ArrowDown,
@@ -17,8 +18,10 @@ import {
 
 type ToolId =
   | "json-formatter"
+  | "json-validator"
   | "json-to-typescript"
   | "json-to-zod"
+  | "jwt-generator"
   | "base64"
   | "hash-generator"
   | "color-converter"
@@ -39,6 +42,11 @@ const TOOLS: {
     id: "json-formatter",
     name: "JSON Formatter",
     description: "Format and validate JSON",
+  },
+  {
+    id: "json-validator",
+    name: "JSON Validator",
+    description: "Validate JSON and report errors",
   },
   {
     id: "json-to-typescript",
@@ -75,6 +83,11 @@ const TOOLS: {
     name: "UUID Generator",
     description: "Generate UUID values",
   },
+  {
+    id: "jwt-generator",
+    name: "JWT Generator",
+    description: "Sign a JSON payload into a JWT",
+  },
 ];
 
 const DEFAULT_CHAIN: ChainStep[] = [
@@ -101,6 +114,11 @@ async function runTool(tool: ToolId, input: string): Promise<string> {
     case "json-formatter": {
       const parsed = JSON.parse(input);
       return JSON.stringify(parsed, null, 2);
+    }
+
+    case "json-validator": {
+      JSON.parse(input);
+      return "Valid JSON ✓";
     }
 
     case "json-to-typescript": {
@@ -312,6 +330,20 @@ async function runTool(tool: ToolId, input: string): Promise<string> {
 
     case "uuid-generator": {
       return crypto.randomUUID();
+    }
+
+    case "jwt-generator": {
+      // Uses the last line of the input as the signing secret, so a
+      // chain can pass "payload\nsecret" without extra configuration.
+      const lines = input.split("\n").filter((line) => line.trim());
+
+      const secret = lines.length > 1 ? lines[lines.length - 1] : "secret";
+
+      const payload = JSON.parse(
+        lines.length > 1 ? lines.slice(0, -1).join("\n") : input
+      );
+
+      return signJwt(payload, secret, "HS256");
     }
 
     default:

@@ -41,7 +41,9 @@ DevKit ships with **22 tools**, all listed in [`data/tools.ts`](data/tools.ts):
 | Tool                        | Description                                              |
 | --------------------------- | -------------------------------------------------------- |
 | JSON Formatter              | Format and beautify JSON data instantly                  |
+| JSON Validator              | Validate JSON and pinpoint syntax errors                 |
 | JWT Decoder                 | Decode JWT tokens and inspect their contents             |
+| JWT Generator               | Generate and sign JSON Web Tokens with a secret          |
 | UUID Generator              | Generate random UUIDs quickly                            |
 | Regex Tester                | Test and debug regular expressions                       |
 | Base64 Encoder              | Encode and decode Base64 strings                         |

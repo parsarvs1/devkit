@@ -146,7 +146,9 @@
 ├── /tools
 │
 ├── /tools/json-formatter
+├── /tools/json-validator
 ├── /tools/jwt-decoder
+├── /tools/jwt-generator
 ├── /tools/uuid-generator
 ├── /tools/regex-tester
 ├── /tools/base64
@@ -212,8 +214,8 @@ Tool
 
 ## Development
 
-* [ ] JSON Formatter
-* [ ] JSON Validator
+* [x] JSON Formatter
+* [x] JSON Validator
 * [ ] XML Formatter
 * [ ] YAML Formatter
 * [ ] SQL Formatter
@@ -223,13 +225,13 @@ Tool
 
 ## Security
 
-* [ ] JWT Decoder
-* [ ] JWT Generator
-* [ ] Hash Generator
-* [ ] Password Generator
-* [ ] UUID Generator
-* [ ] Base64 Encoder / Decoder
-* [ ] URL Encoder / Decoder
+* [x] JWT Decoder
+* [x] JWT Generator
+* [x] Hash Generator
+* [x] Password Generator
+* [x] UUID Generator
+* [x] Base64 Encoder / Decoder
+* [x] URL Encoder / Decoder
 
 ## Text
 
@@ -244,11 +246,11 @@ Tool
 ## Web
 
 * [ ] URL Parser
-* [ ] URL Encoder
-* [ ] URL Decoder
+* [x] URL Encoder
+* [x] URL Decoder
 * [ ] HTTP Status Lookup
 * [ ] User-Agent Parser
-* [ ] Color Converter
+* [x] Color Converter
 
 ## Git
 

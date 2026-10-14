@@ -1,53 +1,53 @@
     
-# Dependencies
+
 node_modules/
 
-# Next.js
+
 .next/
 out/
 
-# Production
+
 build/
 
-# Local environment variables
+
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Debug logs
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# TypeScript
+
 *.tsbuildinfo
 next-env.d.ts
 
-# Vercel
+
 .vercel/
 
-# Turbopack
+
 .turbo/
 
-# OS files
+
 .DS_Store
 Thumbs.db
 
-# Editor
+
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
 
-# Local development
+
 *.local
 .mcp.json
 .agentsroom/handoff-transcript-*.txt
 .agentsroom/handoff-summary-*.md
 .agentsroom/fork-context-*.txt
 
-# Build output (OpenNext / Wrangler)
+
 .open-next/
 .wrangler/

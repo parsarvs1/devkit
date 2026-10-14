@@ -23,8 +23,7 @@ export default function DashboardClient() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // Favorites and recents are hydrated from localStorage on mount.
-    /* eslint-disable react-hooks/set-state-in-effect */
+   
     try {
       const savedFavorites =
         localStorage.getItem("devkit-favorites");
@@ -51,8 +50,7 @@ export default function DashboardClient() {
       setFavorites([]);
       setRecentTools([]);
     }
-    /* eslint-enable react-hooks/set-state-in-effect */
-
+   
     setLoaded(true);
   }, []);
 
@@ -77,7 +75,7 @@ export default function DashboardClient() {
   return (
     <div className="space-y-10">
 
-      {/* Quick Actions */}
+   
 
       <section>
         <div className="mb-4 flex items-center justify-between">
@@ -151,7 +149,7 @@ export default function DashboardClient() {
         </div>
       </section>
 
-      {/* Favorites */}
+      
 
       <section>
 
@@ -251,7 +249,7 @@ export default function DashboardClient() {
 
       </section>
 
-      {/* Recently Used */}
+      
 
       <section>
 
@@ -335,7 +333,7 @@ export default function DashboardClient() {
 
       </section>
 
-      {/* Workspace */}
+      
 
       <section className="grid gap-4 sm:grid-cols-2">
 

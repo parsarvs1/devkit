@@ -20,8 +20,7 @@ export default function DashboardStats() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // Favorites and recents are hydrated from localStorage on mount.
-    /* eslint-disable react-hooks/set-state-in-effect */
+    
     try {
       const savedFavorites = localStorage.getItem(
         "devkit-favorites"
@@ -50,7 +49,7 @@ export default function DashboardStats() {
       setFavorites([]);
       setRecentTools([]);
     }
-    /* eslint-enable react-hooks/set-state-in-effect */
+    
 
     setLoaded(true);
   }, []);
@@ -61,7 +60,7 @@ export default function DashboardStats() {
         className="animate-pulse"
         aria-hidden="true"
       >
-        {/* Stat tiles */}
+       
 
         <div className="grid gap-4 sm:grid-cols-3">
           {[0, 1, 2].map((index) => (
@@ -82,7 +81,7 @@ export default function DashboardStats() {
           ))}
         </div>
 
-        {/* Panels */}
+        
 
         {[0, 1].map((index) => (
           <div
@@ -104,7 +103,7 @@ export default function DashboardStats() {
 
   return (
     <>
-      {/* Stats */}
+     
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-5">
@@ -162,7 +161,7 @@ export default function DashboardStats() {
         </div>
       </div>
 
-      {/* Favorites */}
+      
 
       <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
         <div className="flex items-center justify-between">
@@ -208,7 +207,7 @@ export default function DashboardStats() {
         )}
       </div>
 
-      {/* Recently Used */}
+      
 
       <div className="mt-5 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
         <div className="flex items-center justify-between">

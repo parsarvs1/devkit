@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="border-t border-zinc-800">
       <div className="mx-auto max-w-6xl px-6 py-10">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
-          {/* Brand */}
+
 
           <div className="max-w-sm">
             <Link
@@ -30,7 +30,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Links */}
 
           <nav aria-label="Explore">
             <p className="mb-3 text-xs font-medium uppercase tracking-wider text-zinc-600">
@@ -67,7 +66,6 @@ export default function Footer() {
             </ul>
           </nav>
 
-          {/* Project */}
 
           <div>
             <p className="mb-3 text-xs font-medium uppercase tracking-wider text-zinc-600">

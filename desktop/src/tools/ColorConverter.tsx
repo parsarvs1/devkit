@@ -120,7 +120,7 @@ export default function ColorConverter() {
       </div>
 
       <section className="color-panel">
-        {/* HEADER */}
+
 
         <div className="panel-header">
           <h2>COLOR INPUT</h2>
@@ -138,7 +138,6 @@ export default function ColorConverter() {
           </div>
         </div>
 
-        {/* INPUT */}
 
         <div className="color-input-section">
           <div className="color-input-wrapper">
@@ -181,10 +180,10 @@ export default function ColorConverter() {
           </div>
         )}
 
-        {/* RESULTS */}
+
 
         <div className="color-results">
-          {/* HEX */}
+
 
           <div className="color-result-card">
             <div className="color-result-header">
@@ -220,7 +219,6 @@ export default function ColorConverter() {
             </strong>
           </div>
 
-          {/* RGB */}
 
           <div className="color-result-card">
             <div className="color-result-header">
@@ -256,7 +254,6 @@ export default function ColorConverter() {
             </strong>
           </div>
 
-          {/* HSL */}
 
           <div className="color-result-card">
             <div className="color-result-header">
@@ -293,7 +290,6 @@ export default function ColorConverter() {
           </div>
         </div>
 
-        {/* COLOR PREVIEW */}
 
         <div className="color-large-preview">
           <div

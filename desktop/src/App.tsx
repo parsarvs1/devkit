@@ -25,9 +25,6 @@ import UuidGenerator from "./tools/UuidGenerator";
 
 import type { RecentTool, Tool, User } from "./types";
 
-/* =========================================
-   TOOL INFO
-========================================= */
 
 const TOOL_INFO: Record<
   string,
@@ -96,9 +93,6 @@ const TOOL_INFO: Record<
   },
 };
 
-/* =========================================
-   APP
-========================================= */
 
 export default function App() {
   const [activeTool, setActiveTool] = useState<Tool>("home");
@@ -121,13 +115,9 @@ export default function App() {
 
   const [recentTools, setRecentTools] = useState<RecentTool[]>([]);
 
-  /* =========================================
-     LOAD RECENT TOOLS
-  ========================================= */
 
   useEffect(() => {
-    // The signed-in user is hydrated from localStorage on mount.
-    /* eslint-disable react-hooks/set-state-in-effect */
+
     const savedUser = localStorage.getItem("devkit-user");
 
     if (!savedUser) {
@@ -147,12 +137,10 @@ export default function App() {
     } catch {
       localStorage.removeItem("devkit-user");
     }
-    /* eslint-enable react-hooks/set-state-in-effect */
+
   }, []);
 
-  /* =========================================
-     LOAD COMMAND PALETTE SETTING
-  ========================================= */
+
 
   useEffect(() => {
     const loadCommandPaletteSetting = () => {
@@ -176,9 +164,6 @@ export default function App() {
     };
   }, []);
 
-  /* =========================================
-     OPEN TOOL
-  ========================================= */
 
   const openTool = (tool: string) => {
     const nextTool = tool as Tool;
@@ -217,9 +202,7 @@ export default function App() {
     });
   };
 
-  /* =========================================
-     LOGIN
-  ========================================= */
+
 
   const openLogin = () => {
     setAuthMode("login");
@@ -232,9 +215,7 @@ export default function App() {
     setCommandPaletteOpen(false);
   };
 
-  /* =========================================
-     AUTH SUCCESS
-  ========================================= */
+
 
   const handleAuthSuccess = (authenticatedUser: User) => {
     setUser(authenticatedUser);
@@ -244,9 +225,6 @@ export default function App() {
     setAuthMode("login");
   };
 
-  /* =========================================
-     LOGOUT
-  ========================================= */
 
   const handleLogout = () => {
     localStorage.removeItem("devkit-user");
@@ -259,9 +237,7 @@ export default function App() {
     setActiveTool("home");
   };
 
-  /* =========================================
-     PROFILE
-  ========================================= */
+
 
   const openProfile = () => {
     if (!user) {
@@ -286,9 +262,7 @@ export default function App() {
     setUser(updatedUser);
   };
 
-  /* =========================================
-     SETTINGS
-  ========================================= */
+  
 
   const openSettings = () => {
     setSettingsOpen(true);
@@ -303,9 +277,7 @@ export default function App() {
     setSettingsOpen(false);
   };
 
-  /* =========================================
-     FAVORITES
-  ========================================= */
+  
 
   const openFavorites = () => {
     setFavoritesOpen(true);
@@ -316,9 +288,7 @@ export default function App() {
     setCommandPaletteOpen(false);
   };
 
-  /* =========================================
-     COMMAND PALETTE
-  ========================================= */
+ 
 
   const openCommandPalette = useCallback(() => {
     if (!commandPaletteEnabled) {
@@ -332,9 +302,6 @@ export default function App() {
     setCommandPaletteOpen(false);
   }, []);
 
-  /* =========================================
-     HOME COMMAND PALETTE EVENT
-  ========================================= */
 
   useEffect(() => {
     const handleOpenCommandPalette = () => {
@@ -366,9 +333,6 @@ export default function App() {
     };
   }, [commandPaletteEnabled, openCommandPalette]);
 
-  /* =========================================
-     RENDER TOOL
-  ========================================= */
 
   const renderTool = () => {
     if (favoritesOpen) {
@@ -434,9 +398,6 @@ export default function App() {
     }
   };
 
-  /* =========================================
-     RENDER
-  ========================================= */
 
   return (
     <>

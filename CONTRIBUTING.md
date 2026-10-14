@@ -21,33 +21,33 @@ You can contribute by:
 
 Fork the repository and clone your fork:
 
-```bash
+
 git clone YOUR_FORK_URL
-```
+
 
 Move into the project directory:
 
-```bash
+
 cd devkit
-```
+
 
 Install dependencies:
 
-```bash
+
 npm install
-```
+
 
 Start the development server:
 
-```bash
+
 npm run dev
-```
+
 
 Then open:
 
-```text
+
 http://localhost:3000
-```
+
 
 ## Adding a New Tool
 

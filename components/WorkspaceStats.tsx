@@ -20,8 +20,7 @@ export default function WorkspaceStats() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // Recents and snippet count are hydrated from localStorage on mount.
-    /* eslint-disable react-hooks/set-state-in-effect */
+   
     try {
       const storedRecent = localStorage.getItem(
         "devkit-recent-tools"
@@ -50,13 +49,12 @@ export default function WorkspaceStats() {
       setRecentTools([]);
       setSnippetCount(0);
     }
-    /* eslint-enable react-hooks/set-state-in-effect */
+  
 
     setLoaded(true);
   }, []);
 
-  // Wait for both sources (pins from the hook, the rest locally)
-  // so counts do not flash 0 before hydration.
+  
 
   if (!loaded || !pinsLoaded) {
     return (

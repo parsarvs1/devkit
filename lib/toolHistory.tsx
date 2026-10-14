@@ -87,7 +87,6 @@ export function addToolToHistory(
 
     window.dispatchEvent(new Event("tool-history-updated"));
   } catch {
-    // Ignore localStorage errors
   }
 }
 
@@ -112,7 +111,6 @@ export function removeToolFromHistory(
 
     window.dispatchEvent(new Event("tool-history-updated"));
   } catch {
-    // Ignore localStorage errors
   }
 }
 
@@ -126,6 +124,5 @@ export function clearToolHistory(): void {
 
     window.dispatchEvent(new Event("tool-history-updated"));
   } catch {
-    // Ignore localStorage errors
   }
 }

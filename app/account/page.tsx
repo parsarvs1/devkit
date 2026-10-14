@@ -71,7 +71,7 @@ export default function AccountPage() {
     <main id="main-content" className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
 
-        {/* Back */}
+      
 
         <Link
           href="/"
@@ -81,7 +81,7 @@ export default function AccountPage() {
           Back to home
         </Link>
 
-        {/* Header */}
+       
 
         <div className="mt-8">
           <h1 className="text-3xl font-bold tracking-tight">
@@ -93,11 +93,11 @@ export default function AccountPage() {
           </p>
         </div>
 
-        {/* Profile */}
+       
 
         <section className="mt-8 overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
 
-          {/* Profile header */}
+          
 
           <div className="border-b border-zinc-200 p-6 dark:border-zinc-800">
             <div className="flex items-center gap-4">
@@ -122,11 +122,10 @@ export default function AccountPage() {
             </div>
           </div>
 
-          {/* Account information */}
-
+        
           <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
 
-            {/* Name */}
+           
 
             <div className="flex items-center justify-between gap-4 p-6">
               <div className="flex items-center gap-4">
@@ -152,7 +151,7 @@ export default function AccountPage() {
               </span>
             </div>
 
-            {/* Email */}
+         
 
             <div className="flex items-center justify-between gap-4 p-6">
               <div className="flex items-center gap-4">
@@ -178,7 +177,7 @@ export default function AccountPage() {
               </span>
             </div>
 
-            {/* Account status */}
+            
 
             <div className="flex items-center justify-between gap-4 p-6">
               <div className="flex items-center gap-4">
@@ -208,7 +207,6 @@ export default function AccountPage() {
           </div>
         </section>
 
-        {/* Actions */}
 
         <section className="mt-6 grid gap-4 sm:grid-cols-2">
 

@@ -55,7 +55,7 @@ export default function SettingsPage() {
     <main id="main-content" className="min-h-screen bg-zinc-950 text-white">
       <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
 
-        {/* Back */}
+       
 
         <Link
           href="/dashboard"
@@ -65,8 +65,7 @@ export default function SettingsPage() {
           Back to dashboard
         </Link>
 
-        {/* Header */}
-
+        
         <div className="mt-8 flex items-center gap-4 sm:mt-10">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900 sm:h-14 sm:w-14">
             <SettingsIcon size={23} />
@@ -83,9 +82,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* =========================
-            APPEARANCE
-        ========================== */}
+       
 
         <section className="mt-8 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/30 sm:mt-10">
 
@@ -157,7 +154,7 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* Current Theme */}
+        
 
         <section className="mt-5 rounded-2xl border border-zinc-800 bg-zinc-900/30 p-5 sm:mt-6 sm:p-6">
           <div className="flex items-center justify-between gap-4">
@@ -179,9 +176,7 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* =========================
-            ACCOUNT
-        ========================== */}
+       
 
         <section className="mt-5 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/30 sm:mt-6">
 
@@ -197,7 +192,7 @@ export default function SettingsPage() {
 
           <div className="divide-y divide-zinc-800">
 
-            {/* Profile */}
+            
 
             <Link
               href="/dashboard"
@@ -227,7 +222,7 @@ export default function SettingsPage() {
               />
             </Link>
 
-            {/* Email */}
+          
 
             <div className="flex items-center gap-4 px-5 py-5 sm:px-6">
 
@@ -250,9 +245,7 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* =========================
-            PREFERENCES
-        ========================== */}
+       
 
         <section className="mt-5 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/30 sm:mt-6">
 
@@ -268,7 +261,7 @@ export default function SettingsPage() {
 
           <div className="divide-y divide-zinc-800">
 
-            {/* Command Palette */}
+           
 
             <div className="flex items-center justify-between gap-4 px-5 py-5 sm:px-6">
 
@@ -303,7 +296,7 @@ export default function SettingsPage() {
 
             </div>
 
-            {/* Keyboard shortcut */}
+          
 
             <div className="flex items-center gap-4 px-5 py-5 sm:px-6">
 
@@ -326,9 +319,7 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        {/* =========================
-            SECURITY
-        ========================== */}
+        
 
         <section className="mt-5 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/30 sm:mt-6">
 

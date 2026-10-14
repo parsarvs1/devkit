@@ -14,6 +14,7 @@ import {
   Palette,
   Clock3,
   Fingerprint,
+  KeyRound,
 } from "lucide-react";
 
 type Action = {
@@ -31,6 +32,13 @@ const actions: Action[] = [
     href: "/tools/json-formatter",
     category: "JSON",
     icon: Braces,
+  },
+  {
+    name: "Validate JSON",
+    description: "Validate JSON and pinpoint syntax errors.",
+    href: "/tools/json-validator",
+    category: "JSON",
+    icon: ShieldCheck,
   },
   {
     name: "JSON → TypeScript",
@@ -59,6 +67,13 @@ const actions: Action[] = [
     href: "/tools/hash-generator",
     category: "Security",
     icon: Hash,
+  },
+  {
+    name: "JWT Generator",
+    description: "Sign and generate JSON Web Tokens.",
+    href: "/tools/jwt-generator",
+    category: "Security",
+    icon: KeyRound,
   },
   {
     name: "Color Converter",

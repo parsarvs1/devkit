@@ -2,20 +2,12 @@ import { tools } from "@/data/tools";
 
 export type Tool = (typeof tools)[number];
 
-/**
- * Canonical, ordered list of tool categories.
- *
- * Derived from data/tools.ts so a new category shows up here
- * automatically.
- */
+
 export const categories = Array.from(
   new Set(tools.map((tool) => tool.category)),
 );
 
-/*
- * Explicit category → slug mapping, so URLs are stable and never
- * accidentally collide (e.g. "JSON" stays "json", not generated).
- */
+
 const CATEGORY_SLUGS: Record<string, string> = {
   JSON: "json",
   Security: "security",
@@ -47,13 +39,6 @@ export function toolsInCategory(category: string): Tool[] {
   return tools.filter((tool) => tool.category === category);
 }
 
-/**
- * Tools related to the given tool: same category first, then
- * filled up from the largest other categories when the tool is
- * the only one in its category (e.g. Snippets, Tool Chaining).
- *
- * The tool itself is never included.
- */
 export function relatedTools(href: string, limit = 3): Tool[] {
   const current = tools.find((tool) => tool.href === href);
 

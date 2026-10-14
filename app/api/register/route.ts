@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         ? body.password
         : "";
 
-    // Validate name
+ 
     if (!name) {
       return NextResponse.json(
         {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate email
+    
     if (!email) {
       return NextResponse.json(
         {
@@ -57,7 +57,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate password
     if (!password) {
       return NextResponse.json(
         {
@@ -86,7 +85,7 @@ export async function POST(request: Request) {
 
     const db = env.DB;
 
-    // Check existing user
+
     const existingUser = await db
       .prepare(
         `
@@ -113,19 +112,19 @@ export async function POST(request: Request) {
       );
     }
 
-    // Hash password
+  
     const hashedPassword =
       await bcrypt.hash(password, 12);
 
-    // Create user ID
+  
     const userId =
       crypto.randomUUID();
 
-    // Create timestamp
+   
     const createdAt =
       new Date().toISOString();
 
-    // Insert user
+   
     await db
       .prepare(
         `

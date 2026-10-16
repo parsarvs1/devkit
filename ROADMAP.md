@@ -197,8 +197,8 @@ Tool
 
 ### Tasks
 
-* [ ] Create Tool Documentation
-* [ ] Create Examples
+* [x] Create Tool Documentation
+* [x] Create Examples
 * [x] Create FAQ
 * [ ] Add Internal Links
 * [x] Add Related Tools
@@ -218,7 +218,7 @@ Tool
 * [x] JSON Validator
 * [ ] XML Formatter
 * [ ] YAML Formatter
-* [ ] SQL Formatter
+* [x] SQL Formatter
 * [ ] HTML Formatter
 * [ ] CSS Formatter
 * [ ] JavaScript Formatter
@@ -272,10 +272,10 @@ Tool
 
 > هدف: متمایز شدن از Developer Tool سایت‌های معمولی
 
-* [ ] Cron Parser
-* [ ] Cron Generator
-* [ ] Unix Timestamp Converter
-* [ ] SQL Formatter
+* [x] Cron Parser
+* [x] Cron Generator
+* [x] Unix Timestamp Converter
+* [x] SQL Formatter
 * [ ] Regex Tester
 * [ ] JSON Diff
 * [ ] YAML ↔ JSON
@@ -335,14 +335,14 @@ Tool
 
 ## GitHub
 
-* [ ] Bug Report Template
-* [ ] Feature Request Template
-* [ ] Pull Request Template
-* [ ] Security Policy
-* [ ] Code of Conduct
-* [ ] Changelog
-* [ ] Releases
-* [ ] Version Tags
+* [x] Bug Report Template
+* [x] Feature Request Template
+* [x] Pull Request Template
+* [x] Security Policy
+* [x] Code of Conduct
+* [x] Changelog
+* [x] Releases
+* [x] Version Tags
 
 ## CI/CD
 
@@ -432,13 +432,13 @@ Your data stays in your browser.
 
 > هدف: تبدیل DevKit به یک Web App واقعی
 
-* [ ] Web App Manifest
-* [ ] Service Worker
-* [ ] Installable App
-* [ ] Offline Support
-* [ ] App Icons
-* [ ] Splash Screen
-* [ ] Offline Tool Access
+* [x] Web App Manifest
+* [x] Service Worker
+* [x] Installable App
+* [x] Offline Support
+* [x] App Icons
+* [x] Splash Screen
+* [x] Offline Tool Access
 
 ### Goal
 

@@ -34,7 +34,7 @@ export default function Home() {
       price: "0",
       priceCurrency: "USD",
     },
-    featureList: tools.map((tool) => tool.name),
+    featureList: tools.map((tool) => tool?.name).filter((name): name is string => Boolean(name)),
   };
 
   return (

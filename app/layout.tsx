@@ -5,6 +5,7 @@ import SessionProvider from "@/components/SessionProvider";
 import ThemeProvider from "@/components/ThemeProvider";
 import CommandPalette from "@/components/CommandPalette";
 import ToolUsageTracker from "@/components/ToolUsageTracker";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 
 const SITE_URL = "https://devkit.pars-paris1.workers.dev";
 
@@ -128,6 +129,7 @@ export default function RootLayout({
            />
             <ToolUsageTracker />
             <CommandPalette />
+            <ServiceWorkerRegistration />
           </ThemeProvider>
         </SessionProvider>
       </body>

@@ -18,7 +18,9 @@ FileJson,
 Terminal,
 } from "lucide-react";
 
-export const tools = [
+export interface Tool { name: string; description: string; icon: any; href: string; category: string; }
+
+export const tools: Tool[] = [
 {
 name: "JSON Formatter",
 description: "Format and beautify JSON data instantly.",
@@ -275,4 +277,37 @@ icon: FileText,
 href: "/tools/character-counter",
 category: "Text",
 },
+{
+name: "Cron Parser",
+description: "Parse cron expressions.",
+icon: Clock,
+href: "/tools/cron-parser",
+category: "Time",
+},
+{
+name: "Cron Generator",
+description: "Generate cron expressions.",
+icon: Clock,
+href: "/tools/cron-generator",
+category: "Generators",
+},
+{
+name: "Unix Timestamp Converter",
+description: "Convert Unix timestamps and dates.",
+icon: Clock,
+href: "/tools/unix-timestamp-converter",
+category: "Time",
+},
+{
+name: "SQL Formatter",
+description: "Format SQL queries.",
+icon: Terminal,
+href: "/tools/sql-formatter",
+category: "Data",
+},
+
 ];
+
+
+
+

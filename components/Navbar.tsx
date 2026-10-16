@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   Search,
+  Download,
 } from "lucide-react";
 
 import { useSession, signOut } from "next-auth/react";
@@ -22,6 +23,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useTheme } from "@/components/ThemeProvider";
 import { openCommandPalette } from "@/lib/openCommandPalette";
+import { usePWAInstall } from "@/components/InstallPrompt";
 
 type Theme = "light" | "dark" | "system";
 
@@ -37,6 +39,7 @@ export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
 
   const isLoggedIn = status === "authenticated";
+  const { canInstall, install } = usePWAInstall();
 
   
 
@@ -364,6 +367,17 @@ export default function Navbar() {
             >
               Sign in
             </Link>
+          )}
+
+          {canInstall && (
+            <button
+              type="button"
+              onClick={install}
+              className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:text-white"
+            >
+              <Download size={15} />
+              Install App
+            </button>
           )}
         </div>
 

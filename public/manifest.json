@@ -1,19 +1,61 @@
 {
   "name": "DevKit — Developer Tools",
   "short_name": "DevKit",
-  "description":
-    "Free, fast and privacy-friendly developer tools. Format JSON, decode JWTs, generate hashes and more — right in your browser.",
+  "description": "Free, fast and privacy-friendly developer tools. Format JSON, decode JWTs, generate hashes and more — right in your browser.",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#09090b",
   "theme_color": "#09090b",
-  "orientation": "any",
   "categories": ["developer", "productivity", "utilities"],
   "icons": [
     {
       "src": "/favicon.ico",
       "sizes": "any",
       "type": "image/x-icon"
+    },
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "JSON Formatter",
+      "url": "/tools/json-formatter",
+      "description": "Format and beautify JSON"
+    },
+    {
+      "name": "UUID Generator",
+      "url": "/tools/uuid-generator",
+      "description": "Generate random UUIDs"
+    },
+    {
+      "name": "Hash Generator",
+      "url": "/tools/hash-generator",
+      "description": "Generate hashes from text"
     }
   ]
 }

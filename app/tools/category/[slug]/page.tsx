@@ -34,9 +34,7 @@ export default async function CategoryPage({
     notFound();
   }
 
-  const items = tools.filter(
-    (item) => item.category === category,
-  );
+  const items = tools.filter((item) => item?.category === category);
 
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden bg-zinc-950 text-white">
@@ -107,3 +105,5 @@ export default async function CategoryPage({
     </div>
   );
 }
+
+

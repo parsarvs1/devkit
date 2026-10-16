@@ -37,12 +37,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
-  const toolPages: MetadataRoute.Sitemap = tools.map((tool) => ({
-    url: `${SITE_URL}${tool.href}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly",
-    priority: 0.8,
-  }));
+  const toolPages: MetadataRoute.Sitemap = tools
+    .map((tool) =>
+      tool
+        ? {
+            url: `${SITE_URL}${tool.href}`,
+            lastModified: new Date(),
+            changeFrequency: "monthly" as const,
+            priority: 0.8,
+          }
+        : null
+    )
+    .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
 
   return [...staticPages, ...categoryPages, ...toolPages];
 }

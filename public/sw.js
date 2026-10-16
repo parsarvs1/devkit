@@ -1,18 +1,19 @@
-/* DevKit Service Worker
+/* DevKit Service Worker.
  *
  * Strategy:
- * - Precache: offline fallback, manifest, icons (small, essential).
- * - Cache-first: same-origin static assets (_next/static, images) with
- *   versioned cache cleanup.
- * - Network-first: navigations, falling back to the offline page when the
- *   network is unavailable.
- * - Never cached: authentication, session, API, dashboard, account,
- *   settings, or any non-successful responses.
+ *  - Precache: offline fallback, manifest, icons (small, essential).
+ *  - Cache-first: same-origin static assets (_next/static, images) with
+ *    versioned cache cleanup.
+ *  - Network-first: navigations, falling back to the offline page when the
+ *    network is unavailable.
+ *  - Never cached: authentication, session, API, dashboard, account, settings,
+ *    login, signup, or any non-successful responses.
  */
 
-const VERSION = "devkit-v1";
+const VERSION = "devkit-v2";
 const STATIC_CACHE = `${VERSION}-static`;
 const NAV_CACHE = `${VERSION}-nav`;
+const NAV_MAX_ENTRIES = 40;
 
 const PRECACHE = [
   "/offline",
@@ -21,7 +22,6 @@ const PRECACHE = [
   "/pwa-512x512.png",
 ];
 
-/* Routes that must never be served from cache — always network-only. */
 const SENSITIVE_PATTERNS = [
   /^\/api\//,
   /^\/dashboard/,
@@ -29,7 +29,7 @@ const SENSITIVE_PATTERNS = [
   /^\/settings/,
   /^\/login/,
   /^\/signup/,
-  /auth/,
+  /^\/workspace/,
 ];
 
 function isSensitive(url) {
@@ -38,10 +38,15 @@ function isSensitive(url) {
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches
-      .open(STATIC_CACHE)
-      .then((cache) => cache.addAll(PRECACHE))
-      .then(() => self.skipWaiting())
+    caches.open(STATIC_CACHE).then(async (cache) => {
+      for (const url of PRECACHE) {
+        try {
+          await cache.add(url);
+        } catch (e) {
+          console.warn("sw: precache failed for", url, e);
+        }
+      }
+    }).then(() => self.skipWaiting())
   );
 });
 
@@ -54,8 +59,8 @@ self.addEventListener("activate", (event) => {
           keys
             .filter(
               (key) =>
-                !key.startsWith(VERSION) &&
-                (key.includes("-static") || key.includes("-nav"))
+                (key.endsWith("-static") || key.endsWith("-nav")) &&
+                !key.startsWith(VERSION)
             )
             .map((key) => caches.delete(key))
         )
@@ -63,6 +68,15 @@ self.addEventListener("activate", (event) => {
       .then(() => self.clients.claim())
   );
 });
+
+async function trimCache(cacheName, maxEntries) {
+  const cache = await caches.open(cacheName);
+  const keys = await cache.keys();
+  if (keys.length > maxEntries) {
+    await cache.delete(keys[0]);
+    await trimCache(cacheName, maxEntries);
+  }
+}
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
@@ -74,30 +88,33 @@ self.addEventListener("fetch", (event) => {
   // Only handle same-origin requests.
   if (url.origin !== self.location.origin) return;
 
-  // Sensitive routes: network-only, never cached.
+  // Sensitive routes: never cached, network-only.
   if (isSensitive(url)) return;
 
-  // Static assets: cache-first with background update.
-  if (
+  const isStaticAsset =
     url.pathname.startsWith("/_next/static/") ||
     url.pathname.startsWith("/pwa-") ||
     url.pathname.startsWith("/screenshots/") ||
     url.pathname.endsWith(".png") ||
     url.pathname.endsWith(".svg") ||
-    url.pathname.endsWith(".ico")
-  ) {
+    url.pathname.endsWith(".ico");
+
+  // Static assets: cache-first, refresh in background.
+  if (isStaticAsset) {
     event.respondWith(
       caches.open(STATIC_CACHE).then(async (cache) => {
         const cached = await cache.match(request);
-        const fetchPromise = fetch(request)
+        fetch(request)
           .then((response) => {
             if (response.ok) {
               cache.put(request, response.clone());
             }
-            return response;
           })
-          .catch(() => cached);
-        return cached || fetchPromise;
+          .catch(() => {});
+        return (
+          cached ||
+          fetch(request).catch(() => caches.match("/offline"))
+        );
       })
     );
     return;
@@ -110,28 +127,41 @@ self.addEventListener("fetch", (event) => {
         .then((response) => {
           if (response.ok) {
             const clone = response.clone();
-            caches.open(NAV_CACHE).then((cache) => cache.put(request, clone));
+            caches.open(NAV_CACHE).then(async (cache) => {
+              await cache.put(request, clone);
+              await trimCache(NAV_CACHE, NAV_MAX_ENTRIES);
+            });
           }
           return response;
         })
         .catch(async () => {
-          const cache = await caches.open(NAV_CACHE);
-          const cached = await cache.match(request);
+          const navCache = await caches.open(NAV_CACHE);
+          const cached = await navCache.match(request);
           if (cached) return cached;
-          const offline = await cache.match("/offline");
+          const staticCache = await caches.open(STATIC_CACHE);
+          const offline = await staticCache.match("/offline");
           if (offline) return offline;
-          return Response.error();
+          return new Response(
+            "Service unavailable",
+            { status: 503, headers: { "Content-Type": "text/plain" } }
+          );
         })
     );
     return;
   }
 
-  // Default: network with cache fallback for same-origin GETs.
+  // Default: network with static cache fallback.
   event.respondWith(
     fetch(request).catch(async () => {
       const cache = await caches.open(STATIC_CACHE);
       const cached = await cache.match(request);
-      return cached || Response.error();
+      return (
+        cached ||
+        new Response("Network unavailable", {
+          status: 503,
+          headers: { "Content-Type": "text/plain" },
+        })
+      );
     })
   );
 });

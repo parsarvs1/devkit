@@ -14,6 +14,8 @@ Code2,
 Zap,
 ShieldCheck,
 GitCompare,
+FileJson,
+Terminal,
 } from "lucide-react";
 
 export const tools = [
@@ -218,5 +220,59 @@ description:
 icon: Zap,
 href: "/tools/tool-chaining",
 category: "Automation",
+},
+
+{
+name: ".gitignore Generator",
+description:
+"Create .gitignore files for your projects with pre-built templates.",
+icon: FileJson,
+href: "/tools/gitignore-generator",
+category: "Version Control",
+},
+
+{
+name: "Git Command Generator",
+description:
+"Generate git commands with flags and options for your workflow.",
+icon: Terminal,
+href: "/tools/git-command-generator",
+category: "Version Control",
+},
+
+{
+name: "Git Diff Viewer",
+description:
+"Parse and visualize git diffs with a beautiful, easy-to-read interface.",
+icon: GitCompare,
+href: "/tools/git-diff-viewer",
+category: "Version Control",
+},
+
+{
+name: "Git Branch Name Generator",
+description:
+  "Generate clean, consistent git branch names from your task description.",
+icon: Terminal,
+href: "/tools/git-branch-name-generator",
+category: "Version Control",
+},
+
+{
+name: "CIDR Calculator",
+description:
+  "Calculate network details, broadcast address and host ranges from a CIDR block.",
+icon: Zap,
+href: "/tools/cidr-calculator",
+category: "Networking",
+},
+
+{
+name: "Character Counter",
+description:
+  "Count characters, words, sentences, lines and paragraphs in your text.",
+icon: FileText,
+href: "/tools/character-counter",
+category: "Text",
 },
 ];

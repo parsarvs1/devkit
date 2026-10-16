@@ -55,7 +55,7 @@ export const metadata: Metadata = {
       "Format JSON, decode JWTs, generate hashes, test regex and more. Fast, free and privacy-friendly developer tools in your browser.",
     images: [
       {
-        url: "/screenshots/devkit-home.png",
+        url: "/screenshots/devkit-new-home.png",
         width: 1200,
         height: 630,
         alt: "DevKit — Free Online Developer Tools",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     title: "DevKit — Free Online Developer Tools",
     description:
       "Format JSON, decode JWTs, generate hashes, test regex and more. Fast, free and privacy-friendly developer tools in your browser.",
-    images: ["/screenshots/devkit-home.png"],
+    images: ["/screenshots/devkit-new-home.png"],
   },
   robots: {
     index: true,
@@ -108,6 +108,24 @@ export default function RootLayout({
             </a>
 
             {children}
+           <script
+             type="application/ld+json"
+             dangerouslySetInnerHTML={{
+               __html: JSON.stringify({
+                 "@context": "https://schema.org",
+                 "@type": "WebSite",
+                 name: "DevKit",
+                 url: SITE_URL,
+                 description:
+                   "Free, fast and privacy-friendly developer tools.",
+                 publisher: {
+                   "@type": "Organization",
+                   name: "DevKit",
+                   url: SITE_URL,
+                 },
+               }),
+             }}
+           />
             <ToolUsageTracker />
             <CommandPalette />
           </ThemeProvider>

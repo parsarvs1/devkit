@@ -19,6 +19,7 @@ const CATEGORY_SLUGS: Record<string, string> = {
   Networking: "networking",
   HTTP: "http",
   Automation: "automation",
+  "Version Control": "version-control",
 };
 
 export function categoryToSlug(category: string): string {

@@ -27,7 +27,7 @@ right in your browser, with no signup.
 
 - ⚡ **Fast and lightweight** — results appear instantly
 - 🔒 **Privacy-focused** — many tools run entirely in your browser
-- 🧰 **22 developer utilities** in one place
+- 🧰 **30+ developer utilities** in one place
 - 🔎 **Search and filter** tools quickly
 - ⌨️ **Command Palette** — press `Ctrl + K` to jump to any tool
 - 📱 **Responsive design** — works on desktop and mobile
@@ -36,7 +36,7 @@ right in your browser, with no signup.
 
 ## 🛠️ Available Tools
 
-DevKit ships with **22 tools**, all listed in [`data/tools.ts`](data/tools.ts):
+DevKit ships with **30+ tools**, all listed in [`data/tools.ts`](data/tools.ts):
 
 | Tool                        | Description                                              |
 | --------------------------- | -------------------------------------------------------- |
@@ -64,7 +64,9 @@ DevKit ships with **22 tools**, all listed in [`data/tools.ts`](data/tools.ts):
 | Environment Variable Generator | Generate and format environment variables             |
 | Snippets                    | Save and manage reusable code snippets                   |
 | Tool Chaining               | Connect multiple DevKit tools into one workflow          |
-
+| Git Branch Name Generator   | Generate clean, consistent git branch names              |
+| CIDR Calculator             | Calculate network details from a CIDR block             |
+| Character Counter           | Count characters, words, sentences, lines and paragraphs |
 Browse the full list on the [Tools page](https://devkit.pars-paris1.workers.dev/tools).
 
 ## 🚀 Getting Started

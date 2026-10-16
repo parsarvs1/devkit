@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ToolJsonLd from "@/components/ToolJsonLd";
 
 import { toolMetadata } from "@/lib/toolMetadata";
 
@@ -9,5 +10,10 @@ export default function ToolLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      {children}
+      <ToolJsonLd slug="json-validator" />
+    </>
+  );
 }
